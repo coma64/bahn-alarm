@@ -7,4 +7,5 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'bahn-alarm-frontend-v3';
+  x = JSON.parse('""');
 }

@@ -1,0 +1,9 @@
+a:not([class]) {
+  // TODO: Use HSL color theme
+  color: #5d00e5;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
