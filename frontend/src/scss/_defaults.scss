@@ -38,8 +38,8 @@ input {
   border: none;
   border-bottom: 2px solid hsl(var(--hue) 10% 45%);
   min-width: 25ch;
-  border-top-left-radius: 0.3rem;
-  border-top-right-radius: 0.3rem;
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
 
   &:focus {
     outline: none;
@@ -54,7 +54,7 @@ button {
   color: var(--text1);
   background: var(--surface2);
   border: 2px solid hsl(var(--hue), 10%, 45%);
-  border-radius: 0.3rem;
+  border-radius: var(--radius);
   padding: 0.4rem;
   display: flex;
   justify-content: center;

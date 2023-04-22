@@ -1,0 +1,17 @@
+:host {
+  display: flex;
+  align-items: center;
+  gap: 1ch;
+  margin-top: 1rem;
+
+  &.error {
+    padding: 0.5rem;
+    border-radius: var(--radius);
+    background: var(--brand);
+  }
+}
+
+i-feather {
+  width: 2rem;
+  height: 2rem;
+}

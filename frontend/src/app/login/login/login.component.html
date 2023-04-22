@@ -4,19 +4,23 @@
 </header>
 
 <main>
-  <form>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <label>
-      Username
-      <input />
+      Name
+      <input formControlName="username" />
     </label>
 
     <label>
       Password
-      <input type="password" />
+      <input formControlName="password" type="password" />
     </label>
 
+    <app-banner *ngIf="isInvalid">
+      The credentials you've entered are invalid
+    </app-banner>
+
     <button class="action">
-      <i-feather name="log-in"></i-feather>
+      <i-feather aria-hidden="true" name="log-in"></i-feather>
       Login
     </button>
   </form>
