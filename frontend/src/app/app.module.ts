@@ -8,6 +8,8 @@ import { UserState } from '../../state/user.state';
 import { environment } from '../environments/environment';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
+import { ApiModule, Configuration } from './api';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,6 +21,8 @@ import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
     }),
     NgxsReduxDevtoolsPluginModule.forRoot(),
     NgxsLoggerPluginModule.forRoot(),
+    HttpClientModule,
+    ApiModule.forRoot(() => new Configuration({ basePath: environment.api })),
   ],
   providers: [],
   bootstrap: [AppComponent],
