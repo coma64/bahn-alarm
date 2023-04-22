@@ -4,9 +4,11 @@ section {
   gap: 10px;
   margin: 10px;
   justify-content: space-evenly;
+  height: 11rem;
 
   > * {
     display: flex;
+    align-items: center;
     gap: 1ch;
     border-radius: var(--radius);
     background: var(--surface2);
@@ -20,6 +22,11 @@ section {
       font-size: 1.3rem;
     }
   }
+}
+
+app-spinner {
+  height: 11rem;
+  margin: 10px;
 }
 
 .delayed {

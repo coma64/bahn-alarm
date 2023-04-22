@@ -1,4 +1,4 @@
-<section *ngIf="stats$ | async as stats">
+<section *ngIf="stats$ | async as stats; else spinner">
   <div>
     <div aria-labelledby="tracked-connection-title">
       {{ stats.totalConnectionCount }}
@@ -18,3 +18,7 @@
     <div>until next departure</div>
   </div>
 </section>
+
+<ng-template #spinner>
+  <app-spinner></app-spinner>
+</ng-template>
