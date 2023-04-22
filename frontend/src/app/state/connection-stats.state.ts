@@ -3,11 +3,11 @@ import { State, Action, StateContext } from '@ngxs/store';
 import { ConnectionStats } from './connection-stats.actions';
 import { TrackingStats } from '../api';
 
-export type TrackingStatsModel = TrackingStats | undefined;
+export type TrackingStatsModel = TrackingStats | null;
 
 @State<TrackingStatsModel>({
   name: 'connectionStats',
-  defaults: undefined,
+  defaults: null,
 })
 @Injectable()
 export class ConnectionStatsState {
