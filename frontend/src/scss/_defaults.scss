@@ -2,7 +2,7 @@
 
 a:not([class]) {
   // TODO: Use HSL color theme
-  color: #5d00e5;
+  color: var(--brand);
   text-decoration: none;
 
   &:hover {
