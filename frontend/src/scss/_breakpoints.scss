@@ -1,0 +1,5 @@
+@mixin is-small() {
+  @media screen and (max-width: 700px) {
+    @content;
+  }
+}

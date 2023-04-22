@@ -1,0 +1,40 @@
+:root {
+  /* destructure brand channels */
+  --hue: 0;
+  --saturation: 100%;
+  --lightness: 70%;
+
+  --brand: hsl(
+      var(--hue)
+      var(--saturation)
+      var(--lightness)
+  );
+
+  --surface: hsl(
+      var(--hue)
+      10%
+      12%
+  );
+
+  --text1: hsl(
+      var(--hue)
+      calc(var(--saturation) / 4)
+      90%
+  );
+  --text2: hsl(
+      var(--hue)
+      calc(var(--saturation) / 8)
+      75%
+  );
+  --surface1: hsl(var(--hue) 5% 10%);
+  --surface2: hsl(var(--hue) 5% 15%);
+  --surface3: hsl(var(--hue) 5%  20%);
+  --surface4: hsl(var(--hue) 5% 25%);
+  --surface-shadow: var(--hue) 50% 3%;
+  --shadow-strength: .7;
+}
+
+body {
+  color: var(--text1);
+  background: var(--surface);
+}

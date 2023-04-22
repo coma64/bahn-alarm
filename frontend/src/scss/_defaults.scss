@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 a:not([class]) {
   // TODO: Use HSL color theme
   color: #5d00e5;
@@ -5,5 +7,79 @@ a:not([class]) {
 
   &:hover {
     text-decoration: underline;
+  }
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  height: 100%;
+}
+
+label {
+  color: var(--text2);
+  display: block;
+  font-size: .9rem;
+
+  & ~ label {
+    margin-top: .5rem;
+  }
+}
+
+input {
+  font-size: 1rem;
+  display: block;
+  color: var(--text1);
+  background: var(--surface3);
+  padding: .3rem;
+  border: none;
+  border-bottom: 2px solid hsl(var(--hue) 10% 45%);
+  min-width: 25ch;
+  border-top-left-radius: .3rem;
+  border-top-right-radius: .3rem;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    border-color: var(--brand);
+  }
+}
+
+button {
+  color: var(--text1);
+  background: var(--surface2);
+  border: 2px solid hsl(var(--hue), 10%, 45%);
+  border-radius: .3rem;
+  padding: .4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1ch;
+
+  &.action {
+    $action-color: #0047d4;
+    border-color: $action-color;
+    transition: background 150ms ease-in-out;
+
+    &:hover {
+      background: $action-color;
+    }
+
+    &:active {
+      box-shadow: 0 0 2px 1px $action-color;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      border-color: lighten($action-color, 10%);
+    }
   }
 }

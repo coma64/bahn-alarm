@@ -1,0 +1,63 @@
+@use '../../../scss/breakpoints' as b;
+
+:host {
+  height: 100%;
+  display: grid;
+  grid-template-columns: fit-content(100%) fit-content(25ch);
+  align-items: center;
+  justify-content: center;
+}
+
+main, header {
+  padding: 0 20px;
+}
+
+header {
+  text-align: end;
+  border-right: 2px solid var(--brand);
+  padding-right: 20px;
+  min-height: 40%;
+  justify-self: end;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+h1 {
+  color: var(--brand);
+  font-size: clamp(3rem, 9vw, 4rem);
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+button {
+  margin-top: 2rem;
+  width: 25ch;
+}
+
+@include b.is-small {
+  button, input {
+    width: 100%;
+  }
+
+  main {
+    align-self: start;
+    border: none;
+    width: 100%;
+  }
+
+  header {
+    justify-self: center;
+    align-self: end;
+    border: none;
+    text-align: start;
+  }
+
+  :host {
+    grid-template-columns: 1fr;
+    justify-content: start;
+  }
+}

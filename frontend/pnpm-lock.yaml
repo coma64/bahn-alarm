@@ -25,6 +25,9 @@ dependencies:
   '@angular/router':
     specifier: ^15.2.0
     version: 15.2.0(@angular/common@15.2.0)(@angular/core@15.2.0)(@angular/platform-browser@15.2.0)(rxjs@7.8.0)
+  angular-feather:
+    specifier: ^6.5.0
+    version: 6.5.0(@angular/core@15.2.0)
   rxjs:
     specifier: ~7.8.0
     version: 7.8.0
@@ -2464,6 +2467,15 @@ packages:
       uri-js: 4.4.1
     dev: true
 
+  /angular-feather@6.5.0(@angular/core@15.2.0):
+    resolution: {integrity: sha512-6g8ZDwQ6tMBOmv+2L5U0+zvrgCIxrOF440EmMGC5QmrVFURLkWJofERlpXR/JvKEjk0/hWZGw19mrv7ez0oL9A==}
+    peerDependencies:
+      '@angular/core': '>=12'
+    dependencies:
+      '@angular/core': 15.2.0(rxjs@7.8.0)(zone.js@0.12.0)
+      tslib: 2.5.0
+    dev: false
+
   /ansi-colors@4.1.3:
     resolution: {integrity: sha512-/6w/C21Pm1A7aZitlI5Ni/2J6FFQN8i1Cvz3kHABAAbw93v/NlvKdVOqz7CCWz/3iv/JplRSEEZ83XION15ovw==}
     engines: {node: '>=6'}
@@ -4495,7 +4507,7 @@ packages:
     dependencies:
       copy-anything: 2.0.6
       parse-node-version: 1.0.1
-      tslib: 2.3.0
+      tslib: 2.5.0
     optionalDependencies:
       errno: 0.1.8
       graceful-fs: 4.2.11
@@ -6354,7 +6366,6 @@ packages:
 
   /tslib@2.5.0:
     resolution: {integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==}
-    dev: true
 
   /tuf-js@1.1.4:
     resolution: {integrity: sha512-Lw2JRM3HTYhEtQJM2Th3aNCPbnXirtWMl065BawwmM2pX6XStH/ZO9e8T2hh0zk/HUa+1i6j+Lv6eDitKTau6A==}
