@@ -35,3 +35,12 @@ h4 {
 app-departure:nth-child(even) {
   background: var(--surface3);
 }
+
+.departures {
+  height: calc(2.2rem * 3);
+  overflow: auto;
+
+  > * {
+    height: 2.2rem;
+  }
+}

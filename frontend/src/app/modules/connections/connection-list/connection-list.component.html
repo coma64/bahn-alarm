@@ -16,7 +16,7 @@
       <div>{{ connection.to.name }}</div>
     </div>
 
-    <h4>Tracked departures</h4>
+    <h4>{{ connection.departures.length }} tracked departures</h4>
     <div class="departures">
       <app-departure
         *ngFor="let departure of connection.departures"
