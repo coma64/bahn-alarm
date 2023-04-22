@@ -1,4 +1,4 @@
-@use '../../../scss/breakpoints' as b;
+@use "../../../scss/breakpoints" as b;
 
 :host {
   height: 100%;
@@ -8,7 +8,8 @@
   justify-content: center;
 }
 
-main, header {
+main,
+header {
   padding: 0 20px;
 }
 
@@ -39,7 +40,8 @@ button {
 }
 
 @include b.is-small {
-  button, input {
+  button,
+  input {
     width: 100%;
   }
 

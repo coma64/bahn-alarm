@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
-import { LogIn } from "angular-feather/icons";
-import {FeatherModule} from "angular-feather";
+import { LogIn } from 'angular-feather/icons';
+import { FeatherModule } from 'angular-feather';
 
 const icons = {
   LogIn,

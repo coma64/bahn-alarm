@@ -1,4 +1,4 @@
-@use 'sass:color';
+@use "sass:color";
 
 a:not([class]) {
   // TODO: Use HSL color theme
@@ -22,10 +22,10 @@ body {
 label {
   color: var(--text2);
   display: block;
-  font-size: .9rem;
+  font-size: 0.9rem;
 
   & ~ label {
-    margin-top: .5rem;
+    margin-top: 0.5rem;
   }
 }
 
@@ -34,12 +34,12 @@ input {
   display: block;
   color: var(--text1);
   background: var(--surface3);
-  padding: .3rem;
+  padding: 0.3rem;
   border: none;
   border-bottom: 2px solid hsl(var(--hue) 10% 45%);
   min-width: 25ch;
-  border-top-left-radius: .3rem;
-  border-top-right-radius: .3rem;
+  border-top-left-radius: 0.3rem;
+  border-top-right-radius: 0.3rem;
 
   &:focus {
     outline: none;
@@ -54,8 +54,8 @@ button {
   color: var(--text1);
   background: var(--surface2);
   border: 2px solid hsl(var(--hue), 10%, 45%);
-  border-radius: .3rem;
-  padding: .4rem;
+  border-radius: 0.3rem;
+  padding: 0.4rem;
   display: flex;
   justify-content: center;
   align-items: center;
