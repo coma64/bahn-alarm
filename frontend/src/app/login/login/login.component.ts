@@ -22,7 +22,7 @@ export class LoginComponent implements OnDestroy {
   constructor(
     private readonly http: HttpClient,
     private readonly fb: FormBuilder,
-    private readonly store: Store
+    private readonly store: Store,
   ) {}
 
   ngOnDestroy(): void {
@@ -39,7 +39,7 @@ export class LoginComponent implements OnDestroy {
       .subscribe({
         next: () =>
           this.store.dispatch(
-            new LoginSuccess(this.form.controls.username.value)
+            new LoginSuccess(this.form.controls.username.value),
           ),
         error: () => {
           this.isInvalid = true;
