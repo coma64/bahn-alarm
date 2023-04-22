@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { Store } from '@ngxs/store';
-import { LoginSuccess } from '../../../state/user.actions';
+import { User } from '../../../state/user.actions';
 import { AuthService, LoginRequest } from '../../../api';
 
 @Component({
@@ -39,7 +39,7 @@ export class LoginComponent implements OnDestroy {
       .subscribe({
         next: () =>
           this.store.dispatch(
-            new LoginSuccess(this.form.controls.username.value),
+            new User.LoginSuccess(this.form.controls.username.value),
           ),
         error: () => {
           this.isInvalid = true;

@@ -9,6 +9,7 @@ import {
 import { catchError, EMPTY, Observable } from 'rxjs';
 import { Store } from '@ngxs/store';
 import { Navigate } from '@ngxs/router-plugin';
+import { User } from '../state/user.actions';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +28,8 @@ export class JwtExpiredInterceptor implements HttpInterceptor {
 
   private handleHttpError(err: HttpErrorResponse): Observable<any> {
     if (err.status !== 401) throw err;
-    this.store.dispatch(new Navigate(['/login']));
+
+    this.store.dispatch(new User.Logout());
     return EMPTY;
   }
 }

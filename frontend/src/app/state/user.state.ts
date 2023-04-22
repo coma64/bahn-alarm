@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
-import { LoginSuccess } from './user.actions';
+import { User } from './user.actions';
 import { Navigate } from '@ngxs/router-plugin';
 
 export class UserStateModel {
@@ -13,13 +13,18 @@ export class UserStateModel {
 })
 @Injectable()
 export class UserState {
-  @Action(LoginSuccess)
-  add(
+  @Action(User.LoginSuccess)
+  login(
     { patchState, dispatch }: StateContext<UserStateModel>,
-    { name }: LoginSuccess,
-  ) {
+    { name }: User.LoginSuccess,
+  ): void {
     patchState({ name });
-    if (name) dispatch(new Navigate(['/connections']));
-    else dispatch(new Navigate(['/login']));
+    dispatch(new Navigate(['/connections']));
+  }
+
+  @Action(User.Logout)
+  logout({ setState, dispatch }: StateContext<UserStateModel>): void {
+    setState({});
+    dispatch(new Navigate(['/login']));
   }
 }
