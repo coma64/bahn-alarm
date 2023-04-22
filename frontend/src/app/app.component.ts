@@ -5,7 +5,4 @@ import { Component } from '@angular/core';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
-  title = 'bahn-alarm-frontend-v3';
-  x = JSON.parse('""');
-}
+export class AppComponent {}

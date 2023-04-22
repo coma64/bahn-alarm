@@ -1,9 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { Store } from '@ngxs/store';
-import { LoginSuccess } from '../../../../state/user.actions';
+import { LoginSuccess } from '../../state/user.actions';
 import { AuthService, LoginRequest } from '../../api';
 
 @Component({

@@ -1,0 +1,20 @@
+<section *ngIf="stats$ | async as stats">
+  <div>
+    <div aria-labelledby="tracked-connection-title">
+      {{ stats.totalConnectionCount }}
+    </div>
+    <div id="tracked-connection-title">Tracked Connections</div>
+  </div>
+  <div>
+    <div class="delayed">{{ stats.delayedConnectionCount }}</div>
+    <div>Delayed Connection</div>
+  </div>
+  <div>
+    <div class="canceled">{{ stats.canceledConnectionCount }}</div>
+    <div>Canceled Connection</div>
+  </div>
+  <div>
+    <div>{{ stats.nextDeparture.departure | toRelativeTime | timeUntil }}</div>
+    <div>until next departure</div>
+  </div>
+</section>
