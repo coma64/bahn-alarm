@@ -1,0 +1,11 @@
+<div *ngIf="departure" class="departure">
+  <div class="time">{{ (departure.departure | toRelativeTime).str }}</div>
+  <div class="time-until">
+    {{ departure.departure | toRelativeTime | timeUntil }}
+  </div>
+
+  <div class="status">
+    <div>{{ departure | toHumanStatus }}</div>
+    <div class="dot {{ departure.status }}"></div>
+  </div>
+</div>

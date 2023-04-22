@@ -1,0 +1,31 @@
+<button class="action add-connection">
+  <i-feather name="plus"></i-feather>
+  Add connection
+</button>
+
+<div
+  *ngIf="connections$ | async as connections; else spinner"
+  class="connections"
+>
+  <div *ngFor="let connection of connections" class="connection">
+    <div class="stations">
+      <div class="label">From</div>
+      <div>{{ connection.from.name }}</div>
+
+      <div class="label">To</div>
+      <div>{{ connection.to.name }}</div>
+    </div>
+
+    <h4>Tracked departures</h4>
+    <div class="departures">
+      <app-departure
+        *ngFor="let departure of connection.departures"
+        [departure]="departure"
+      ></app-departure>
+    </div>
+  </div>
+</div>
+
+<ng-template #spinner>
+  <app-spinner></app-spinner>
+</ng-template>

@@ -1,0 +1,49 @@
+:host {
+  display: block;
+}
+
+.departure {
+  margin: 0 10px;
+  display: flex;
+  justify-content: start;
+  gap: 1ch;
+  padding: 5px;
+}
+
+.time-until {
+  color: var(--text2);
+}
+
+.status {
+  display: flex;
+  justify-content: end;
+  gap: 1ch;
+  align-items: center;
+  margin-left: auto;
+}
+
+.dot {
+  height: 12px;
+  width: 12px;
+  border-radius: 12px;
+  border: 3px solid;
+
+  &.not-checked {
+    //background: hsl(var(--hue) 15% var(--lightness));
+    border-color: hsl(var(--hue) 10% var(--lightness));
+  }
+
+  &.delayed {
+    //background: goldenrod;
+    border-color: #f6bb33;
+  }
+
+  &.on-time {
+    //background: limegreen;
+    border-color: #55f655;
+  }
+
+  &.canceled {
+    border-color: var(--brand);
+  }
+}

@@ -3,15 +3,14 @@ import { TrackingService } from '../../../api';
 import { Subject, takeUntil } from 'rxjs';
 import { Store } from '@ngxs/store';
 import { ConnectionStats } from '../../../state/connection-stats.actions';
+import { Connections } from '../../../state/state/connections.actions';
 
 @Component({
   selector: 'app-connections',
   templateUrl: './connections.component.html',
   styleUrls: ['./connections.component.scss'],
 })
-export class ConnectionsComponent implements OnInit, OnDestroy {
-  private readonly destroy$ = new Subject<void>();
-
+export class ConnectionsComponent implements OnInit {
   constructor(
     private readonly tracking: TrackingService,
     private readonly store: Store,
@@ -20,14 +19,14 @@ export class ConnectionsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.tracking
       .trackingStatsGet()
-      .pipe(takeUntil(this.destroy$))
       .subscribe((stats) =>
         this.store.dispatch(new ConnectionStats.Fetched(stats)),
       );
-  }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.tracking
+      .trackingConnectionsGet()
+      .subscribe((response) =>
+        this.store.dispatch(new Connections.Fetched(response.connections)),
+      );
   }
 }

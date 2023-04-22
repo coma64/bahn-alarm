@@ -105,9 +105,9 @@ export class TrackingService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public trackingConnectionsGet(page?: number, size?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<TrackedConnectionList>>;
-    public trackingConnectionsGet(page?: number, size?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<TrackedConnectionList>>>;
-    public trackingConnectionsGet(page?: number, size?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<TrackedConnectionList>>>;
+    public trackingConnectionsGet(page?: number, size?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<TrackedConnectionList>;
+    public trackingConnectionsGet(page?: number, size?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<TrackedConnectionList>>;
+    public trackingConnectionsGet(page?: number, size?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<TrackedConnectionList>>;
     public trackingConnectionsGet(page?: number, size?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
@@ -152,7 +152,7 @@ export class TrackingService {
         }
 
         let localVarPath = `/tracking/connections`;
-        return this.httpClient.request<Array<TrackedConnectionList>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<TrackedConnectionList>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

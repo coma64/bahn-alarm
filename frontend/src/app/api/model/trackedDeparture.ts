@@ -13,6 +13,7 @@
 
 export interface TrackedDeparture { 
     departure: string;
+    delay?: number;
     readonly status: TrackedDeparture.StatusEnum;
 }
 export namespace TrackedDeparture {

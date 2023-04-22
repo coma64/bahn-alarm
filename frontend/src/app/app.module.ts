@@ -14,13 +14,14 @@ import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { JwtExpiredInterceptor } from './interceptors/jwt-expired.interceptor';
 import { ConnectionStatsState } from './state/connection-stats.state';
+import { ConnectionsState } from './state/state/connections.state';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgxsModule.forRoot([UserState, ConnectionStatsState], {
+    NgxsModule.forRoot([UserState, ConnectionStatsState, ConnectionsState], {
       developmentMode: !environment.production,
     }),
     NgxsReduxDevtoolsPluginModule.forRoot(),
