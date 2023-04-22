@@ -6,13 +6,13 @@ const routes: Routes = [
   {
     path: 'login',
     loadChildren: () =>
-      import('./login/login.module').then((m) => m.LoginModule),
+      import('./modules/login/login.module').then((m) => m.LoginModule),
   },
   {
     path: 'connections',
     canActivate: [isLoggedInGuard],
     loadChildren: () =>
-      import('./connections/connections.module').then(
+      import('./modules/connections/connections.module').then(
         (m) => m.ConnectionsModule,
       ),
   },

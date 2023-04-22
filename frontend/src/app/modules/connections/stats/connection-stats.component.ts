@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TrackingStatsModel } from '../../state/connection-stats.state';
-import { State } from '../../state/state';
+import { TrackingStatsModel } from '../../../state/connection-stats.state';
+import { State } from '../../../state/state';
 import { Select } from '@ngxs/store';
 
 @Component({

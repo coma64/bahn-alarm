@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { TrackingService } from '../../api';
+import { TrackingService } from '../../../api';
 import { Subject, takeUntil } from 'rxjs';
 import { Store } from '@ngxs/store';
-import { ConnectionStats } from '../../state/connection-stats.actions';
+import { ConnectionStats } from '../../../state/connection-stats.actions';
 
 @Component({
   selector: 'app-connections',
