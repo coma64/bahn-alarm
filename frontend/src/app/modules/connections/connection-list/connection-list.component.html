@@ -1,7 +1,11 @@
-<button class="action add-connection">
-  <i-feather name="plus"></i-feather>
-  Add connection
-</button>
+<header>
+  <h3>Connections</h3>
+
+  <button class="action add-connection">
+    <i-feather name="plus"></i-feather>
+    Add connection
+  </button>
+</header>
 
 <div
   *ngIf="connections$ | async as connections; else spinner"
