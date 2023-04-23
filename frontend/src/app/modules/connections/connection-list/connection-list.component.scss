@@ -1,6 +1,6 @@
 .add-connection {
-  width: 95%;
-  margin: auto;
+  width: calc(100% - 20px);
+  margin: 10px;
 }
 
 .connections {
@@ -32,8 +32,16 @@ h4 {
   border-bottom: 1px solid hsl(var(--hue), 30%, var(--lightness));
 }
 
-app-departure:nth-child(even) {
-  background: var(--surface3);
+app-departure {
+  transition: 150ms background-color ease-in-out;
+
+  &:nth-child(even) {
+    background: var(--surface3);
+  }
+
+  &:hover {
+    background: var(--surface4);
+  }
 }
 
 .departures {
