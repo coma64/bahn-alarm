@@ -9,9 +9,10 @@ import { SharedModule } from '../shared/shared.module';
 import { ConnectionListComponent } from './connection-list/connection-list.component';
 import { DepartureComponent } from './departure/departure.component';
 import { ToHumanStatusPipe } from './to-human-status.pipe';
+import { EditConnectionComponent } from './edit-connection/edit-connection.component';
 
 @NgModule({
-  declarations: [ConnectionsComponent, ConnectionStatsComponent, ConnectionListComponent, DepartureComponent, ToHumanStatusPipe],
+  declarations: [ConnectionsComponent, ConnectionStatsComponent, ConnectionListComponent, DepartureComponent, ToHumanStatusPipe, EditConnectionComponent],
   imports: [CommonModule, ConnectionsRoutingModule, IconsModule, SharedModule],
 })
 export class ConnectionsModule {}

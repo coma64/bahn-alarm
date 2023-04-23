@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
   HttpErrorResponse,
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
 } from '@angular/common/http';
 import { catchError, EMPTY, Observable } from 'rxjs';
 import { Store } from '@ngxs/store';
-import { Navigate } from '@ngxs/router-plugin';
 import { User } from '../state/user.actions';
 
 @Injectable({

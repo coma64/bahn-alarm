@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TrackingService } from '../../../api';
-import { Subject, takeUntil } from 'rxjs';
 import { Store } from '@ngxs/store';
 import { ConnectionStats } from '../../../state/connection-stats.actions';
 import { Connections } from '../../../state/state/connections.actions';
