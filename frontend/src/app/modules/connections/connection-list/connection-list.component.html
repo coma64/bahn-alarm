@@ -1,7 +1,10 @@
 <header>
   <h3>Connections</h3>
 
-  <button class="action add-connection">
+  <button
+    (click)="router.navigate(['/connections/add'])"
+    class="action add-connection"
+  >
     <i-feather name="plus"></i-feather>
     Add connection
   </button>
