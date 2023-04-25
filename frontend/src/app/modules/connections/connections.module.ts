@@ -10,9 +10,30 @@ import { ConnectionListComponent } from './connection-list/connection-list.compo
 import { DepartureComponent } from './departure/departure.component';
 import { ToHumanStatusPipe } from './to-human-status.pipe';
 import { EditConnectionComponent } from './edit-connection/edit-connection.component';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DepartureSelectComponent } from './departure-select/departure-select.component';
+import { NgArrayPipesModule } from 'ngx-pipes';
 
 @NgModule({
-  declarations: [ConnectionsComponent, ConnectionStatsComponent, ConnectionListComponent, DepartureComponent, ToHumanStatusPipe, EditConnectionComponent],
-  imports: [CommonModule, ConnectionsRoutingModule, IconsModule, SharedModule],
+  declarations: [
+    ConnectionsComponent,
+    ConnectionStatsComponent,
+    ConnectionListComponent,
+    DepartureComponent,
+    ToHumanStatusPipe,
+    EditConnectionComponent,
+    DepartureSelectComponent,
+  ],
+  imports: [
+    CommonModule,
+    ConnectionsRoutingModule,
+    IconsModule,
+    SharedModule,
+    OverlayModule,
+    ReactiveFormsModule,
+    FormsModule,
+    NgArrayPipesModule,
+  ],
 })
 export class ConnectionsModule {}

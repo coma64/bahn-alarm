@@ -50,18 +50,6 @@ h4 {
   border-bottom: 1px solid hsl(var(--hue), 30%, var(--lightness));
 }
 
-app-departure {
-  transition: 150ms background-color ease-in-out;
-
-  &:nth-child(even) {
-    background: var(--surface3);
-  }
-
-  &:hover {
-    background: var(--surface4);
-  }
-}
-
 .departures {
   height: calc(2.2rem * 3);
   overflow: auto;

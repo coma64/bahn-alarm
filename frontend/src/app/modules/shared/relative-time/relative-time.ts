@@ -13,11 +13,13 @@ export class RelativeTime {
   private readonly utc: dayjs.Dayjs;
   private readonly local: dayjs.Dayjs;
   readonly str: string;
+  readonly timestamp: number;
 
   constructor(dateTime: dayjs.Dayjs) {
     this.utc = RelativeTime.copyTime(dateTime, dayjs.utc());
     this.local = this.utc.local();
     this.str = this.local.format('HH:mm');
+    this.timestamp = this.utc.unix();
   }
 
   static fromIso(dateTime: string): RelativeTime {

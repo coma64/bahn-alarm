@@ -1,0 +1,37 @@
+input {
+  width: 100%;
+}
+
+app-spinner,
+.suggestions {
+  height: 10rem;
+}
+
+.suggestions {
+  background: var(--surface2);
+  box-shadow: 0 6px 10px hsl(var(--surface-shadow) / var(--shadow-strength));
+  border-bottom-right-radius: 0.3rem;
+  border-bottom-left-radius: 0.3rem;
+  overflow: auto;
+
+  button {
+    padding: 10px;
+    background: unset;
+    border: none;
+    border-radius: 0;
+    width: 100%;
+    justify-content: start;
+
+    &:hover {
+      background: var(--surface4) !important;
+    }
+  }
+
+  li:nth-child(even) > button {
+    background: var(--surface3);
+  }
+}
+
+p.too-short-warning {
+  padding: 10px;
+}

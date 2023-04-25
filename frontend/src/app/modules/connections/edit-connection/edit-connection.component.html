@@ -1,0 +1,34 @@
+<main>
+  <h1>New connection</h1>
+
+  <form [formGroup]="form" class="stations">
+    <label for="from">From</label>
+    <app-station-search
+      formControlName="from"
+      inputId="from"
+    ></app-station-search>
+
+    <label for="to">To</label>
+    <app-station-search formControlName="to" inputId="to"></app-station-search>
+  </form>
+
+  <section class="departures" *ngIf="form.valid">
+    <header>
+      <h2>Tracked departures</h2>
+      <p class="help">
+        You'll only receive alarms for departures you're tracking.
+      </p>
+    </header>
+
+    <app-departure-select
+      [from]="form.value.from"
+      [to]="form.value.to"
+      [(selectedDepartures)]="selectedDepartures"
+    ></app-departure-select>
+  </section>
+
+  <button class="action save">
+    <i-feather name="check"></i-feather>
+    Save connection
+  </button>
+</main>

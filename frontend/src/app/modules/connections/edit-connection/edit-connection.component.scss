@@ -1,0 +1,65 @@
+h1 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1rem;
+}
+
+main {
+  padding: 10px;
+}
+
+.stations {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  gap: 1ch;
+  align-items: center;
+
+  label {
+    font-size: 1rem;
+    text-align: end;
+  }
+}
+
+section.departures {
+  margin-top: 0.5rem;
+
+  .add {
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+
+  header {
+    padding-bottom: 0.5rem;
+  }
+}
+
+.departure-list {
+  max-height: calc(3.5rem * 4);
+  overflow: auto;
+}
+
+.departure {
+  display: flex;
+  align-items: center;
+  gap: 1ch;
+  padding: 10px;
+  height: 3.5rem;
+
+  .time-until {
+    color: var(--text2);
+  }
+
+  .delete {
+    margin-left: auto;
+    border-color: var(--brand);
+  }
+}
+
+.save {
+  margin-top: 10px;
+  width: 100%;
+}

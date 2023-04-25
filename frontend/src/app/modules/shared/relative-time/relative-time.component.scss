@@ -1,0 +1,15 @@
+:host {
+  display: flex;
+  gap: 1ch;
+  align-items: end;
+}
+
+input {
+  width: 100%;
+  color: var(--text1);
+}
+
+output {
+  color: var(--text2);
+  padding: 3px;
+}

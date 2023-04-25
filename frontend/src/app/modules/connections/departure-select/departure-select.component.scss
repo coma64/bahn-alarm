@@ -1,0 +1,28 @@
+h3 {
+  font-size: 1rem;
+}
+
+app-relative-time {
+  margin-bottom: 0.5rem;
+}
+
+.departures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 8ch);
+  gap: 1ch;
+  margin-top: 0.5rem;
+
+  button {
+    $action-color: #0047d4;
+    transition: background-color 150ms ease-in-out;
+
+    &:hover {
+      border-color: darken($action-color, 5%);
+    }
+
+    &.is-selected {
+      background: $action-color;
+      border-color: $action-color;
+    }
+  }
+}

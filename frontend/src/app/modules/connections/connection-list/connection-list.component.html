@@ -24,12 +24,11 @@
     </div>
 
     <h4>{{ connection.departures.length }} tracked departures</h4>
-    <div class="departures">
-      <app-departure
-        *ngFor="let departure of connection.departures"
-        [departure]="departure"
-      ></app-departure>
-    </div>
+    <ul class="departures">
+      <li *ngFor="let departure of connection.departures">
+        <app-departure [departure]="departure"></app-departure>
+      </li>
+    </ul>
   </div>
 </div>
 

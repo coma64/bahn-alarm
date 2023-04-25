@@ -1,0 +1,51 @@
+<label for="target-departure">Target departure</label>
+<app-relative-time
+  [formControl]="targetDeparture"
+  inputId="target-departure"
+></app-relative-time>
+
+<h3>Found departures</h3>
+<p class="help">
+  Departures for connections around the target departure.
+  <strong>Multiple can be selected.</strong> Instantly selected departures are
+  already tracked.
+</p>
+
+<div
+  *ngIf="foundDepartures$ | async as foundDepartures; else spinner"
+  class="departures"
+>
+  <ng-container
+    *ngIf="
+      [foundDepartures, selectedDepartures]
+        | flatten
+        | unique : 'timestamp'
+        | orderBy : 'timestamp' as departures
+    "
+  >
+    <app-banner *ngIf="!departures.length && from && to">
+      No connections were found between <strong>{{ from.name }}</strong> and
+      <strong>{{ to.name }}</strong>
+    </app-banner>
+
+    <app-banner
+      *ngIf="!foundDepartures.length && selectedDepartures.length && from && to"
+    >
+      No additional connections were found between
+      <strong>{{ from.name }}</strong> and
+      <strong>{{ to.name }}</strong>
+    </app-banner>
+
+    <button
+      (click)="onToggle(departure)"
+      [class.is-selected]="departure | isIncludedIn : selectedDepartures"
+      *ngFor="let departure of departures"
+    >
+      {{ departure.str }}
+    </button>
+  </ng-container>
+</div>
+
+<ng-template #spinner>
+  <app-spinner></app-spinner>
+</ng-template>

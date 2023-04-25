@@ -1,0 +1,34 @@
+<input
+  #inputElement
+  (focus)="show()"
+  (blur)="onBlur($event)"
+  [formControl]="inputControl"
+  [id]="inputId"
+  (keydown.enter)="onEnter()"
+/>
+
+<ng-template cdkPortal>
+  <div
+    #suggestionsElement
+    class="suggestions"
+    [style.width.px]="inputElement.clientWidth"
+  >
+    <ul *ngIf="suggestions$ | async as suggestions; else spinner">
+      <li *ngFor="let suggestion of suggestions.places">
+        <button (click)="onSelect(suggestion)">{{ suggestion.name }}</button>
+      </li>
+    </ul>
+  </div>
+</ng-template>
+
+<ng-template #spinner>
+  <ng-container *ngIf="inputElement.value.length >= 3; else tooShortWarning">
+    <app-spinner></app-spinner>
+  </ng-container>
+
+  <ng-template #tooShortWarning>
+    <p class="too-short-warning">
+      The station name must be at least 3 characters long to start searching
+    </p>
+  </ng-template>
+</ng-template>

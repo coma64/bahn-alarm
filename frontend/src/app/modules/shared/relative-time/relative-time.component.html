@@ -1,0 +1,8 @@
+<input
+  [id]="inputId"
+  type="time"
+  [formControl]="inputControl"
+  (blur)="onBlur()"
+/>
+
+<output>{{ time | timeUntil }}</output>
