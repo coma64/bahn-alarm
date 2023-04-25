@@ -13,17 +13,16 @@ import {
 import { CdkPortal, TemplatePortal } from '@angular/cdk/portal';
 import { Overlay } from '@angular/cdk/overlay';
 import {
+  catchError,
   debounceTime,
   distinctUntilChanged,
   EMPTY,
-  map,
   shareReplay,
   startWith,
   Subject,
   switchMap,
   take,
   takeUntil,
-  tap,
 } from 'rxjs';
 import { BahnService, BahnStation } from '../../../api';
 
@@ -56,6 +55,10 @@ export class StationSearchComponent implements ControlValueAccessor {
       // Start with undefined to show the loading spinner again
       return this.bahn.bahnPlacesGet(stationName).pipe(startWith(undefined));
     }),
+    catchError((e) => {
+      alert('An error occurred while loading the stations');
+      throw e;
+    }),
     shareReplay(1),
   );
 
@@ -64,10 +67,6 @@ export class StationSearchComponent implements ControlValueAccessor {
   private readonly destroy$ = new Subject<void>();
   private onTouched?: () => void;
   private onChange?: (station: BahnStation) => void;
-
-  private get isOpen(): boolean {
-    return !!this.suggestionsPortal?.isAttached;
-  }
 
   constructor(
     private readonly overlay: Overlay,
