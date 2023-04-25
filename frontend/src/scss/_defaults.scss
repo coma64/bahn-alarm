@@ -58,7 +58,7 @@ input {
 button {
   color: var(--text1);
   background: var(--surface2);
-  border: 2px solid hsl(var(--hue), 10%, 45%);
+  border: 2px solid var(--surface4);
   border-radius: var(--radius);
   padding: 0.4rem;
   display: flex;
@@ -66,6 +66,11 @@ button {
   align-items: center;
   gap: 1ch;
   transition: background 150ms ease-in-out;
+
+  &:hover {
+    border: 2px solid var(--surface5);
+    background: var(--surface3);
+  }
 
   &.action {
     $action-color: #0047d4;
