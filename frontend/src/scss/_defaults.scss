@@ -1,4 +1,5 @@
 @use "sass:color";
+@use "breakpoints" as b;
 
 a:not([class]) {
   // TODO: Use HSL color theme
@@ -96,6 +97,10 @@ button {
     position: fixed;
     top: 5px;
     left: 5px;
+
+    @include b.is-large {
+      display: none;
+    }
   }
 
   &.icon {

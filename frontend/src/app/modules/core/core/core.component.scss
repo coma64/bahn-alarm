@@ -1,0 +1,8 @@
+@use "../../../../scss/breakpoints" as b;
+
+@include b.is-large {
+  :host {
+    display: grid;
+    grid-template-columns: 240px 0 1fr;
+  }
+}
