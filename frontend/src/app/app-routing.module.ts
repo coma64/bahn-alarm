@@ -9,17 +9,10 @@ const routes: Routes = [
       import('./modules/login/login.module').then((m) => m.LoginModule),
   },
   {
-    path: 'connections',
-    canActivate: [isLoggedInGuard],
-    loadChildren: () =>
-      import('./modules/connections/connections.module').then(
-        (m) => m.ConnectionsModule,
-      ),
-  },
-  {
     path: '',
-    pathMatch: 'full',
-    redirectTo: 'login',
+    loadChildren: () =>
+      import('./modules/core/core.module').then((m) => m.CoreModule),
+    canActivate: [isLoggedInGuard],
   },
 ];
 
