@@ -2,44 +2,40 @@
 
 section {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
   gap: 10px;
   margin: 10px 0;
   justify-content: space-evenly;
-  height: 5.5rem;
 
   > * {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1ch;
-    border-radius: var(--radius);
-    background: var(--surface2);
-    padding: 0.5rem;
-    box-shadow: 0 6px 10px hsl(var(--surface-shadow) / var(--shadow-strength));
-
-    :first-child {
-      font-size: 2.2rem;
-    }
-
-    :last-child {
-      font-size: 1.1rem;
-    }
-  }
-
-  @include b.is-small {
+    display: grid;
     grid-template-columns: 1fr 1fr;
-    height: 11rem;
+    gap: 10px;
+
+    > * {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1ch;
+      border-radius: var(--radius);
+      background: var(--surface2);
+      padding: 0.5rem;
+      box-shadow: 0 6px 10px hsl(var(--surface-shadow) / var(--shadow-strength));
+
+      :first-child {
+        font-size: 2.2rem;
+      }
+
+      :last-child {
+        font-size: 1.1rem;
+      }
+    }
   }
 }
 
 app-spinner {
   height: 5.5rem;
   margin: 10px;
-
-  @include b.is-small {
-    height: 11rem;
-  }
 }
 
 .delayed {
