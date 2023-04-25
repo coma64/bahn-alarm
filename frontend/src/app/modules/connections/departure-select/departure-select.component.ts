@@ -24,16 +24,16 @@ import {
   styleUrls: ['./departure-select.component.scss'],
 })
 export class DepartureSelectComponent implements OnDestroy {
-  @Input() set from(station: BahnPlace | undefined | null) {
-    this.from$.next(station ?? undefined);
+  @Input() set from(station: BahnPlace | undefined) {
+    this.from$.next(station);
   }
 
   get from(): BahnPlace | undefined {
     return this.from$.value;
   }
 
-  @Input() set to(station: BahnPlace | undefined | null) {
-    this.to$.next(station ?? undefined);
+  @Input() set to(station: BahnPlace | undefined) {
+    this.to$.next(station);
   }
 
   get to(): BahnPlace | undefined {
@@ -46,8 +46,10 @@ export class DepartureSelectComponent implements OnDestroy {
   private readonly to$ = new BehaviorSubject<BahnPlace | undefined>(undefined);
 
   targetDeparture = new FormControl(RelativeTime.now(), { nonNullable: true });
-  @Input() selectedDepartures: Array<RelativeTime> = [];
-  @Output() selectedDeparturesChange = new EventEmitter<Array<RelativeTime>>();
+  @Input() selectedDepartures: ReadonlyArray<RelativeTime> = [];
+  @Output() selectedDeparturesChange = new EventEmitter<
+    ReadonlyArray<RelativeTime>
+  >();
 
   foundDepartures$ = combineLatest([
     this.from$,
@@ -85,8 +87,9 @@ export class DepartureSelectComponent implements OnDestroy {
     if (selectedDepartureIndex === -1) {
       this.selectedDepartures = [departure, ...this.selectedDepartures];
     } else {
-      this.selectedDepartures.splice(selectedDepartureIndex, 1);
-      this.selectedDepartures = [...this.selectedDepartures];
+      this.selectedDepartures = this.selectedDepartures.filter(
+        (_, index) => index !== selectedDepartureIndex,
+      );
     }
 
     this.selectedDeparturesChange.emit(this.selectedDepartures);

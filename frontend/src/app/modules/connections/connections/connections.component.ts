@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { TrackingService } from '../../../api';
 import { Store } from '@ngxs/store';
 import { ConnectionStats } from '../../../state/connection-stats.actions';
-import { Connections } from '../../../state/state/connections.actions';
+import { Connections } from '../../../state/connections.actions';
+import { State } from '../../../state/state';
 
 @Component({
   selector: 'app-connections',
@@ -16,16 +17,18 @@ export class ConnectionsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.tracking
-      .trackingStatsGet()
-      .subscribe((stats) =>
-        this.store.dispatch(new ConnectionStats.Fetched(stats)),
-      );
+    if (!this.store.selectSnapshot((s: State) => s.connectionStats))
+      this.tracking
+        .trackingStatsGet()
+        .subscribe((stats) =>
+          this.store.dispatch(new ConnectionStats.Fetched(stats)),
+        );
 
-    this.tracking
-      .trackingConnectionsGet()
-      .subscribe((response) =>
-        this.store.dispatch(new Connections.Fetched(response.connections)),
-      );
+    if (this.store.selectSnapshot((s: State) => s.connections.page) === -1)
+      this.tracking
+        .trackingConnectionsGet()
+        .subscribe((response) =>
+          this.store.dispatch(new Connections.Fetched(response.connections)),
+        );
   }
 }

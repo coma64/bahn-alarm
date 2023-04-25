@@ -35,7 +35,9 @@ model/simpleConnection.ts
 model/trackedConnection.ts
 model/trackedConnectionList.ts
 model/trackedConnectionUpdate.ts
+model/trackedConnectionWrite.ts
 model/trackedDeparture.ts
+model/trackedDepartureWrite.ts
 model/trackingStats.ts
 model/trackingStatsNextDeparture.ts
 model/urgency.ts

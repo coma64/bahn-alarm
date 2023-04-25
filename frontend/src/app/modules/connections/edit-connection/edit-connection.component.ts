@@ -1,44 +1,95 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RelativeTime } from '../../shared/relative-time/relative-time';
 import { FormBuilder, Validators } from '@angular/forms';
-import { BahnPlace } from '../../../api';
+import { BahnPlace, TrackingService } from '../../../api';
+import { Store } from '@ngxs/store';
+import { Connections } from '../../../state/connections.actions';
+import { Navigate } from '@ngxs/router-plugin';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-edit-connection',
   templateUrl: './edit-connection.component.html',
   styleUrls: ['./edit-connection.component.scss'],
 })
-export class EditConnectionComponent {
-  // readonly form = this.fb.nonNullable.group({
-  //   from: [null as BahnPlace | null, Validators.required],
-  //   to: [null as BahnPlace | null, Validators.required],
-  // });
-
-  readonly form = this.fb.nonNullable.group({
-    from: [
-      {
-        id: '38Dfr1pLBwweELSuarsr9ouX8',
-        label: 'Uetze',
-        name: 'Dedenhausen',
-        stationId: '8001392',
-      } as BahnPlace | null,
-      Validators.required,
-    ],
-    to: [
-      {
-        id: '38Dfr1pL2y4tedsPCBKNPRSYi',
-        label: 'Mitte, Hannover',
-        name: 'Hannover Hbf',
-        stationId: '8000152',
-      } as BahnPlace | null,
-      Validators.required,
-    ],
+export class EditConnectionComponent implements OnInit, OnDestroy {
+  readonly stationForm = this.fb.group({
+    from: [null as BahnPlace | null, Validators.required],
+    to: [null as BahnPlace | null, Validators.required],
   });
 
-  selectedDepartures: Array<RelativeTime> = [
-    RelativeTime.now(),
-    RelativeTime.now(),
-  ];
+  selectedDepartures: ReadonlyArray<RelativeTime> = [];
+  hasTriedSubmitting = false;
 
-  constructor(private readonly fb: FormBuilder) {}
+  get from(): BahnPlace | undefined {
+    return this.stationForm.value.from ?? undefined;
+  }
+
+  get to(): BahnPlace | undefined {
+    return this.stationForm.value.to ?? undefined;
+  }
+
+  private readonly destroy$ = new Subject<void>();
+
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly tracking: TrackingService,
+    private readonly store: Store,
+  ) {}
+
+  ngOnInit(): void {
+    this.stationForm.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => (this.selectedDepartures = []));
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  onSubmit(): void {
+    this.hasTriedSubmitting = true;
+
+    if (!this.from || !this.to) return;
+
+    if (
+      !this.selectedDepartures.length &&
+      confirm(
+        "You won't get alarms for this connection because you didn't select any departures. Keep editing?",
+      )
+    )
+      return;
+
+    // TODO: store pagination issues
+    this.tracking
+      .trackingConnectionsPost({
+        from: {
+          id: this.from.stationId,
+          name: this.from.name,
+        },
+        to: {
+          id: this.to.stationId,
+          name: this.to.name,
+        },
+        departures: this.selectedDepartures.map((d) => ({
+          departure: d.toIsoZeroBased(),
+        })),
+      })
+      .subscribe({
+        next: (connection) =>
+          this.store.dispatch([
+            new Connections.Created(connection),
+            new Navigate(['/connections']),
+          ]),
+        error: (err: HttpErrorResponse) => {
+          if (err.status === 409)
+            alert(
+              "You're already tracking this connection. You can edit it instead",
+            );
+          else alert('An unknown error occurred');
+        },
+      });
+  }
 }

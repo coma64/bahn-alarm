@@ -11,19 +11,7 @@
  */
 
 
-export interface TrackedDeparture { 
+export interface TrackedDepartureWrite { 
     departure: string;
-    readonly delay: number;
-    readonly status: TrackedDeparture.StatusEnum;
 }
-export namespace TrackedDeparture {
-    export type StatusEnum = 'on-time' | 'delayed' | 'canceled' | 'not-checked';
-    export const StatusEnum = {
-        OnTime: 'on-time' as StatusEnum,
-        Delayed: 'delayed' as StatusEnum,
-        Canceled: 'canceled' as StatusEnum,
-        NotChecked: 'not-checked' as StatusEnum
-    };
-}
-
 

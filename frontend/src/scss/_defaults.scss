@@ -86,6 +86,11 @@ button {
       border-color: lighten($action-color, 10%);
     }
   }
+
+  &:disabled {
+    color: var(--text2);
+    border-color: var(--surface4);
+  }
 }
 
 p.help {

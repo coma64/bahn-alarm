@@ -14,7 +14,7 @@ import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { JwtExpiredInterceptor } from './interceptors/jwt-expired.interceptor';
 import { ConnectionStatsState } from './state/connection-stats.state';
-import { ConnectionsState } from './state/state/connections.state';
+import { ConnectionsState } from './state/connections.state';
 
 @NgModule({
   declarations: [AppComponent],

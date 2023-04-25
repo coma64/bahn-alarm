@@ -1,7 +1,7 @@
 <main>
   <h1>New connection</h1>
 
-  <form [formGroup]="form" class="stations">
+  <form [formGroup]="stationForm" class="stations">
     <label for="from">From</label>
     <app-station-search
       formControlName="from"
@@ -12,7 +12,7 @@
     <app-station-search formControlName="to" inputId="to"></app-station-search>
   </form>
 
-  <section class="departures" *ngIf="form.valid">
+  <section class="departures" *ngIf="stationForm.valid">
     <header>
       <h2>Tracked departures</h2>
       <p class="help">
@@ -21,13 +21,25 @@
     </header>
 
     <app-departure-select
-      [from]="form.value.from"
-      [to]="form.value.to"
+      [from]="from"
+      [to]="to"
       [(selectedDepartures)]="selectedDepartures"
     ></app-departure-select>
   </section>
 
-  <button class="action save">
+  <app-banner *ngIf="hasTriedSubmitting && !from">
+    You must select a <strong>from</strong> station first
+  </app-banner>
+
+  <app-banner *ngIf="hasTriedSubmitting && !to">
+    You must select a <strong>to</strong> station first
+  </app-banner>
+
+  <button
+    [disabled]="hasTriedSubmitting && stationForm.invalid"
+    (click)="onSubmit()"
+    class="action save"
+  >
     <i-feather name="check"></i-feather>
     Save connection
   </button>

@@ -9,10 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { TrackedDeparture } from './trackedDeparture';
+import { TrackedDepartureWrite } from './trackedDepartureWrite';
 
 
 export interface TrackedConnectionUpdate { 
-    departures: Array<TrackedDeparture>;
+    departures: Array<TrackedDepartureWrite>;
 }
 
