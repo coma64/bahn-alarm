@@ -1,13 +1,20 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { CoreComponent } from './core/core.component';
 
 const routes: Routes = [
   {
-    path: 'connections',
-    loadChildren: () =>
-      import('../connections/connections.module').then(
-        (m) => m.ConnectionsModule,
-      ),
+    path: '',
+    component: CoreComponent,
+    children: [
+      {
+        path: 'connections',
+        loadChildren: () =>
+          import('../connections/connections.module').then(
+            (m) => m.ConnectionsModule,
+          ),
+      },
+    ],
   },
   {
     path: '',

@@ -6,6 +6,9 @@ import {
   Plus,
   Trash,
   ArrowLeft,
+  Bell,
+  Eye,
+  User,
 } from 'angular-feather/icons';
 import { FeatherModule } from 'angular-feather';
 
@@ -16,6 +19,9 @@ const icons = {
   Trash,
   Check,
   ArrowLeft,
+  Bell,
+  Eye,
+  User,
 };
 
 @NgModule({
