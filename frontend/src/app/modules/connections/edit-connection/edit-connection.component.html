@@ -1,5 +1,14 @@
 <main>
-  <h1>New connection</h1>
+  <header>
+    <button
+      (click)="onNavigateBack()"
+      aria-label="Go back"
+      class="navigate-back icon"
+    >
+      <i-feather name="arrow-left"></i-feather>
+    </button>
+    <h1>New connection</h1>
+  </header>
 
   <form [formGroup]="stationForm" class="stations">
     <label for="from">From</label>

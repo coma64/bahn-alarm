@@ -64,11 +64,11 @@ button {
   justify-content: center;
   align-items: center;
   gap: 1ch;
+  transition: background 150ms ease-in-out;
 
   &.action {
     $action-color: #0047d4;
     border-color: $action-color;
-    transition: background 150ms ease-in-out;
 
     &:hover {
       background: $action-color;
@@ -89,7 +89,27 @@ button {
 
   &:disabled {
     color: var(--text2);
-    border-color: var(--surface4);
+    border-color: var(--surface2);
+  }
+
+  &.navigate-back {
+    position: fixed;
+    top: 5px;
+    left: 5px;
+  }
+
+  &.icon {
+    border: none;
+    background: unset;
+
+    i-feather {
+      width: 1.7rem;
+      height: 1.7rem;
+    }
+
+    &:active {
+      background: var(--surface3);
+    }
   }
 }
 
@@ -113,4 +133,10 @@ li {
   &:hover {
     background: var(--surface4);
   }
+}
+
+h1 {
+  padding-bottom: 0.5rem;
+  font-size: 1.2rem;
+  text-align: center;
 }

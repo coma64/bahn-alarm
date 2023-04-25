@@ -5,6 +5,7 @@ import {
   LogIn,
   Plus,
   Trash,
+  ArrowLeft,
 } from 'angular-feather/icons';
 import { FeatherModule } from 'angular-feather';
 
@@ -14,6 +15,7 @@ const icons = {
   Plus,
   Trash,
   Check,
+  ArrowLeft,
 };
 
 @NgModule({

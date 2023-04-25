@@ -35,7 +35,7 @@ export class EditConnectionComponent implements OnInit, OnDestroy {
   constructor(
     private readonly fb: FormBuilder,
     private readonly tracking: TrackingService,
-    private readonly store: Store,
+    readonly store: Store,
   ) {}
 
   ngOnInit(): void {
@@ -91,5 +91,9 @@ export class EditConnectionComponent implements OnInit, OnDestroy {
           else alert('An unknown error occurred');
         },
       });
+  }
+
+  onNavigateBack(): void {
+    this.store.dispatch(new Navigate(['/connections']));
   }
 }
