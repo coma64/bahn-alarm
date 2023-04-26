@@ -1,18 +1,22 @@
 @use "../../../../scss/breakpoints" as b;
 
 h1 {
+  display: flex;
+  gap: 1ch;
   text-align: start;
   padding-left: 10px;
   border-bottom: 2px solid var(--surface4);
-}
 
-@include b.is-small {
-  h1 {
+  img {
+    width: 2rem;
+  }
+
+  @include b.is-small {
     display: none;
   }
 }
 
-header {
+nav {
   position: fixed;
   bottom: 0;
   left: 0;
