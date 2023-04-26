@@ -3,6 +3,7 @@ import {
   ElementRef,
   forwardRef,
   Input,
+  OnDestroy,
   ViewChild,
 } from '@angular/core';
 import {
@@ -38,7 +39,7 @@ import { BahnService, BahnStation } from '../../../api';
     },
   ],
 })
-export class StationSearchComponent implements ControlValueAccessor {
+export class StationSearchComponent implements ControlValueAccessor, OnDestroy {
   @Input() inputId?: string;
 
   readonly inputControl = new FormControl('', { nonNullable: true });
@@ -72,6 +73,11 @@ export class StationSearchComponent implements ControlValueAccessor {
     private readonly overlay: Overlay,
     private readonly bahn: BahnService,
   ) {}
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   writeValue(station?: BahnStation) {
     this.inputControl.setValue(station?.name ?? '');

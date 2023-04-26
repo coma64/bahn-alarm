@@ -1,6 +1,6 @@
 import { OnDestroy, Pipe, PipeTransform } from '@angular/core';
 import { Subject, takeUntil, timer } from 'rxjs';
-import { RelativeTime } from './relative-time';
+import { RelativeTime, TimeUntilOptions } from './relative-time';
 
 @Pipe({
   name: 'timeUntil',
@@ -10,19 +10,22 @@ export class TimeUntilPipe implements PipeTransform, OnDestroy {
   private readonly next$ = new Subject<void>();
   private currentTime?: RelativeTime;
   private currentTimeDiff = '';
-  private alwaysShowMinutes = false;
+  private options: TimeUntilOptions = RelativeTime.TIME_UNTIL_DEFAULTS;
 
   ngOnDestroy(): void {
     this.next$.next();
     this.next$.complete();
   }
 
-  transform(time: RelativeTime, alwaysShowMinutes = false): string {
-    this.alwaysShowMinutes = alwaysShowMinutes;
+  transform(
+    time: RelativeTime,
+    options: TimeUntilOptions = RelativeTime.TIME_UNTIL_DEFAULTS,
+  ): string {
+    this.options = options;
 
     if (time !== this.currentTime) {
       this.currentTime = time;
-      this.currentTimeDiff = time?.timeUntil(this.alwaysShowMinutes) ?? '';
+      this.currentTimeDiff = time?.timeUntil(options) ?? '';
       this.setupTimer();
     }
 
@@ -37,7 +40,7 @@ export class TimeUntilPipe implements PipeTransform, OnDestroy {
       .subscribe(
         () =>
           (this.currentTimeDiff =
-            this.currentTime?.timeUntil(this.alwaysShowMinutes) ?? ''),
+            this.currentTime?.timeUntil(this.options) ?? ''),
       );
   }
 }

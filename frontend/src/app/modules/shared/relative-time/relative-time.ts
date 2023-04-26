@@ -7,8 +7,17 @@ dayjs.extend(utc);
 dayjs.extend(relativeTime);
 dayjs.extend(duration);
 
+export type TimeUntilOptions = Partial<{
+  alwaysShowMinutes: boolean;
+  humanReadable: boolean;
+}>;
+
 export class RelativeTime {
   static readonly ZERO_DATE = dayjs.utc('0001-01-01T00:01:01Z');
+  static readonly TIME_UNTIL_DEFAULTS: TimeUntilOptions = {
+    alwaysShowMinutes: false,
+    humanReadable: true,
+  };
 
   private readonly utc: dayjs.Dayjs;
   private readonly local: dayjs.Dayjs;
@@ -16,7 +25,7 @@ export class RelativeTime {
   readonly timestamp: number;
 
   constructor(dateTime: dayjs.Dayjs) {
-    this.utc = RelativeTime.copyTime(dateTime, dayjs.utc());
+    this.utc = RelativeTime.copyTime(dateTime, dayjs.utc()).startOf('minute');
     this.local = this.utc.local();
     this.str = this.local.format('HH:mm');
     this.timestamp = this.utc.unix();
@@ -57,23 +66,35 @@ export class RelativeTime {
     return zeroBasedDateTime.toISOString();
   }
 
-  timeUntil(alwaysShowMinutes: boolean): string {
+  timeUntil(
+    {
+      alwaysShowMinutes,
+      humanReadable,
+    }: TimeUntilOptions = RelativeTime.TIME_UNTIL_DEFAULTS,
+  ): string {
     // TODO: add "in" prefix option and "now"
     let nextTime = this.utc;
-    const now = dayjs.utc();
+    const now = dayjs.utc().startOf('minute');
     if (nextTime.isBefore(now)) {
       nextTime = nextTime.add(1, 'day');
     }
 
+    const prefix = humanReadable ? 'in ' : '';
     const diffMinutes = nextTime.diff(now, 'minutes');
     const diffHours = nextTime.diff(now, 'hours');
+
+    if (diffHours === 0 && diffMinutes === 0) {
+      if (humanReadable) return 'now';
+      else return '0m';
+    }
+
     if (diffHours > 0) {
       if (alwaysShowMinutes) {
-        return `${diffHours}h ${diffMinutes - diffHours * 60}m`;
+        return `${prefix}${diffHours}h ${diffMinutes - diffHours * 60}m`;
       }
-      return `${diffHours}h`;
+      return `${prefix}${diffHours}h`;
     } else {
-      return `${diffMinutes}m`;
+      return `${prefix}${diffMinutes}m`;
     }
   }
 }

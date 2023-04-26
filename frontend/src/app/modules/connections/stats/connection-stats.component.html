@@ -19,7 +19,11 @@
     </div>
     <div>
       <div>
-        {{ stats.nextDeparture.departure | toRelativeTime | timeUntil }}
+        {{
+          stats.nextDeparture.departure
+            | toRelativeTime
+            | timeUntil : { humanReadable: false }
+        }}
       </div>
       <div>until next departure</div>
     </div>
