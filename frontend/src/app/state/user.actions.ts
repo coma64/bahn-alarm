@@ -1,7 +1,9 @@
-export namespace User {
+import { User } from '../api';
+
+export namespace UserActions {
   export class LoginSuccess {
     static readonly type = '[User] login success';
-    constructor(public readonly name: string) {}
+    constructor(public readonly user: User) {}
   }
 
   export class Logout {

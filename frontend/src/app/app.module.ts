@@ -15,15 +15,19 @@ import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { JwtExpiredInterceptor } from './interceptors/jwt-expired.interceptor';
 import { ConnectionStatsState } from './state/connection-stats.state';
 import { ConnectionsState } from './state/connections.state';
+import { AlarmedDevicesState } from './state/alarmed-devices.state';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgxsModule.forRoot([UserState, ConnectionStatsState, ConnectionsState], {
-      developmentMode: !environment.production,
-    }),
+    NgxsModule.forRoot(
+      [UserState, ConnectionStatsState, ConnectionsState, AlarmedDevicesState],
+      {
+        developmentMode: !environment.production,
+      },
+    ),
     NgxsReduxDevtoolsPluginModule.forRoot(),
     NgxsLoggerPluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot(),

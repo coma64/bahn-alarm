@@ -1,0 +1,26 @@
+<main>
+  <h1>Profile</h1>
+
+  <section *ngIf="user$ | async as user; else spinner">
+    <div class="infos">
+      <div class="label">Username</div>
+      <div>{{ user.name }}</div>
+
+      <div class="label">Created at</div>
+      <div>{{ user.createdAt | format }}</div>
+
+      <div class="label">Is admin</div>
+      <div>{{ user.isAdmin | format }}</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Alarmed Devices</h2>
+
+    <app-alarmed-devices-list></app-alarmed-devices-list>
+  </section>
+</main>
+
+<ng-template #spinner>
+  <app-spinner></app-spinner>
+</ng-template>

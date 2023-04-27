@@ -3,6 +3,6 @@
 @include b.is-large {
   :host {
     display: grid;
-    grid-template-columns: 240px 0 1fr;
+    grid-template-columns: var(--nav-width) 0 1fr;
   }
 }

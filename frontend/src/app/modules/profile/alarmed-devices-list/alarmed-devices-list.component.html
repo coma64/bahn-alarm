@@ -1,0 +1,13 @@
+<ul *ngIf="alarmedDevices$ | async as alarmedDevices; else spinner">
+  <p class="text2" *ngIf="!alarmedDevices.items.length">
+    You haven't registered any devices yet
+  </p>
+
+  <li *ngFor="let device of alarmedDevices.items">
+    {{ device.name }}
+  </li>
+</ul>
+
+<ng-template #spinner>
+  <app-spinner></app-spinner>
+</ng-template>

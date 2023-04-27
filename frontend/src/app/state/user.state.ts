@@ -1,30 +1,29 @@
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
-import { User } from './user.actions';
+import { UserActions } from './user.actions';
 import { Navigate } from '@ngxs/router-plugin';
+import { User } from '../api';
 
-export class UserStateModel {
-  public readonly name?: string;
-}
+export type UserStateModel = User | null;
 
 @State<UserStateModel>({
   name: 'user',
-  defaults: {},
+  defaults: null,
 })
 @Injectable()
 export class UserState {
-  @Action(User.LoginSuccess)
+  @Action(UserActions.LoginSuccess)
   login(
-    { patchState, dispatch }: StateContext<UserStateModel>,
-    { name }: User.LoginSuccess,
+    { setState, dispatch }: StateContext<UserStateModel>,
+    { user }: UserActions.LoginSuccess,
   ): void {
-    patchState({ name });
+    setState(user);
     dispatch(new Navigate(['/connections']));
   }
 
-  @Action(User.Logout)
+  @Action(UserActions.Logout)
   logout({ setState, dispatch }: StateContext<UserStateModel>): void {
-    setState({});
+    setState(null);
     dispatch(new Navigate(['/login']));
   }
 }

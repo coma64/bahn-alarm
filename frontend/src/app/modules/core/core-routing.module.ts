@@ -14,6 +14,11 @@ const routes: Routes = [
             (m) => m.ConnectionsModule,
           ),
       },
+      {
+        path: 'profile',
+        loadChildren: () =>
+          import('../profile/profile.module').then((m) => m.ProfileModule),
+      },
     ],
   },
   {

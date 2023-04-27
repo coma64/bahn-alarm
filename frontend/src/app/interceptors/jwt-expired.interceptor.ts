@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 import { catchError, EMPTY, Observable } from 'rxjs';
 import { Store } from '@ngxs/store';
-import { User } from '../state/user.actions';
+import { UserActions } from '../state/user.actions';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +28,7 @@ export class JwtExpiredInterceptor implements HttpInterceptor {
   private handleHttpError(err: HttpErrorResponse): Observable<any> {
     if (err.status !== 401) throw err;
 
-    this.store.dispatch(new User.Logout());
+    this.store.dispatch(new UserActions.Logout());
     return EMPTY;
   }
 }

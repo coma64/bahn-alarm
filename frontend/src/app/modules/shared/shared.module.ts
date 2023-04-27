@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { PortalModule } from '@angular/cdk/portal';
 import { RelativeTimeComponent } from './relative-time/relative-time.component';
 import { IsIncludedInPipe } from './is-included-in.pipe';
+import { FormatPipe } from './format.pipe';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { IsIncludedInPipe } from './is-included-in.pipe';
     StationSearchComponent,
     RelativeTimeComponent,
     IsIncludedInPipe,
+    FormatPipe,
   ],
   imports: [CommonModule, IconsModule, ReactiveFormsModule, PortalModule],
   exports: [
@@ -30,6 +32,7 @@ import { IsIncludedInPipe } from './is-included-in.pipe';
     StationSearchComponent,
     RelativeTimeComponent,
     IsIncludedInPipe,
+    FormatPipe,
   ],
 })
 export class SharedModule {}

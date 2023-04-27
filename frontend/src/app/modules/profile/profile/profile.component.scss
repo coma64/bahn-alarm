@@ -1,0 +1,29 @@
+@use "../../../../scss/breakpoints" as b;
+
+.infos {
+  background: var(--surface2);
+  box-shadow: 0 6px 10px hsl(var(--surface-shadow) / var(--shadow-strength));
+  padding: 10px;
+  border-radius: 0.5rem;
+
+  .label {
+    color: var(--text2);
+    font-size: 0.9rem;
+
+    &:not(:first-child) {
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+@include b.is-large {
+  .logout {
+    width: unset;
+    min-width: 15rem;
+  }
+}
+
+h2 {
+  font-size: 1.17rem;
+  margin-top: 1rem;
+}

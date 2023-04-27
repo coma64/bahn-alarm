@@ -11,6 +11,10 @@ a:not([class]) {
   }
 }
 
+:root {
+  --nav-width: 280px;
+}
+
 html {
   height: 100%;
 }
@@ -72,16 +76,23 @@ button {
     background: var(--surface3);
   }
 
+  --action-color: #0047d4;
+  --action-border: #0453ee;
+
+  &.red {
+    --action-color: var(--brand);
+    --action-border: hsl(var(--hue), var(--saturation), 60%);
+  }
+
   &.action {
-    $action-color: #0047d4;
-    border-color: $action-color;
+    border-color: var(--action-color);
 
     &:hover {
-      background: $action-color;
+      background: var(--action-color);
     }
 
     &:active {
-      box-shadow: 0 0 2px 1px $action-color;
+      box-shadow: 0 0 2px 1px var(--action-color);
     }
 
     &:focus {
@@ -89,7 +100,7 @@ button {
     }
 
     &:focus-visible {
-      border-color: lighten($action-color, 10%);
+      border-color: var(--action-border);
     }
   }
 
@@ -104,27 +115,38 @@ button {
     left: 5px;
 
     @include b.is-large {
-      display: none;
+      left: calc(var(--nav-width) + 5px);
     }
   }
 
   &.icon {
     border: none;
     background: unset;
+    border-radius: 25px;
 
     i-feather {
       width: 1.7rem;
       height: 1.7rem;
     }
 
-    &:active {
+    &:hover {
       background: var(--surface3);
+    }
+
+    &:active {
+      background: var(--surface4);
     }
   }
 }
 
-p.help {
-  color: var(--text2);
+p {
+  &.help {
+    color: var(--text2);
+  }
+
+  &.text2 {
+    color: var(--text2);
+  }
 }
 
 ul {
@@ -149,4 +171,20 @@ h1 {
   padding-bottom: 0.5rem;
   font-size: 1.2rem;
   text-align: center;
+
+  @include b.is-large {
+    text-align: start;
+  }
+}
+
+main {
+  padding: 10px;
+}
+
+header {
+  @include b.is-large {
+    .navigate-back + :is(h1, h2, h3, h4, h5, h6) {
+      margin-left: 40px;
+    }
+  }
 }

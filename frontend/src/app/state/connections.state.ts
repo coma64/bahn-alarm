@@ -3,9 +3,9 @@ import { State, Action, StateContext } from '@ngxs/store';
 import { Connections } from './connections.actions';
 import { TrackedConnection } from '../api';
 
-export class ConnectionsStateModel {
-  public items: TrackedConnection[] = [];
-  public page = 0;
+export interface ConnectionsStateModel {
+  items: TrackedConnection[];
+  page: number;
 }
 
 const defaults = {
