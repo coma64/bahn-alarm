@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { State } from '../../../state/state';
 import { Observable } from 'rxjs';
-import { NotificationsService } from '../../../api';
+import { AuthService, NotificationsService } from '../../../api';
 import { AlarmedDeviceActions } from '../../../state/alarmed-devices.actions';
+import { UserActions } from '../../../state/user.actions';
 
 @Component({
   selector: 'app-profile',
@@ -15,6 +16,7 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private readonly notifications: NotificationsService,
+    private readonly auth: AuthService,
     private readonly store: Store,
   ) {}
 
@@ -26,5 +28,15 @@ export class ProfileComponent implements OnInit {
           new AlarmedDeviceActions.Fetched(notifications.subscriptions),
         ),
       );
+  }
+
+  onLogout(): void {
+    this.auth.authLogoutPost().subscribe({
+      next: () => this.store.dispatch(new UserActions.Logout()),
+      error: () =>
+        alert(
+          'An unknown error occurred while logging you out. Please try again',
+        ),
+    });
   }
 }

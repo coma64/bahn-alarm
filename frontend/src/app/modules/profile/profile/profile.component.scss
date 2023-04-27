@@ -27,3 +27,12 @@ h2 {
   font-size: 1.17rem;
   margin-top: 1rem;
 }
+
+.logout {
+  min-width: 15rem;
+  margin-top: 0.5rem;
+
+  @include b.is-small {
+    width: 100%;
+  }
+}
