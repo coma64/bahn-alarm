@@ -1,17 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BannerComponent } from './banner/banner.component';
+import { BannerComponent } from './components/banner/banner.component';
 import { IconsModule } from '../login/icons/icons.module';
-import { TimeUntilPipe } from './relative-time/time-until.pipe';
-import { ToRelativeTimePipe } from './relative-time/to-relative-time.pipe';
-import { SpinnerComponent } from './spinner/spinner.component';
-import { StationSearchComponent } from './station-search/station-search.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { PortalModule } from '@angular/cdk/portal';
-import { RelativeTimeComponent } from './relative-time/relative-time.component';
-import { IsIncludedInPipe } from './is-included-in.pipe';
-import { FormatPipe } from './format.pipe';
-import { TimeSincePipe } from './time-since.pipe';
+import { TimeUntilPipe } from './pipes/time-until.pipe';
+import { ToRelativeTimePipe } from './pipes/to-relative-time.pipe';
+import { SpinnerComponent } from './components/spinner/spinner.component';
+import { IsIncludedInPipe } from './pipes/is-included-in.pipe';
+import { FormatPipe } from './pipes/format.pipe';
+import { TimeSincePipe } from './pipes/time-since.pipe';
 
 @NgModule({
   declarations: [
@@ -19,20 +15,16 @@ import { TimeSincePipe } from './time-since.pipe';
     TimeUntilPipe,
     ToRelativeTimePipe,
     SpinnerComponent,
-    StationSearchComponent,
-    RelativeTimeComponent,
     IsIncludedInPipe,
     FormatPipe,
     TimeSincePipe,
   ],
-  imports: [CommonModule, IconsModule, ReactiveFormsModule, PortalModule],
+  imports: [CommonModule, IconsModule],
   exports: [
     BannerComponent,
     ToRelativeTimePipe,
     TimeUntilPipe,
     SpinnerComponent,
-    StationSearchComponent,
-    RelativeTimeComponent,
     IsIncludedInPipe,
     FormatPipe,
     TimeSincePipe,

@@ -1,6 +1,9 @@
 import { OnDestroy, Pipe, PipeTransform } from '@angular/core';
 import { Subject, takeUntil, timer } from 'rxjs';
-import { RelativeTime, TimeUntilOptions } from './relative-time';
+import {
+  RelativeTime,
+  TimeUntilOptions,
+} from '../../connections/relative-time/relative-time';
 
 @Pipe({
   name: 'timeUntil',

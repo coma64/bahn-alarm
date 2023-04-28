@@ -6,7 +6,7 @@ import {
   Output,
 } from '@angular/core';
 import { BahnPlace, BahnService } from '../../../api';
-import { RelativeTime } from '../../shared/relative-time/relative-time';
+import { RelativeTime } from '../relative-time/relative-time';
 import { FormControl } from '@angular/forms';
 import {
   BehaviorSubject,

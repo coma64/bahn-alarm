@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { RelativeTime } from '../../shared/relative-time/relative-time';
+import { RelativeTime } from '../relative-time/relative-time';
 import { FormBuilder, Validators } from '@angular/forms';
 import { BahnPlace, TrackingService } from '../../../api';
 import { Store } from '@ngxs/store';

@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { RelativeTime } from './relative-time';
+import { RelativeTime } from '../../connections/relative-time/relative-time';
 
 @Pipe({
   name: 'toRelativeTime',

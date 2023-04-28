@@ -14,6 +14,9 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DepartureSelectComponent } from './departure-select/departure-select.component';
 import { NgArrayPipesModule } from 'ngx-pipes';
+import { StationSearchComponent } from './station-search/station-search.component';
+import { RelativeTimeComponent } from './relative-time/relative-time.component';
+import { PortalModule } from '@angular/cdk/portal';
 
 @NgModule({
   declarations: [
@@ -24,6 +27,8 @@ import { NgArrayPipesModule } from 'ngx-pipes';
     ToHumanStatusPipe,
     EditConnectionComponent,
     DepartureSelectComponent,
+    StationSearchComponent,
+    RelativeTimeComponent,
   ],
   imports: [
     CommonModule,
@@ -34,6 +39,7 @@ import { NgArrayPipesModule } from 'ngx-pipes';
     ReactiveFormsModule,
     FormsModule,
     NgArrayPipesModule,
+    PortalModule,
   ],
 })
 export class ConnectionsModule {}
