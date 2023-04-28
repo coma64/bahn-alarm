@@ -13,7 +13,15 @@ import { SimpleConnection } from './simpleConnection';
 
 
 export interface CancelledAlarm { 
+    type: CancelledAlarm.TypeEnum;
     isCanceled: boolean;
     connection: SimpleConnection;
 }
+export namespace CancelledAlarm {
+    export type TypeEnum = 'cancelled-alarm';
+    export const TypeEnum = {
+        CancelledAlarm: 'cancelled-alarm' as TypeEnum
+    };
+}
+
 

@@ -13,7 +13,15 @@ import { SimpleConnection } from './simpleConnection';
 
 
 export interface DelayChangeAlarm { 
+    type: DelayChangeAlarm.TypeEnum;
     newDelayMinutes: number;
     connection: SimpleConnection;
 }
+export namespace DelayChangeAlarm {
+    export type TypeEnum = 'delay-change-alarm';
+    export const TypeEnum = {
+        DelayChangeAlarm: 'delay-change-alarm' as TypeEnum
+    };
+}
+
 

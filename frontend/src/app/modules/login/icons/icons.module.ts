@@ -10,6 +10,7 @@ import {
   Eye,
   User,
   LogOut,
+  X,
 } from 'angular-feather/icons';
 import { FeatherModule } from 'angular-feather';
 
@@ -24,6 +25,7 @@ const icons = {
   Eye,
   User,
   LogOut,
+  X,
 };
 
 @NgModule({

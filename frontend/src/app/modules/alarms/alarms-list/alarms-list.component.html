@@ -1,0 +1,53 @@
+<section *ngIf="alarms$ | async as alarms; else spinner">
+  <p *ngIf="!alarms.items.length" class="text2">No alarms were found</p>
+  <div class="alarm" *ngFor="let alarm of alarms.items">
+    <div class="header">
+      <span class="urgency {{ alarm.urgency }}">
+        {{ emergencyToHumanReadable[alarm.urgency] }}
+      </span>
+
+      <span>{{ alarm.createdAt | timeSince | async }}</span>
+
+      <button
+        class="icon close"
+        aria-label="Delete alarm"
+        (click)="delete(alarm.id)"
+      >
+        <i-feather name="x"></i-feather>
+      </button>
+    </div>
+
+    <ng-container *ngIf="alarm.content as content">
+      <p
+        *ngIf="
+          content.type === 'delay-change-alarm' && content.newDelayMinutes !== 0
+        "
+      >
+        New delay of +{{ content.newDelayMinutes }}m
+      </p>
+
+      <p *ngIf="content.type === 'cancelled-alarm' && content.isCanceled">
+        Connection was canceled
+      </p>
+
+      <p
+        *ngIf="
+          (content.type === 'delay-change-alarm' &&
+            content.newDelayMinutes === 0) ||
+          (content.type === 'cancelled-alarm' && !content.isCanceled)
+        "
+      >
+        Connection is no longer delayed
+      </p>
+
+      <app-connection-info
+        *ngIf="content.connection"
+        [connection]="content.connection"
+      ></app-connection-info>
+    </ng-container>
+  </div>
+</section>
+
+<ng-template #spinner>
+  <app-spinner></app-spinner>
+</ng-template>

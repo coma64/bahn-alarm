@@ -16,6 +16,7 @@ import { JwtExpiredInterceptor } from './interceptors/jwt-expired.interceptor';
 import { ConnectionStatsState } from './state/connection-stats.state';
 import { ConnectionsState } from './state/connections.state';
 import { AlarmedDevicesState } from './state/alarmed-devices.state';
+import { AlarmsState } from './state/alarms.state';
 
 @NgModule({
   declarations: [AppComponent],
@@ -23,7 +24,13 @@ import { AlarmedDevicesState } from './state/alarmed-devices.state';
     BrowserModule,
     AppRoutingModule,
     NgxsModule.forRoot(
-      [UserState, ConnectionStatsState, ConnectionsState, AlarmedDevicesState],
+      [
+        UserState,
+        ConnectionStatsState,
+        ConnectionsState,
+        AlarmedDevicesState,
+        AlarmsState,
+      ],
       {
         developmentMode: !environment.production,
       },

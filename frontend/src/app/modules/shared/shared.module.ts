@@ -11,6 +11,7 @@ import { PortalModule } from '@angular/cdk/portal';
 import { RelativeTimeComponent } from './relative-time/relative-time.component';
 import { IsIncludedInPipe } from './is-included-in.pipe';
 import { FormatPipe } from './format.pipe';
+import { TimeSincePipe } from './time-since.pipe';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { FormatPipe } from './format.pipe';
     RelativeTimeComponent,
     IsIncludedInPipe,
     FormatPipe,
+    TimeSincePipe,
   ],
   imports: [CommonModule, IconsModule, ReactiveFormsModule, PortalModule],
   exports: [
@@ -33,6 +35,7 @@ import { FormatPipe } from './format.pipe';
     RelativeTimeComponent,
     IsIncludedInPipe,
     FormatPipe,
+    TimeSincePipe,
   ],
 })
 export class SharedModule {}

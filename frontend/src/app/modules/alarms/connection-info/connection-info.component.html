@@ -1,0 +1,16 @@
+<div class="connection" *ngIf="connection">
+  <div class="label">From</div>
+  <div class="value">{{ connection.fromName }}</div>
+
+  <div class="departure">
+    <div>
+      {{ (connection.departure | toRelativeTime).str }}
+    </div>
+    <div class="text2">
+      {{ connection.departure | toRelativeTime | timeUntil }}
+    </div>
+  </div>
+
+  <div class="label">To</div>
+  <div class="value">{{ connection.toName }}</div>
+</div>

@@ -19,6 +19,11 @@ const routes: Routes = [
         loadChildren: () =>
           import('../profile/profile.module').then((m) => m.ProfileModule),
       },
+      {
+        path: 'alarms',
+        loadChildren: () =>
+          import('../alarms/alarms.module').then((m) => m.AlarmsModule),
+      },
     ],
   },
   {
