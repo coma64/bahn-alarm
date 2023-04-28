@@ -7,7 +7,7 @@
       {{ (connection.departure | toRelativeTime).str }}
     </div>
     <div class="text2">
-      {{ connection.departure | toRelativeTime | timeUntil }}
+      {{ connection.departure | toRelativeTime | nextRelativeTime | async }}
     </div>
   </div>
 

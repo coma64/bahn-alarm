@@ -22,7 +22,8 @@
         {{
           stats.nextDeparture.departure
             | toRelativeTime
-            | timeUntil : { humanReadable: false }
+            | nextRelativeTime : { humanReadable: false }
+            | async
         }}
       </div>
       <div>until next departure</div>

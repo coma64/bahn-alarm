@@ -1,7 +1,7 @@
 <div *ngIf="departure" class="departure">
   <div class="time">{{ (departure.departure | toRelativeTime).str }}</div>
   <div class="time-until">
-    {{ departure.departure | toRelativeTime | timeUntil }}
+    {{ departure.departure | toRelativeTime | nextRelativeTime | async }}
   </div>
 
   <div class="status">
