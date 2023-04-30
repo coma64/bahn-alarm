@@ -6,3 +6,10 @@
     grid-template-columns: var(--nav-width) 0 1fr;
   }
 }
+
+@include b.is-small {
+  :host {
+    display: block;
+    padding-bottom: 4rem;
+  }
+}
