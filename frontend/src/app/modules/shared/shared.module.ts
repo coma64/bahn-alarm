@@ -8,6 +8,9 @@ import { SpinnerComponent } from './components/spinner/spinner.component';
 import { IsIncludedInPipe } from './pipes/is-included-in.pipe';
 import { FormatPipe } from './pipes/format.pipe';
 import { TimeSincePipe } from './pipes/time-since.pipe';
+import { DropdownComponent } from './dropdown/dropdown.component';
+import { PortalModule } from '@angular/cdk/portal';
+import { NgObjectPipesModule } from 'ngx-pipes';
 
 @NgModule({
   declarations: [
@@ -18,8 +21,9 @@ import { TimeSincePipe } from './pipes/time-since.pipe';
     IsIncludedInPipe,
     FormatPipe,
     TimeSincePipe,
+    DropdownComponent,
   ],
-  imports: [CommonModule, IconsModule],
+  imports: [CommonModule, IconsModule, PortalModule, NgObjectPipesModule],
   exports: [
     BannerComponent,
     ToRelativeTimePipe,
@@ -28,6 +32,7 @@ import { TimeSincePipe } from './pipes/time-since.pipe';
     IsIncludedInPipe,
     FormatPipe,
     TimeSincePipe,
+    DropdownComponent,
   ],
 })
 export class SharedModule {}

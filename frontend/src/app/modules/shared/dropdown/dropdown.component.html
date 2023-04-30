@@ -1,0 +1,18 @@
+<ng-content></ng-content>
+<i-feather [class.rotate-180]="isOpen" name="chevron-down"></i-feather>
+
+<ng-template cdkPortal>
+  <ul
+    *ngIf="options.length"
+    [style.width.px]="element.nativeElement.clientWidth"
+  >
+    <li *ngFor="let option of options">
+      <button
+        (click)="onSelect(option)"
+        [class.is-selected]="option === selected"
+      >
+        {{ option.label }}
+      </button>
+    </li>
+  </ul>
+</ng-template>

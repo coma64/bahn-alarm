@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { State } from '../../../state/state';
-import { AlarmsService, Urgency } from '../../../api';
+import { Urgency } from '../../../api';
 import { AlarmsActions } from '../../../state/alarms.actions';
 
 @Component({
@@ -18,15 +18,9 @@ export class AlarmsListComponent {
     error: 'Error',
   };
 
-  constructor(
-    private readonly alarms: AlarmsService,
-    private readonly store: Store,
-  ) {}
+  constructor(private readonly store: Store) {}
 
   delete(id: number): void {
-    this.alarms.alarmsIdDelete(id).subscribe({
-      next: () => this.store.dispatch(new AlarmsActions.Deleted(id)),
-      error: () => alert('An unknown error occurred while delete the alarm'),
-    });
+    this.store.dispatch(new AlarmsActions.Delete(id));
   }
 }

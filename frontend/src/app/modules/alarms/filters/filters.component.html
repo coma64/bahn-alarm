@@ -1,0 +1,13 @@
+<button (click)="onRefresh()">
+  <i-feather name="refresh-cw"></i-feather>
+  Refresh
+</button>
+
+<button
+  app-dropdown
+  (selectedChange)="onUrgencyChange($event)"
+  [(selected)]="selectedUrgency"
+  [options]="urgencyOptions"
+>
+  {{ selectedUrgency.value ? selectedUrgency.label : "Urgency" }}
+</button>

@@ -11,6 +11,8 @@ import {
   User,
   LogOut,
   X,
+  RefreshCw,
+  ChevronDown,
 } from 'angular-feather/icons';
 import { FeatherModule } from 'angular-feather';
 
@@ -26,6 +28,8 @@ const icons = {
   User,
   LogOut,
   X,
+  RefreshCw,
+  ChevronDown,
 };
 
 @NgModule({
