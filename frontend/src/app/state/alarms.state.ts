@@ -5,7 +5,7 @@ import { Alarm, AlarmsService, Urgency } from '../api';
 import { Observable, tap } from 'rxjs';
 
 export class AlarmsStateModel {
-  items: Array<Alarm> = [];
+  items?: Array<Alarm>;
   page = 0;
   size = 50;
   filteredUrgency?: Urgency;
@@ -23,6 +23,8 @@ export class AlarmsState {
     getState,
     patchState,
   }: StateContext<AlarmsStateModel>): Observable<unknown> {
+    patchState({ items: undefined });
+
     const { page, size, filteredUrgency } = getState();
 
     return this.alarms.alarmsGet(page, size, filteredUrgency).pipe(
@@ -43,7 +45,7 @@ export class AlarmsState {
     return this.alarms.alarmsIdDelete(targetId).pipe(
       tap({
         next: () =>
-          patchState({ items: items.filter(({ id }) => id !== targetId) }),
+          patchState({ items: items?.filter(({ id }) => id !== targetId) }),
         error: () =>
           alert('An unknown error occurred while deleting the alarm'),
       }),

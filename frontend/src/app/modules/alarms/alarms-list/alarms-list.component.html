@@ -1,7 +1,7 @@
-<section *ngIf="alarms$ | async as alarms; else spinner">
-  <p *ngIf="!alarms.items.length" class="text2">No alarms were found</p>
+<section *ngIf="(alarms$ | async)?.items as alarms; else spinner">
+  <p *ngIf="!alarms.length" class="text2">No alarms were found</p>
 
-  <div class="alarm" *ngFor="let alarm of alarms.items">
+  <div class="alarm" *ngFor="let alarm of alarms">
     <div class="header">
       <span class="urgency {{ alarm.urgency }}">
         {{ emergencyToHumanReadable[alarm.urgency] }}
