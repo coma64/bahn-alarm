@@ -7,6 +7,7 @@ import { Connections } from '../../../state/connections.actions';
 import { Navigate } from '@ngxs/router-plugin';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subject, takeUntil } from 'rxjs';
+import { NotifyService } from '../../shared/services/notify.service';
 
 @Component({
   selector: 'app-edit-connection',
@@ -35,7 +36,8 @@ export class EditConnectionComponent implements OnInit, OnDestroy {
   constructor(
     private readonly fb: FormBuilder,
     private readonly tracking: TrackingService,
-    readonly store: Store,
+    private readonly notify: NotifyService,
+    protected readonly store: Store,
   ) {}
 
   ngOnInit(): void {
@@ -56,7 +58,7 @@ export class EditConnectionComponent implements OnInit, OnDestroy {
 
     if (
       !this.selectedDepartures.length &&
-      confirm(
+      this.notify.confirm(
         "You won't get alarms for this connection because you didn't select any departures. Keep editing?",
       )
     )
@@ -85,10 +87,10 @@ export class EditConnectionComponent implements OnInit, OnDestroy {
           ]),
         error: (err: HttpErrorResponse) => {
           if (err.status === 409)
-            alert(
+            this.notify.error(
               "You're already tracking this connection. You can edit it instead",
             );
-          else alert('An unknown error occurred');
+          else this.notify.error('An unknown error occurred');
         },
       });
   }

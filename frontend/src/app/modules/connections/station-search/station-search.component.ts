@@ -27,6 +27,7 @@ import {
   takeUntil,
 } from 'rxjs';
 import { BahnPlace, BahnService, BahnStation } from '../../../api';
+import { NotifyService } from '../../shared/services/notify.service';
 
 @Component({
   selector: 'app-station-search',
@@ -58,7 +59,7 @@ export class StationSearchComponent implements ControlValueAccessor, OnDestroy {
       return this.bahn.bahnPlacesGet(stationName).pipe(startWith(undefined));
     }),
     catchError((e) => {
-      alert('An error occurred while loading the stations');
+      this.notify.error('An error occurred while loading the stations');
       throw e;
     }),
     shareReplay(1),
@@ -73,6 +74,7 @@ export class StationSearchComponent implements ControlValueAccessor, OnDestroy {
   constructor(
     private readonly overlay: Overlay,
     private readonly bahn: BahnService,
+    private readonly notify: NotifyService,
   ) {}
 
   ngOnDestroy(): void {

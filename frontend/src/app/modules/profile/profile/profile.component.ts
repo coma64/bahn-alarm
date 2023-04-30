@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { AuthService, NotificationsService } from '../../../api';
 import { AlarmedDeviceActions } from '../../../state/alarmed-devices.actions';
 import { UserActions } from '../../../state/user.actions';
+import { NotifyService } from '../../shared/services/notify.service';
 
 @Component({
   selector: 'app-profile',
@@ -18,6 +19,7 @@ export class ProfileComponent implements OnInit {
     private readonly notifications: NotificationsService,
     private readonly auth: AuthService,
     private readonly store: Store,
+    private readonly notify: NotifyService,
   ) {}
 
   ngOnInit(): void {
@@ -34,7 +36,7 @@ export class ProfileComponent implements OnInit {
     this.auth.authLogoutPost().subscribe({
       next: () => this.store.dispatch(new UserActions.Logout()),
       error: () =>
-        alert(
+        this.notify.error(
           'An unknown error occurred while logging you out. Please try again',
         ),
     });

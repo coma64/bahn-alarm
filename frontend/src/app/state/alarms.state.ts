@@ -3,6 +3,7 @@ import { State, Action, StateContext } from '@ngxs/store';
 import { AlarmsActions } from './alarms.actions';
 import { Alarm, AlarmsService, Urgency } from '../api';
 import { Observable, tap } from 'rxjs';
+import { NotifyService } from '../modules/shared/services/notify.service';
 
 export class AlarmsStateModel {
   items?: Array<Alarm>;
@@ -16,7 +17,10 @@ export class AlarmsStateModel {
 })
 @Injectable()
 export class AlarmsState {
-  constructor(private readonly alarms: AlarmsService) {}
+  constructor(
+    private readonly alarms: AlarmsService,
+    private readonly notify: NotifyService,
+  ) {}
 
   @Action(AlarmsActions.Fetch)
   fetch({
@@ -31,7 +35,9 @@ export class AlarmsState {
       tap({
         next: (response) => patchState({ items: response.alarms }),
         error: () =>
-          alert('An unknown error occurred while loading the alarms'),
+          this.notify.error(
+            'An unknown error occurred while loading the alarms',
+          ),
       }),
     );
   }
@@ -47,7 +53,9 @@ export class AlarmsState {
         next: () =>
           patchState({ items: items?.filter(({ id }) => id !== targetId) }),
         error: () =>
-          alert('An unknown error occurred while deleting the alarm'),
+          this.notify.error(
+            'An unknown error occurred while deleting the alarm',
+          ),
       }),
     );
   }
