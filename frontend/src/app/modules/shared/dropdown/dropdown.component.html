@@ -6,7 +6,7 @@
     *ngIf="options.length"
     [style.width.px]="element.nativeElement.clientWidth"
   >
-    <li *ngFor="let option of options">
+    <li *ngFor="let option of options; trackBy: trackByOption">
       <button
         (click)="onSelect(option)"
         [class.is-selected]="option === selected"

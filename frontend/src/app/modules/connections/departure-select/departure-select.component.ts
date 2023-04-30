@@ -4,6 +4,7 @@ import {
   Input,
   OnDestroy,
   Output,
+  TrackByFunction,
 } from '@angular/core';
 import { BahnPlace, BahnService } from '../../../api';
 import { RelativeTime } from '../relative-time/relative-time';
@@ -94,4 +95,7 @@ export class DepartureSelectComponent implements OnDestroy {
 
     this.selectedDeparturesChange.emit(this.selectedDepartures);
   }
+
+  trackByDeparture: TrackByFunction<RelativeTime> = (_, { timestamp }) =>
+    timestamp;
 }

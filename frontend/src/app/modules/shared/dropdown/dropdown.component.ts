@@ -7,6 +7,7 @@ import {
   Input,
   OnDestroy,
   Output,
+  TrackByFunction,
   ViewChild,
 } from '@angular/core';
 import { CdkPortal, TemplatePortal } from '@angular/cdk/portal';
@@ -102,4 +103,6 @@ export class DropdownComponent<T> implements OnDestroy {
   hide(): void {
     if (this.isOpen) this.portal?.detach();
   }
+
+  trackByOption: TrackByFunction<Option<T>> = (_, { value }) => value;
 }

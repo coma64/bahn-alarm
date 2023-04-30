@@ -3,7 +3,7 @@
     You haven't registered any devices yet
   </p>
 
-  <li *ngFor="let device of alarmedDevices.items">
+  <li *ngFor="let device of alarmedDevices.items; trackBy: trackById">
     {{ device.name }}
   </li>
 </ul>

@@ -14,7 +14,10 @@
   *ngIf="connections$ | async as connections; else spinner"
   class="connections"
 >
-  <div *ngFor="let connection of connections" class="connection">
+  <div
+    *ngFor="let connection of connections; trackBy: trackById"
+    class="connection"
+  >
     <div class="stations">
       <div class="label">From</div>
       <div>{{ connection.from.name }}</div>
@@ -25,7 +28,12 @@
 
     <h4>{{ connection.departures.length }} tracked departures</h4>
     <ul class="departures">
-      <li *ngFor="let departure of connection.departures">
+      <li
+        *ngFor="
+          let departure of connection.departures;
+          trackBy: trackByDeparture
+        "
+      >
         <app-departure [departure]="departure"></app-departure>
       </li>
     </ul>

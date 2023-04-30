@@ -14,7 +14,7 @@
     [style.width.px]="inputElement.clientWidth"
   >
     <ul *ngIf="suggestions$ | async as suggestions; else spinner">
-      <li *ngFor="let suggestion of suggestions.places">
+      <li *ngFor="let suggestion of suggestions.places; trackBy: trackByPlace">
         <button (click)="onSelect(suggestion)">{{ suggestion.name }}</button>
       </li>
     </ul>

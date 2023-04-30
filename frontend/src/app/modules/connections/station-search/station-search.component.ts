@@ -4,6 +4,7 @@ import {
   forwardRef,
   Input,
   OnDestroy,
+  TrackByFunction,
   ViewChild,
 } from '@angular/core';
 import {
@@ -25,7 +26,7 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
-import { BahnService, BahnStation } from '../../../api';
+import { BahnPlace, BahnService, BahnStation } from '../../../api';
 
 @Component({
   selector: 'app-station-search',
@@ -157,4 +158,6 @@ export class StationSearchComponent implements ControlValueAccessor, OnDestroy {
   hide(): void {
     if (this.suggestionsPortal?.isAttached) this.suggestionsPortal.detach();
   }
+
+  trackByPlace: TrackByFunction<BahnPlace> = (_, { id }) => id;
 }

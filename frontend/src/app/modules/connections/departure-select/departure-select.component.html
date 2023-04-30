@@ -39,7 +39,7 @@
     <button
       (click)="onToggle(departure)"
       [class.is-selected]="departure | isIncludedIn : selectedDepartures"
-      *ngFor="let departure of departures"
+      *ngFor="let departure of departures; trackBy: trackByDeparture"
     >
       {{ departure.str }}
     </button>

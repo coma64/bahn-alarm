@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { State } from '../../../state/state';
 import { Urgency } from '../../../api';
 import { AlarmsActions } from '../../../state/alarms.actions';
+import { trackById } from '../../shared/track-by-id';
 
 @Component({
   selector: 'app-alarms-list',
@@ -17,6 +18,8 @@ export class AlarmsListComponent {
     warn: 'Warning',
     error: 'Error',
   };
+
+  protected readonly trackById = trackById;
 
   constructor(private readonly store: Store) {}
 
