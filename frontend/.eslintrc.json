@@ -1,0 +1,33 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+      "xo",
+      "prettier"
+    ],
+    "overrides": [
+        {
+            "extends": [
+                "xo-typescript",
+                "prettier"
+            ],
+            "files": [
+                "*.ts",
+                "*.tsx"
+            ],
+            "rules": {
+              "@typescript-eslint/class-literal-property-style": "off",
+              "new-cap": "off",
+              "@typescript-eslint/no-extraneous-class": "off",
+              "@typescript-eslint/no-confusing-void-expression": "off",
+              "@typescript-eslint/consistent-type-imports": "off"
+            }
+        }
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    }
+}
