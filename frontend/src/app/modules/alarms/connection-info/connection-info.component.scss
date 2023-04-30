@@ -7,17 +7,9 @@
     grid-row: span 2;
     border-left: 2px solid var(--surface4);
     padding-left: 10px;
-
-    :first-child {
-      font-size: 1.1rem;
-    }
   }
 }
 
 .label {
   color: var(--text2);
-}
-
-.value {
-  font-size: 1.1rem;
 }
