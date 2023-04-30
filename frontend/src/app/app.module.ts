@@ -10,13 +10,19 @@ import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { ApiModule, Configuration } from './api';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
+import {
+  NgxsRouterPluginModule,
+  RouterDataResolved,
+  RouterNavigated,
+  RouterNavigation,
+} from '@ngxs/router-plugin';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { JwtExpiredInterceptor } from './interceptors/jwt-expired.interceptor';
 import { ConnectionStatsState } from './state/connection-stats.state';
 import { ConnectionsState } from './state/connections.state';
 import { AlarmedDevicesState } from './state/alarmed-devices.state';
 import { AlarmsState } from './state/alarms.state';
+import { State } from './state/state';
 
 @NgModule({
   declarations: [AppComponent],
@@ -36,7 +42,17 @@ import { AlarmsState } from './state/alarms.state';
       },
     ),
     NgxsReduxDevtoolsPluginModule.forRoot(),
-    NgxsLoggerPluginModule.forRoot(),
+    NgxsLoggerPluginModule.forRoot({
+      collapsed: true,
+      filter: (action, _state: State) => {
+        return !(
+          action instanceof RouterNavigation ||
+          action instanceof RouterDataResolved ||
+          action instanceof RouterNavigated
+        );
+      },
+      disabled: environment.production,
+    }),
     NgxsRouterPluginModule.forRoot(),
     NgxsStoragePluginModule.forRoot({
       key: [UserState],
