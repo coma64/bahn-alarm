@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "generate-api": "openapi-generator-cli generate --input-spec 'http://localhost:8090/docs/openapi.yml' --generator-name typescript-angular --output src/app/api"
+    "generate-api": "openapi-generator-cli generate --input-spec 'http://localhost:8090/docs/openapi.yml' --generator-name typescript-angular --output src/app/api",
+    "lint": "ng lint"
   },
   "private": true,
   "dependencies": {
@@ -34,13 +35,18 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^15.2.6",
+    "@angular-eslint/builder": "15.2.1",
+    "@angular-eslint/eslint-plugin": "15.2.1",
+    "@angular-eslint/eslint-plugin-template": "15.2.1",
+    "@angular-eslint/schematics": "15.2.1",
+    "@angular-eslint/template-parser": "15.2.1",
     "@angular/cli": "~15.2.6",
     "@angular/compiler-cli": "^15.2.0",
     "@total-typescript/ts-reset": "^0.4.2",
     "@types/jasmine": "~4.3.0",
-    "@typescript-eslint/eslint-plugin": ">=5.57.0",
-    "@typescript-eslint/parser": ">=5.57.0",
-    "eslint": ">=8.0.0",
+    "@typescript-eslint/eslint-plugin": "5.48.2",
+    "@typescript-eslint/parser": "5.48.2",
+    "eslint": "^8.33.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-config-xo": "^0.43.1",
     "eslint-config-xo-typescript": "^0.57.0",
