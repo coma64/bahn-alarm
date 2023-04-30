@@ -15,11 +15,8 @@ export namespace AlarmsActions {
     constructor(readonly urgency?: Urgency) {}
   }
 
-  export class IncrementPage {
-    static readonly type = '[Alarms] Increment page';
-  }
-
-  export class DecrementPage {
-    static readonly type = '[Alarms] Decrement page';
+  export class SetPage {
+    static readonly type = '[Alarms] Set page';
+    constructor(readonly newPage: number) {}
   }
 }

@@ -11,6 +11,8 @@ import { TimeSincePipe } from './pipes/time-since.pipe';
 import { DropdownComponent } from './dropdown/dropdown.component';
 import { PortalModule } from '@angular/cdk/portal';
 import { NgObjectPipesModule } from 'ngx-pipes';
+import { PaginationComponent } from './components/pagination/pagination.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -22,8 +24,15 @@ import { NgObjectPipesModule } from 'ngx-pipes';
     FormatPipe,
     TimeSincePipe,
     DropdownComponent,
+    PaginationComponent,
   ],
-  imports: [CommonModule, IconsModule, PortalModule, NgObjectPipesModule],
+  imports: [
+    CommonModule,
+    IconsModule,
+    PortalModule,
+    NgObjectPipesModule,
+    ReactiveFormsModule,
+  ],
   exports: [
     BannerComponent,
     ToRelativeTimePipe,
@@ -33,6 +42,7 @@ import { NgObjectPipesModule } from 'ngx-pipes';
     FormatPipe,
     TimeSincePipe,
     DropdownComponent,
+    PaginationComponent,
   ],
 })
 export class SharedModule {}

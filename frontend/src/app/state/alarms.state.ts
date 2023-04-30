@@ -2,18 +2,20 @@ import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { AlarmsActions } from './alarms.actions';
 import { Alarm, AlarmsService, Urgency } from '../api';
-import { Observable, tap } from 'rxjs';
+import { EMPTY, Observable, tap } from 'rxjs';
 import { NotifyService } from '../modules/shared/services/notify.service';
 
 export class AlarmsStateModel {
   items?: Array<Alarm>;
   page = 0;
+  maxPage = 0;
   size = 50;
   filteredUrgency?: Urgency;
 }
 
 @State<AlarmsStateModel>({
   name: 'alarms',
+  defaults: new AlarmsStateModel(),
 })
 @Injectable()
 export class AlarmsState {
@@ -33,7 +35,11 @@ export class AlarmsState {
 
     return this.alarms.alarmsGet(page, size, filteredUrgency).pipe(
       tap({
-        next: (response) => patchState({ items: response.alarms }),
+        next: (response) =>
+          patchState({
+            items: response.alarms,
+            maxPage: Math.ceil(response.pagination.totalItems / size) - 1,
+          }),
         error: () =>
           this.notify.error(
             'An unknown error occurred while loading the alarms',
@@ -69,27 +75,17 @@ export class AlarmsState {
     return dispatch(AlarmsActions.Fetch);
   }
 
-  @Action(AlarmsActions.IncrementPage)
-  incrementPage({
-    getState,
-    patchState,
-    dispatch,
-  }: StateContext<AlarmsStateModel>): Observable<any> {
-    const { page } = getState();
-    patchState({ page: page + 1 });
+  @Action(AlarmsActions.SetPage)
+  setPage(
+    { getState, patchState, dispatch }: StateContext<AlarmsStateModel>,
+    { newPage }: AlarmsActions.SetPage,
+  ): Observable<any> {
+    const { page, maxPage } = getState();
+    if (newPage > maxPage) newPage = maxPage;
+    if (newPage < 0) newPage = 0;
+    if (newPage === page) return EMPTY;
 
-    return dispatch(AlarmsActions.Fetch);
-  }
-
-  @Action(AlarmsActions.DecrementPage)
-  decrementPage({
-    getState,
-    patchState,
-    dispatch,
-  }: StateContext<AlarmsStateModel>): Observable<any> {
-    const { page } = getState();
-    patchState({ page: page - 1 });
-
+    patchState({ page: newPage });
     return dispatch(AlarmsActions.Fetch);
   }
 }

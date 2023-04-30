@@ -13,6 +13,8 @@ import {
   X,
   RefreshCw,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
 } from 'angular-feather/icons';
 import { FeatherModule } from 'angular-feather';
 
@@ -30,6 +32,8 @@ const icons = {
   X,
   RefreshCw,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
 };
 
 @NgModule({

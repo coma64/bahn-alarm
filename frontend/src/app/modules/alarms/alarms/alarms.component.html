@@ -4,4 +4,11 @@
   <app-filters></app-filters>
 
   <app-alarms-list></app-alarms-list>
+
+  <app-pagination
+    *ngIf="alarms$ | async as alarms"
+    [page]="alarms.page"
+    [maxPage]="alarms.maxPage"
+    (pageChange)="changePage($event)"
+  ></app-pagination>
 </main>

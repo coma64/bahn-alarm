@@ -1,0 +1,23 @@
+<button
+  (click)="decrement()"
+  [disabled]="shownPage === 1"
+  aria-label="Previous page"
+>
+  <i-feather name="chevron-left"></i-feather>
+</button>
+
+<input
+  aria-label="Current page"
+  type="number"
+  min="1"
+  [max]="maxPage + 1"
+  [formControl]="control"
+/>
+
+<button
+  (click)="increment()"
+  [disabled]="shownPage === maxPage + 1"
+  aria-label="Next Page"
+>
+  <i-feather name="chevron-right"></i-feather>
+</button>

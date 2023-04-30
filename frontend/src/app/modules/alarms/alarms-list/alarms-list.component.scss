@@ -20,9 +20,10 @@ section {
 
 .urgency {
   border-radius: 0.5rem;
-  padding: 5px;
+  padding: 3px;
   text-align: center;
   font-weight: 600;
+  font-size: 0.9rem;
   border: 2px solid;
 
   &.warn {
@@ -44,7 +45,12 @@ section {
 .close {
   margin-left: auto;
   display: inline-flex;
-  padding: 5px;
+  padding: 3px;
+
+  i-feather {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 }
 
 h2 {

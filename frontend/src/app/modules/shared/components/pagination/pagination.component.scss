@@ -1,0 +1,11 @@
+:host {
+  display: flex;
+  gap: 1ch;
+  width: 100%;
+  margin-block: 0.5rem;
+  justify-content: center;
+}
+
+input:invalid {
+  background: var(--brand);
+}

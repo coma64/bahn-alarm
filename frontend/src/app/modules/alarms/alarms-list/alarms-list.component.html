@@ -24,7 +24,7 @@
           content.type === 'delay-change-alarm' && content.newDelayMinutes !== 0
         "
       >
-        New delay of +{{ content.newDelayMinutes }}m
+        New delay of {{ content.newDelayMinutes }}m
       </p>
 
       <p *ngIf="content.type === 'cancelled-alarm' && content.isCanceled">
