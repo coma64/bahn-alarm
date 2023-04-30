@@ -4,7 +4,9 @@ import { UserActions } from './user.actions';
 import { Navigate } from '@ngxs/router-plugin';
 import { User } from '../api';
 
-export type UserStateModel = User | undefined;
+export type UserStateModel = {
+  user?: User;
+};
 
 @State<UserStateModel>({
   name: 'user',
@@ -16,13 +18,13 @@ export class UserState {
     { setState, dispatch }: StateContext<UserStateModel>,
     { user }: UserActions.LoginSuccess,
   ): void {
-    setState(user);
+    setState({ user });
     dispatch(new Navigate(['/connections']));
   }
 
   @Action(UserActions.Logout)
   logout({ setState, dispatch }: StateContext<UserStateModel>): void {
-    setState(undefined);
+    setState({ user: undefined });
     dispatch(new Navigate(['/login']));
   }
 }

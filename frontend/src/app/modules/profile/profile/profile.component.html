@@ -1,7 +1,7 @@
 <main>
   <h1>Profile</h1>
 
-  <section *ngIf="user$ | async as user; else spinner" class="infos">
+  <section *ngIf="(user$ | async)?.user as user; else spinner" class="infos">
     <div class="label">Username</div>
     <div>{{ user.name }}</div>
 

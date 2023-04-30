@@ -19,6 +19,7 @@ export type Option<T> = {
 };
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[app-dropdown]',
   templateUrl: './dropdown.component.html',
   styleUrls: ['./dropdown.component.scss'],

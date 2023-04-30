@@ -6,7 +6,6 @@ import { EditConnectionComponent } from './edit-connection/edit-connection.compo
 const routes: Routes = [
   {
     path: '',
-    pathMatch: 'full',
     component: ConnectionsComponent,
   },
   {

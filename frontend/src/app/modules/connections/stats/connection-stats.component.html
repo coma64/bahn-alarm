@@ -1,4 +1,4 @@
-<section *ngIf="stats$ | async as stats; else spinner">
+<section *ngIf="(stats$ | async)?.stats as stats; else spinner">
   <div>
     <div>
       <div aria-labelledby="tracked-connection-title">

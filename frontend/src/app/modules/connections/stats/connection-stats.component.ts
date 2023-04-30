@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TrackingStatsModel } from '../../../state/connection-stats.state';
-import { State } from '../../../state/state';
+import {
+  ConnectionStatsState,
+  ConnectionStatsModel,
+} from '../../../state/connection-stats.state';
 import { Select } from '@ngxs/store';
 
 @Component({
@@ -10,6 +12,6 @@ import { Select } from '@ngxs/store';
   styleUrls: ['./connection-stats.component.scss'],
 })
 export class ConnectionStatsComponent {
-  @Select((s: State) => s.connectionStats)
-  readonly stats$!: Observable<TrackingStatsModel>;
+  @Select(ConnectionStatsState)
+  readonly stats$!: Observable<ConnectionStatsModel>;
 }

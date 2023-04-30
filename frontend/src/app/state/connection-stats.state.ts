@@ -3,18 +3,20 @@ import { State, Action, StateContext } from '@ngxs/store';
 import { ConnectionStats } from './connection-stats.actions';
 import { TrackingStats } from '../api';
 
-export type TrackingStatsModel = TrackingStats | undefined;
+export type ConnectionStatsModel = {
+  stats?: TrackingStats;
+};
 
-@State<TrackingStatsModel>({
+@State<ConnectionStatsModel>({
   name: 'connectionStats',
 })
 @Injectable()
 export class ConnectionStatsState {
   @Action(ConnectionStats.Fetched)
   add(
-    { setState }: StateContext<TrackingStatsModel>,
+    { setState }: StateContext<ConnectionStatsModel>,
     stats: ConnectionStats.Fetched,
   ) {
-    setState(stats.stats);
+    setState({ stats: stats.stats });
   }
 }

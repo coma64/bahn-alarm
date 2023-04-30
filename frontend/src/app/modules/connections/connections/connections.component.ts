@@ -4,6 +4,10 @@ import { Store } from '@ngxs/store';
 import { ConnectionStats } from '../../../state/connection-stats.actions';
 import { Connections } from '../../../state/connections.actions';
 import { State } from '../../../state/state';
+import {
+  ConnectionStatsModel,
+  ConnectionStatsState,
+} from '../../../state/connection-stats.state';
 
 @Component({
   selector: 'app-connections',
@@ -17,7 +21,10 @@ export class ConnectionsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (!this.store.selectSnapshot((s: State) => s.connectionStats))
+    if (
+      !this.store.selectSnapshot<ConnectionStatsModel>(ConnectionStatsState)
+        .stats
+    )
       this.tracking
         .trackingStatsGet()
         .subscribe((stats) =>

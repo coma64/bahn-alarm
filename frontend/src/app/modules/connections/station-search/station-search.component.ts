@@ -15,7 +15,6 @@ import {
 import { CdkPortal, TemplatePortal } from '@angular/cdk/portal';
 import { Overlay } from '@angular/cdk/overlay';
 import {
-  catchError,
   debounceTime,
   distinctUntilChanged,
   EMPTY,

@@ -4,8 +4,8 @@ import { Store } from '@ngxs/store';
 import { UserState, UserStateModel } from '../state/user.state';
 
 export const isLoggedInGuard: CanActivateFn = () => {
-  const user = inject(Store).selectSnapshot<UserStateModel>(UserState);
+  const { user } = inject(Store).selectSnapshot<UserStateModel>(UserState);
 
-  if (user) return true;
+  if (user !== undefined) return true;
   return inject(Router).parseUrl('/login');
 };

@@ -22,7 +22,6 @@ import { ConnectionStatsState } from './state/connection-stats.state';
 import { ConnectionsState } from './state/connections.state';
 import { AlarmedDevicesState } from './state/alarmed-devices.state';
 import { AlarmsState } from './state/alarms.state';
-import { State } from './state/state';
 
 @NgModule({
   declarations: [AppComponent],
@@ -44,7 +43,7 @@ import { State } from './state/state';
     NgxsReduxDevtoolsPluginModule.forRoot(),
     NgxsLoggerPluginModule.forRoot({
       collapsed: true,
-      filter: (action, _state: State) => {
+      filter: (action) => {
         return !(
           action instanceof RouterNavigation ||
           action instanceof RouterDataResolved ||
