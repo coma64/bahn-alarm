@@ -15,28 +15,28 @@ import { debounceTime, Subject, takeUntil } from 'rxjs';
   styleUrls: ['./pagination.component.scss'],
 })
 export class PaginationComponent implements OnInit, OnDestroy {
+  get page(): number {
+    return this.control.value - 1;
+  }
+
   @Input() set page(value: number) {
     this.control.setValue(value + 1);
     if (value === this.maxPage) this.control.disable();
     else this.control.enable();
   }
 
-  get page(): number {
-    return this.control.value - 1;
-  }
-
   get shownPage(): number {
     return this.control.value;
+  }
+
+  get maxPage(): number {
+    return this._maxPage;
   }
 
   @Input() set maxPage(value: number) {
     this._maxPage = value;
     if (this.page === value) this.control.disable();
     else this.control.enable();
-  }
-
-  get maxPage(): number {
-    return this._maxPage;
   }
 
   @Output() protected readonly pageChange = new EventEmitter<number>();
@@ -57,10 +57,10 @@ export class PaginationComponent implements OnInit, OnDestroy {
   }
 
   increment(): void {
-    this.page = this.page + 1;
+    this.page += 1;
   }
 
   decrement(): void {
-    this.page = this.page - 1;
+    this.page -= 1;
   }
 }

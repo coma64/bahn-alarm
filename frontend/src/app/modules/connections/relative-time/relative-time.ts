@@ -13,30 +13,18 @@ export type TimeUntilOptions = Partial<{
 }>;
 
 export class RelativeTime {
-  static readonly ZERO_DATE = dayjs.utc('0001-01-01T00:01:01Z');
-  static readonly TIME_UNTIL_DEFAULTS: TimeUntilOptions = {
+  static readonly zeroDate = dayjs.utc('0001-01-01T00:01:01Z');
+  static readonly timeUntilDefaults: TimeUntilOptions = {
     alwaysShowMinutes: false,
     humanReadable: true,
   };
-
-  private readonly utc: dayjs.Dayjs;
-  private readonly local: dayjs.Dayjs;
-  readonly str: string;
-  readonly timestamp: number;
-
-  constructor(dateTime: dayjs.Dayjs) {
-    this.utc = RelativeTime.copyTime(dateTime, dayjs.utc()).startOf('minute');
-    this.local = this.utc.local();
-    this.str = this.local.format('HH:mm');
-    this.timestamp = this.utc.unix();
-  }
 
   static fromIso(dateTime: string): RelativeTime {
     return new RelativeTime(dayjs.utc(dateTime));
   }
 
   static fromTimeInput(time: string): RelativeTime {
-    const [hours, minutes] = time.split(':').map((v) => parseInt(v));
+    const [hours, minutes] = time.split(':').map((v) => parseInt(v, 10));
     return new RelativeTime(
       dayjs().set('hours', hours).set('minutes', minutes).utc(),
     );
@@ -54,6 +42,19 @@ export class RelativeTime {
       .set('millisecond', from.millisecond());
   }
 
+  readonly str: string;
+  readonly timestamp: number;
+
+  private readonly utc: dayjs.Dayjs;
+  private readonly local: dayjs.Dayjs;
+
+  constructor(dateTime: dayjs.Dayjs) {
+    this.utc = RelativeTime.copyTime(dateTime, dayjs.utc()).startOf('minute');
+    this.local = this.utc.local();
+    this.str = this.local.format('HH:mm');
+    this.timestamp = this.utc.unix();
+  }
+
   toIso(): string {
     return this.utc.toISOString();
   }
@@ -61,7 +62,7 @@ export class RelativeTime {
   toIsoZeroBased(): string {
     const zeroBasedDateTime = RelativeTime.copyTime(
       this.utc,
-      RelativeTime.ZERO_DATE,
+      RelativeTime.zeroDate,
     );
     return zeroBasedDateTime.toISOString();
   }
@@ -70,7 +71,7 @@ export class RelativeTime {
     {
       alwaysShowMinutes,
       humanReadable,
-    }: TimeUntilOptions = RelativeTime.TIME_UNTIL_DEFAULTS,
+    }: TimeUntilOptions = RelativeTime.timeUntilDefaults,
   ): string {
     // TODO: add "in" prefix option and "now"
     let nextTime = this.utc;
@@ -85,16 +86,17 @@ export class RelativeTime {
 
     if (diffHours === 0 && diffMinutes === 0) {
       if (humanReadable) return 'now';
-      else return '0m';
+      return '0m';
     }
 
     if (diffHours > 0) {
       if (alwaysShowMinutes) {
         return `${prefix}${diffHours}h ${diffMinutes - diffHours * 60}m`;
       }
+
       return `${prefix}${diffHours}h`;
-    } else {
-      return `${prefix}${diffMinutes}m`;
     }
+
+    return `${prefix}${diffMinutes}m`;
   }
 }

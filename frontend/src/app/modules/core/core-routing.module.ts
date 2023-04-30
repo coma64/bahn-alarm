@@ -9,20 +9,18 @@ const routes: Routes = [
     children: [
       {
         path: 'connections',
-        loadChildren: () =>
-          import('../connections/connections.module').then(
-            (m) => m.ConnectionsModule,
-          ),
+        loadChildren: async () =>
+          (await import('../connections/connections.module')).ConnectionsModule,
       },
       {
         path: 'profile',
-        loadChildren: () =>
-          import('../profile/profile.module').then((m) => m.ProfileModule),
+        loadChildren: async () =>
+          (await import('../profile/profile.module')).ProfileModule,
       },
       {
         path: 'alarms',
-        loadChildren: () =>
-          import('../alarms/alarms.module').then((m) => m.AlarmsModule),
+        loadChildren: async () =>
+          (await import('../alarms/alarms.module')).AlarmsModule,
       },
     ],
   },

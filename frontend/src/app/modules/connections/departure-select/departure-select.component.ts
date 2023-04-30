@@ -14,6 +14,7 @@ import {
   combineLatest,
   EMPTY,
   map,
+  Observable,
   shareReplay,
   startWith,
   switchMap,
@@ -25,56 +26,63 @@ import {
   styleUrls: ['./departure-select.component.scss'],
 })
 export class DepartureSelectComponent implements OnDestroy {
-  @Input() set from(station: BahnPlace | undefined) {
-    this.from$.next(station);
-  }
-
   get from(): BahnPlace | undefined {
     return this.from$.value;
   }
 
-  @Input() set to(station: BahnPlace | undefined) {
-    this.to$.next(station);
+  @Input() set from(station: BahnPlace | undefined) {
+    this.from$.next(station);
   }
 
   get to(): BahnPlace | undefined {
     return this.to$.value;
   }
 
+  @Input() set to(station: BahnPlace | undefined) {
+    this.to$.next(station);
+  }
+
+  @Input() selectedDepartures: readonly RelativeTime[] = [];
+
+  readonly targetDeparture = new FormControl(RelativeTime.now(), {
+    nonNullable: true,
+  });
+
+  protected readonly foundDepartures$: Observable<RelativeTime[] | undefined>;
+
+  @Output() private readonly selectedDeparturesChange = new EventEmitter<
+    readonly RelativeTime[]
+  >();
+
   private readonly from$ = new BehaviorSubject<BahnPlace | undefined>(
     undefined,
   );
+
   private readonly to$ = new BehaviorSubject<BahnPlace | undefined>(undefined);
 
-  targetDeparture = new FormControl(RelativeTime.now(), { nonNullable: true });
-  @Input() selectedDepartures: ReadonlyArray<RelativeTime> = [];
-  @Output() selectedDeparturesChange = new EventEmitter<
-    ReadonlyArray<RelativeTime>
-  >();
-
-  foundDepartures$ = combineLatest([
-    this.from$,
-    this.to$,
-    this.targetDeparture.valueChanges.pipe(
-      startWith(this.targetDeparture.value),
-    ),
-  ]).pipe(
-    switchMap(([from, to, departure]) => {
-      if (!from || !to) return EMPTY;
-
-      return this.bahn
-        .bahnConnectionsGet(departure.toIso(), from.stationId, to.stationId)
-        .pipe(startWith(undefined));
-    }),
-    map((response) =>
-      response?.connections.map((c) =>
-        RelativeTime.fromIso(c.departure.scheduledTime),
+  constructor(private readonly bahn: BahnService) {
+    this.foundDepartures$ = combineLatest([
+      this.from$,
+      this.to$,
+      this.targetDeparture.valueChanges.pipe(
+        startWith(this.targetDeparture.value),
       ),
-    ),
-    shareReplay(1),
-  );
+    ]).pipe(
+      switchMap(([from, to, departure]) => {
+        if (!from || !to) return EMPTY;
 
-  constructor(private readonly bahn: BahnService) {}
+        return this.bahn
+          .bahnConnectionsGet(departure.toIso(), from.stationId, to.stationId)
+          .pipe(startWith(undefined));
+      }),
+      map((response) =>
+        response?.connections.map((c) =>
+          RelativeTime.fromIso(c.departure.scheduledTime),
+        ),
+      ),
+      shareReplay(1),
+    );
+  }
 
   ngOnDestroy(): void {
     this.selectedDeparturesChange.complete();

@@ -6,5 +6,5 @@ import { Component, HostBinding, Input } from '@angular/core';
   styleUrls: ['./banner.component.scss'],
 })
 export class BannerComponent {
-  @Input() @HostBinding('class') type: 'error' = 'error';
+  @Input() @HostBinding('class') type = 'error' as const;
 }

@@ -3,7 +3,7 @@ import { State, Action, StateContext } from '@ngxs/store';
 import { Connections } from './connections.actions';
 import { TrackedConnection } from '../api';
 
-export interface ConnectionsStateModel {
+export type ConnectionsStateModel = {
   items: TrackedConnection[];
   page: number;
 }

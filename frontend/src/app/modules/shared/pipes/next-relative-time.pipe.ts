@@ -11,7 +11,7 @@ import {
 export class NextRelativeTimePipe implements PipeTransform {
   transform(
     time: RelativeTime,
-    options: TimeUntilOptions = RelativeTime.TIME_UNTIL_DEFAULTS,
+    options: TimeUntilOptions = RelativeTime.timeUntilDefaults,
   ): Observable<string> {
     return interval(1000).pipe(
       startWith(time.timeUntil(options)),

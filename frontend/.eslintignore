@@ -1,1 +1,2 @@
 src/app/api
+src/app/modules/login/icons/icons.module.ts

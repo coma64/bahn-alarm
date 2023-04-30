@@ -16,6 +16,7 @@ export class FiltersComponent {
     { label: 'Warning', value: Urgency.Warn },
     { label: 'Error', value: Urgency.Error },
   ];
+
   selectedUrgency: Option<Urgency | undefined> = this.urgencyOptions[0];
 
   constructor(private readonly store: Store) {}

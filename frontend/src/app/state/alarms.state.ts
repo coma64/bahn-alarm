@@ -6,7 +6,7 @@ import { EMPTY, Observable, tap } from 'rxjs';
 import { NotifyService } from '../modules/shared/services/notify.service';
 
 export class AlarmsStateModel {
-  items?: Array<Alarm>;
+  items?: Alarm[];
   page = 0;
   maxPage = 0;
   size = 50;

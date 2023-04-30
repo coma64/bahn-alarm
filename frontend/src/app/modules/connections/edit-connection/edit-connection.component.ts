@@ -3,11 +3,11 @@ import { RelativeTime } from '../relative-time/relative-time';
 import { FormBuilder, Validators } from '@angular/forms';
 import { BahnPlace, TrackingService } from '../../../api';
 import { Store } from '@ngxs/store';
-import { Connections } from '../../../state/connections.actions';
 import { Navigate } from '@ngxs/router-plugin';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subject, takeUntil } from 'rxjs';
 import { NotifyService } from '../../shared/services/notify.service';
+import { Connections } from '../../../state/connections.actions';
 
 @Component({
   selector: 'app-edit-connection',
@@ -15,20 +15,20 @@ import { NotifyService } from '../../shared/services/notify.service';
   styleUrls: ['./edit-connection.component.scss'],
 })
 export class EditConnectionComponent implements OnInit, OnDestroy {
-  readonly stationForm = this.fb.group({
-    from: [null as BahnPlace | null, Validators.required],
-    to: [null as BahnPlace | null, Validators.required],
+  readonly stationForm = this.fb.nonNullable.group({
+    from: [undefined as BahnPlace | undefined, Validators.required],
+    to: [undefined as BahnPlace | undefined, Validators.required],
   });
 
-  selectedDepartures: ReadonlyArray<RelativeTime> = [];
+  selectedDepartures: readonly RelativeTime[] = [];
   hasTriedSubmitting = false;
 
   get from(): BahnPlace | undefined {
-    return this.stationForm.value.from ?? undefined;
+    return this.stationForm.value.from;
   }
 
   get to(): BahnPlace | undefined {
-    return this.stationForm.value.to ?? undefined;
+    return this.stationForm.value.to;
   }
 
   private readonly destroy$ = new Subject<void>();

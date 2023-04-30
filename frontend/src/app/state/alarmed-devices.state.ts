@@ -3,10 +3,10 @@ import { State, Action, StateContext } from '@ngxs/store';
 import { AlarmedDeviceActions } from './alarmed-devices.actions';
 import { PushNotificationSubscription } from '../api';
 
-export interface AlarmedDevicesStateModel {
-  items: Array<PushNotificationSubscription>;
+export type AlarmedDevicesStateModel = {
+  items: PushNotificationSubscription[];
   page: number;
-}
+};
 
 const defaults = {
   items: [],

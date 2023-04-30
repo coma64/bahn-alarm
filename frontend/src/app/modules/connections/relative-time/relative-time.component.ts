@@ -29,6 +29,7 @@ export class RelativeTimeComponent
   readonly inputControl = new FormControl(this.time.str, {
     nonNullable: true,
   });
+
   private onTouched?: () => void;
   private onChange?: (time: RelativeTime) => void;
   private readonly destroy$ = new Subject<void>();

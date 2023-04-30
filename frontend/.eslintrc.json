@@ -18,11 +18,22 @@
                 "*.tsx"
             ],
             "rules": {
+              // This isn't a library, no need prevent JS from accessing a private prop
               "@typescript-eslint/class-literal-property-style": "off",
+              // Not possible with ngxs decorators
               "new-cap": "off",
+              // Needed for ngxs action classes
               "@typescript-eslint/no-extraneous-class": "off",
+              // Just looks too good
               "@typescript-eslint/no-confusing-void-expression": "off",
-              "@typescript-eslint/consistent-type-imports": "off"
+              // Angular needs those imports for DI
+              "@typescript-eslint/consistent-type-imports": "off",
+              // Just looks too good
+              "no-return-assign": "off",
+              // Still better than no alert
+              "no-alert": "warn",
+              // You can't tell pycharm to auto import the whole module using `* as ...`
+              "@typescript-eslint/no-namespace": "off"
             }
         }
     ],

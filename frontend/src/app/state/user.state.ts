@@ -4,11 +4,10 @@ import { UserActions } from './user.actions';
 import { Navigate } from '@ngxs/router-plugin';
 import { User } from '../api';
 
-export type UserStateModel = User | null;
+export type UserStateModel = User | undefined;
 
 @State<UserStateModel>({
   name: 'user',
-  defaults: null,
 })
 @Injectable()
 export class UserState {
@@ -23,7 +22,7 @@ export class UserState {
 
   @Action(UserActions.Logout)
   logout({ setState, dispatch }: StateContext<UserStateModel>): void {
-    setState(null);
+    setState(undefined);
     dispatch(new Navigate(['/login']));
   }
 }

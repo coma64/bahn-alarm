@@ -4,7 +4,7 @@ import { ConnectionsStateModel } from './connections.state';
 import { AlarmedDevicesStateModel } from './alarmed-devices.state';
 import { AlarmsStateModel } from './alarms.state';
 
-export interface State {
+export type State = {
   user: UserStateModel;
   connectionStats: TrackingStatsModel;
   connections: ConnectionsStateModel;

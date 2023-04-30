@@ -13,7 +13,7 @@ import { trackById } from '../../shared/track-by-id';
 })
 export class ConnectionListComponent {
   @Select((state: State) => state.connections.items)
-  protected readonly connections$!: Observable<Array<TrackedConnection>>;
+  protected readonly connections$!: Observable<TrackedConnection[]>;
 
   protected readonly trackById = trackById;
 

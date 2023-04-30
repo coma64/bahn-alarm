@@ -22,10 +22,13 @@ export class JwtExpiredInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<unknown>> {
     return next
       .handle(request)
-      .pipe(catchError((err) => this.handleHttpError(err)));
+      .pipe(catchError((err: HttpErrorResponse) => this.handleHttpError(err)));
   }
 
-  private handleHttpError(err: HttpErrorResponse): Observable<any> {
+  private handleHttpError(
+    err: HttpErrorResponse,
+  ): Observable<HttpEvent<unknown>> {
+    // eslint-disable-next-line @typescript-eslint/no-throw-literal
     if (err.status !== 401) throw err;
 
     this.store.dispatch(new UserActions.Logout());

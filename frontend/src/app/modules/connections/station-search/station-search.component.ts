@@ -25,6 +25,7 @@ import {
   switchMap,
   take,
   takeUntil,
+  tap,
 } from 'rxjs';
 import { BahnPlace, BahnService, BahnStation } from '../../../api';
 import { NotifyService } from '../../shared/services/notify.service';
@@ -44,10 +45,11 @@ import { NotifyService } from '../../shared/services/notify.service';
 export class StationSearchComponent implements ControlValueAccessor, OnDestroy {
   @Input() inputId?: string;
 
-  readonly inputControl = new FormControl('', { nonNullable: true });
   @ViewChild(CdkPortal) readonly suggestionsPortal?: TemplatePortal;
   @ViewChild('suggestionsElement')
   readonly suggestionsElement?: ElementRef<HTMLDivElement>;
+
+  readonly inputControl = new FormControl('', { nonNullable: true });
 
   readonly suggestions$ = this.inputControl.valueChanges.pipe(
     distinctUntilChanged(),
@@ -58,15 +60,16 @@ export class StationSearchComponent implements ControlValueAccessor, OnDestroy {
       // Start with undefined to show the loading spinner again
       return this.bahn.bahnPlacesGet(stationName).pipe(startWith(undefined));
     }),
-    catchError((e) => {
-      this.notify.error('An error occurred while loading the stations');
-      throw e;
+    tap({
+      error: () =>
+        this.notify.error('An error occurred while loading the stations'),
     }),
     shareReplay(1),
   );
 
   @ViewChild('inputElement')
   private readonly inputElement?: ElementRef<HTMLInputElement>;
+
   private readonly destroy$ = new Subject<void>();
   private onTouched?: () => void;
   private onChange?: (station: BahnStation) => void;
