@@ -26,10 +26,10 @@ model/loginRequest.ts
 model/models.ts
 model/pagination.ts
 model/pushNotificationSubscription.ts
+model/pushNotificationSubscriptionCreate.ts
 model/pushNotificationSubscriptionList.ts
 model/pushNotificationSubscriptionPartialUpdate.ts
 model/rawSubscription.ts
-model/rawSubscriptionKeys.ts
 model/registerRequest.ts
 model/simpleConnection.ts
 model/trackedConnection.ts
@@ -43,5 +43,6 @@ model/trackingStatsNextDeparture.ts
 model/urgency.ts
 model/user.ts
 model/validationFailed.ts
+model/vapidKeys.ts
 param.ts
 variables.ts

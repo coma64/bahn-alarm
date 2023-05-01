@@ -17,12 +17,20 @@
     <app-alarmed-devices-list></app-alarmed-devices-list>
   </section>
 
-  <section>
+  <section class="actions">
     <h2>Actions</h2>
 
-    <button (click)="onLogout()" class="logout action red">
+    <button (click)="onLogout()" class="action red">
       <i-feather name="log-out"></i-feather>
       Logout
+    </button>
+
+    <button
+      *ngIf="!pushNotificationSubscription.isRegistered"
+      (click)="onRegisterPushNotifications()"
+    >
+      <i-feather name="bell"></i-feather>
+      Register push notifications on this device
     </button>
   </section>
 </main>

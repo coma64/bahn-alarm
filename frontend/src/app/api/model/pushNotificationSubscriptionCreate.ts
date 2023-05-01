@@ -9,10 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { RawSubscription } from './rawSubscription';
 
 
-export interface RawSubscription { 
-    endpoint?: string;
-    keys?: { [key: string]: string; };
+export interface PushNotificationSubscriptionCreate { 
+    name: string;
+    subscription: RawSubscription;
 }
 

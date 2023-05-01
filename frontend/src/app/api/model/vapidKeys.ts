@@ -11,8 +11,7 @@
  */
 
 
-export interface RawSubscription { 
-    endpoint?: string;
-    keys?: { [key: string]: string; };
+export interface VapidKeys { 
+    publicKey: string;
 }
 

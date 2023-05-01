@@ -12,4 +12,8 @@ export class NotifyService {
   confirm(message: string): Observable<boolean> {
     return of(confirm(message));
   }
+
+  prompt(message: string): Observable<string | undefined> {
+    return of(prompt(message) ?? undefined);
+  }
 }

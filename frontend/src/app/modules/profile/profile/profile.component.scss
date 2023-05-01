@@ -28,9 +28,9 @@ h2 {
   margin-top: 1rem;
 }
 
-.logout {
-  min-width: 15rem;
+.actions button {
   margin-top: 0.5rem;
+  min-width: 15rem;
 
   @include b.is-small {
     width: 100%;

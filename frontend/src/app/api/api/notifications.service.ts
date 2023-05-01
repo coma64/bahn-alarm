@@ -21,9 +21,13 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { PushNotificationSubscription } from '../model/pushNotificationSubscription';
 // @ts-ignore
+import { PushNotificationSubscriptionCreate } from '../model/pushNotificationSubscriptionCreate';
+// @ts-ignore
 import { PushNotificationSubscriptionList } from '../model/pushNotificationSubscriptionList';
 // @ts-ignore
 import { ValidationFailed } from '../model/validationFailed';
+// @ts-ignore
+import { VapidKeys } from '../model/vapidKeys';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -285,14 +289,14 @@ export class NotificationsService {
     }
 
     /**
-     * @param pushNotificationSubscription 
+     * @param pushNotificationSubscriptionCreate 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public notificationsPushSubscriptionsPost(pushNotificationSubscription?: PushNotificationSubscription, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<PushNotificationSubscription>;
-    public notificationsPushSubscriptionsPost(pushNotificationSubscription?: PushNotificationSubscription, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<PushNotificationSubscription>>;
-    public notificationsPushSubscriptionsPost(pushNotificationSubscription?: PushNotificationSubscription, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<PushNotificationSubscription>>;
-    public notificationsPushSubscriptionsPost(pushNotificationSubscription?: PushNotificationSubscription, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public notificationsPushSubscriptionsPost(pushNotificationSubscriptionCreate?: PushNotificationSubscriptionCreate, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<PushNotificationSubscription>;
+    public notificationsPushSubscriptionsPost(pushNotificationSubscriptionCreate?: PushNotificationSubscriptionCreate, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<PushNotificationSubscription>>;
+    public notificationsPushSubscriptionsPost(pushNotificationSubscriptionCreate?: PushNotificationSubscriptionCreate, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<PushNotificationSubscription>>;
+    public notificationsPushSubscriptionsPost(pushNotificationSubscriptionCreate?: PushNotificationSubscriptionCreate, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -338,7 +342,60 @@ export class NotificationsService {
         return this.httpClient.request<PushNotificationSubscription>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: pushNotificationSubscription,
+                body: pushNotificationSubscriptionCreate,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public notificationsVapidKeysGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<VapidKeys>;
+    public notificationsVapidKeysGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<VapidKeys>>;
+    public notificationsVapidKeysGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<VapidKeys>>;
+    public notificationsVapidKeysGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/notifications/vapid-keys`;
+        return this.httpClient.request<VapidKeys>('get', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
