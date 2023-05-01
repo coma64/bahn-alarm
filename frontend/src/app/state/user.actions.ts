@@ -10,7 +10,8 @@ export namespace UserActions {
     static readonly type = '[User] logging out';
   }
 
-  export class DeniedPushNotification {
-    static readonly type = '[User] Denied push notification';
+  export class RegisteredPushNotifications {
+    static readonly type = '[User] Registered push notifications';
+    constructor(readonly pushSubId: number) {}
   }
 }

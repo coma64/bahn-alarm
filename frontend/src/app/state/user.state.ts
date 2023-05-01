@@ -1,38 +1,60 @@
 import { Injectable } from '@angular/core';
-import { State, Action, StateContext } from '@ngxs/store';
+import { Action, State, StateContext } from '@ngxs/store';
 import { UserActions } from './user.actions';
 import { Navigate } from '@ngxs/router-plugin';
 import { User } from '../api';
-import { patch } from '@ngxs/store/operators';
+import { EMPTY, Observable } from 'rxjs';
+import { NotifyService } from '../modules/shared/services/notify.service';
+import { PushNotificationSubscriptionService } from '../modules/core/push-notification-subscription.service';
 
 export type UserStateModel = {
   user?: User;
-  hasDeniedPushNotifications: boolean;
+  pushSubId?: number;
 };
 
 @State<UserStateModel>({
   name: 'user',
-  defaults: { hasDeniedPushNotifications: false },
 })
 @Injectable()
 export class UserState {
+  constructor(
+    private readonly notify: NotifyService,
+    private readonly pushNotificationSubscription: PushNotificationSubscriptionService,
+  ) {}
+
   @Action(UserActions.LoginSuccess)
   login(
     { patchState, dispatch }: StateContext<UserStateModel>,
     { user }: UserActions.LoginSuccess,
-  ): void {
+  ): Observable<unknown> {
     patchState({ user });
     dispatch(new Navigate(['/connections']));
+
+    return this.pushNotificationSubscription.askUserAndRegister();
   }
 
   @Action(UserActions.Logout)
-  logout({ patchState, dispatch }: StateContext<UserStateModel>): void {
-    patchState({ user: undefined });
+  logout({
+    setState,
+    getState,
+    dispatch,
+  }: StateContext<UserStateModel>): Observable<unknown> {
+    const { pushSubId } = getState();
+    setState({});
     dispatch(new Navigate(['/login']));
+
+    if (!pushSubId) return EMPTY;
+
+    return this.pushNotificationSubscription.unregister(pushSubId);
   }
 
-  @Action(UserActions.DeniedPushNotification)
-  deniedPushNotification({ patchState }: StateContext<UserStateModel>): void {
-    patchState({ hasDeniedPushNotifications: true });
+  @Action(UserActions.RegisteredPushNotifications)
+  registeredPushNotifications(
+    { patchState }: StateContext<UserStateModel>,
+    payload: UserActions.RegisteredPushNotifications,
+  ): void {
+    patchState({
+      pushSubId: payload.pushSubId,
+    });
   }
 }

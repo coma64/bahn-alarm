@@ -52,7 +52,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   onRegisterPushNotifications(): void {
     this.pushNotificationSubscription
-      .register(true)
+      .register()
       .pipe(takeUntil(this.destroy$))
       .subscribe();
   }

@@ -33,6 +33,8 @@
         "no-alert": "warn",
         // You can't tell pycharm to auto import the whole module using `* as ...`
         "@typescript-eslint/no-namespace": "off",
+        // somehow broken for rxjs - many false positives
+        "@typescript-eslint/no-unsafe-argument": "off",
         "@angular-eslint/directive-selector": [
           "error",
           {
