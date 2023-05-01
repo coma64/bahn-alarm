@@ -43,6 +43,11 @@
             ],
             "scripts": [],
             "serviceWorker": true,
+            "sourceMap": {
+              "scripts": true,
+              "styles": true,
+              "vendor": true
+            },
             "ngswConfigPath": "ngsw-config.json"
           },
           "configurations": {
@@ -66,7 +71,6 @@
               "optimization": false,
               "vendorChunk": true,
               "extractLicenses": false,
-              "sourceMap": true,
               "namedChunks": true,
               "fileReplacements": [
                 {
