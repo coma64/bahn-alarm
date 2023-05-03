@@ -134,7 +134,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TrackedConnection'
+              $ref: '#/components/schemas/TrackedConnectionWrite'
       responses:
         201:
           description: Created
@@ -599,6 +599,15 @@ components:
         - isEnabled
         - createdAt
         - subscription
+    TrackedDepartureWrite:
+      type: object
+      properties:
+        departure:
+          type: string
+          format: date-time
+          example: 0001-01-01T13:48:00Z
+      required:
+        - departure
     TrackedDeparture:
       type: object
       properties:
@@ -606,8 +615,10 @@ components:
           type: string
           format: date-time
           example: 0001-01-01T13:48:00Z
+        delay:
+          type: integer
+          example: 69
         status:
-          readOnly: true
           type: string
           enum:
             - on-time
@@ -617,6 +628,7 @@ components:
           example: on-time
       required:
         - departure
+        - delay
         - status
     TrackedConnectionUpdate:
       type: object
@@ -624,7 +636,7 @@ components:
         departures:
           type: array
           items:
-            $ref: '#/components/schemas/TrackedDeparture'
+            $ref: '#/components/schemas/TrackedDepartureWrite'
       required:
         - departures
     TrackedConnectionList:
@@ -651,6 +663,21 @@ components:
       required:
         - id
         - name
+    TrackedConnectionWrite:
+      type: object
+      properties:
+        from:
+          $ref: '#/components/schemas/BahnStation'
+        to:
+          $ref: '#/components/schemas/BahnStation'
+        departures:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackedDepartureWrite'
+      required:
+        - from
+        - to
+        - departures
     TrackedConnection:
       type: object
       properties:

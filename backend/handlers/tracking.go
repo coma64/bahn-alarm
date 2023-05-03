@@ -100,6 +100,7 @@ offset $2 fetch first $3 rows only
 select
 	connectionId,
 	departure,
+    floor((extract(epoch from i.actualTime) - extract(epoch from i.scheduledTime)) / 60) as delay,
 	case
 	    when i.departureId is null then 'not-checked'
 	    when i.actualTime = i.scheduledTime then 'on-time'
@@ -120,6 +121,7 @@ where connectionId in (?)
 
 	var departures []struct {
 		server.TrackedDeparture
+		Delay        *int
 		ConnectionId int
 	}
 	if err = db.Db.SelectContext(
@@ -135,6 +137,9 @@ where connectionId in (?)
 	for _, departure := range departures {
 		for connIndex := range connSchemas {
 			if departure.ConnectionId == conns[connIndex].Id {
+				if departure.Delay != nil {
+					departure.TrackedDeparture.Delay = *departure.Delay
+				}
 				connSchemas[connIndex].Departures = append(connSchemas[connIndex].Departures, departure.TrackedDeparture)
 			}
 		}
@@ -174,6 +179,12 @@ func (b *BahnAlarmApi) PostTrackingConnections(ctx echo.Context) error {
 		return fmt.Errorf("error inserting bahn stations: %w", err)
 	}
 
+	response := &server.TrackedConnection{
+		From:       body.From,
+		To:         body.To,
+		Departures: []server.TrackedDeparture{},
+	}
+
 	if err = tx.QueryRowxContext(
 		ctx.Request().Context(),
 		`
@@ -188,7 +199,7 @@ values (
 		ctx.Get("username"),
 		body.From.Id,
 		body.To.Id,
-	).Scan(&body.Id); err != nil {
+	).Scan(&response.Id); err != nil {
 		_ = tx.Rollback()
 		if pqErr, ok := err.(*pq.Error); ok && pqErr.Constraint == "connections_trackedbyid_fromid_toid_key" {
 			return ctx.NoContent(http.StatusConflict)
@@ -202,12 +213,12 @@ values (
 			return fmt.Errorf("error committing transaction: %w", err)
 		}
 
-		return ctx.JSON(http.StatusCreated, body)
+		return ctx.JSON(http.StatusCreated, response)
 	}
 
 	query := db.Sq.Insert("departures").Columns("connectionId", "departure")
 	for _, departure := range body.Departures {
-		query = query.Values(*body.Id, departure.Departure)
+		query = query.Values(response.Id, departure.Departure)
 	}
 
 	if _, err = query.RunWith(tx).ExecContext(ctx.Request().Context()); err != nil {
@@ -219,12 +230,15 @@ values (
 		return fmt.Errorf("error committing transaction: %w", err)
 	}
 
-	notChecked := server.NotChecked
-	for i := range body.Departures {
-		body.Departures[i].Status = &notChecked
+	for _, departure := range body.Departures {
+		responseDeparture := server.TrackedDeparture{
+			Departure: departure.Departure,
+			Status:    server.NotChecked,
+		}
+		response.Departures = append(response.Departures, responseDeparture)
 	}
 
-	return ctx.JSON(http.StatusCreated, body)
+	return ctx.JSON(http.StatusCreated, response)
 }
 
 func (b *BahnAlarmApi) DeleteTrackingConnectionsId(ctx echo.Context, id int) error {
@@ -249,7 +263,7 @@ func (b *BahnAlarmApi) DeleteTrackingConnectionsId(ctx echo.Context, id int) err
 	return ctx.NoContent(http.StatusNoContent)
 }
 
-func extractDepartureTimes(departures []server.TrackedDeparture) []time.Time {
+func extractDepartureTimes(departures []server.TrackedDepartureWrite) []time.Time {
 	times := make([]time.Time, 0, len(departures))
 	for _, d := range departures {
 		times = append(times, d.Departure)
