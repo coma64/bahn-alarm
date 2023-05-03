@@ -1,0 +1,701 @@
+openapi: 3.0.3
+info:
+  title: Bahn Alarm
+  description: |-
+    An app for live tracking of train delays from the DB
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.0.1
+servers:
+  - url: http://localhost:8090
+  - url: https://ba.coma64.me
+tags:
+  - name: auth
+    description: Authentication
+  - name: tracking
+    description: Tracked connections
+  - name: notifications
+    description: Push notification subscriptions
+  - name: bahn
+    description: Stations and connections
+  - name: alarms
+    description: Alarms about delay changes
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - auth
+      description: Sets a JWT cookie on successful login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        204:
+          description: Successful login
+        400:
+          description: Validation failed, or invalid username or password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailed'
+  /auth/logout:
+    post:
+      tags:
+        - auth
+      responses:
+        204:
+          description: Logged out
+        401:
+          description: Not logged in
+  /auth/register:
+    post:
+      tags:
+        - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        201:
+          description: Successfully registered
+        400:
+          description: Validation failed or invalid invite token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailed'
+  /auth/me:
+    get:
+      tags:
+        - auth
+      responses:
+        200:
+          description: The current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          description: Not logged in
+
+  /tracking/stats:
+    get:
+      tags:
+        - tracking
+      responses:
+        200:
+          description: Tracking stats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackingStats'
+        401:
+          description: Not logged in
+  /tracking/connections:
+    get:
+      tags:
+        - tracking
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 50
+      responses:
+        200:
+          description: All tracked connections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TrackedConnectionList'
+        401:
+          description: Not logged in
+    post:
+      tags:
+        - tracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackedConnection'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackedConnection'
+        400:
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailed'
+        401:
+          description: Not logged in
+        409:
+          description: Connection is already being tracked
+  /tracking/connections/{id}:
+    put:
+      tags:
+        - tracking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackedConnectionUpdate'
+      responses:
+        204:
+          description: Updated
+        401:
+          description: Not logged in
+        404:
+          description: Not found
+    delete:
+      tags:
+        - tracking
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Deleted
+        401:
+          description: Not logged in
+        404:
+          description: Not found
+
+  /notifications/push-subscriptions:
+    get:
+      tags:
+        - notifications
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 50
+      responses:
+        200:
+          description: All registered subscriptions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushNotificationSubscriptionList'
+        401:
+          description: Not logged in
+    post:
+      tags:
+        - notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PushNotificationSubscription'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushNotificationSubscription'
+        400:
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailed'
+        401:
+          description: Not logged in
+  /notifications/push-subscriptions/{id}:
+    patch:
+      tags:
+        - notifications
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PushNotificationSubscriptionPartialUpdate'
+      responses:
+        204:
+          description: Updated
+        401:
+          description: Not logged in
+        404:
+          description: Not found
+    delete:
+      tags:
+        - notifications
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Deleted
+        401:
+          description: Not logged in
+        404:
+          description: Not found
+
+  /bahn/places:
+    get:
+      tags:
+        - bahn
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: All places matching name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BahnPlacesList'
+        401:
+          description: Not logged in
+  /bahn/connections:
+    get:
+      tags:
+        - bahn
+      parameters:
+        - name: departure
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: fromId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: toId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: All connections between from and to after the given departure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BahnConnectionsList'
+        401:
+          description: Not logged in
+
+  /alarms:
+    get:
+      tags:
+        - alarms
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: urgency
+          in: query
+          schema:
+            $ref: '#/components/schemas/Urgency'
+      responses:
+        200:
+          description: All alarms
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlarmsList'
+        401:
+          description: Not logged in
+  /alarms/{id}:
+    delete:
+      tags:
+        - alarms
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Deleted
+        401:
+          description: Not logged in
+        404:
+          description: Not found
+
+components:
+  schemas:
+    TrackingStats:
+      type: object
+      properties:
+        totalConnectionCount:
+          type: integer
+        delayedConnectionCount:
+          type: integer
+        canceledConnectionCount:
+          type: integer
+        nextDeparture:
+          type: object
+          properties:
+            departure:
+              type: string
+              format: date-time
+            connectionId:
+              type: integer
+          required:
+            - departure
+            - connectionId
+      required:
+        - totalConnectionCount
+        - delayedConnectionCount
+        - canceledConnectionCount
+        - nextDeparture
+    Pagination:
+      type: object
+      properties:
+        totalItems:
+          type: integer
+          description: The total amount of found items, not just on this page
+      required:
+        - totalItems
+
+    AlarmsList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        alarms:
+          type: array
+          items:
+            $ref: '#/components/schemas/Alarm'
+      required:
+        - alarms
+        - pagination
+    Urgency:
+      type: string
+      enum:
+        - info
+        - warn
+        - error
+    DelayChangeAlarm:
+      properties:
+        newDelayMinutes:
+          type: number
+      required:
+        - newDelayMinutes
+    CancelledAlarm:
+      properties:
+        isCanceled:
+          type: boolean
+      required:
+        - isCanceled
+    Alarm:
+      properties:
+        id:
+          type: integer
+        urgency:
+          $ref: '#/components/schemas/Urgency'
+        createdAt:
+          type: string
+          format: date-time
+        connection:
+          type: object
+          properties:
+            fromName:
+              type: string
+            toName:
+              type: string
+            departure:
+              type: string
+              format: date-time
+          required:
+            - fromName
+            - toName
+            - departure
+        content:
+          oneOf:
+            - $ref: '#/components/schemas/DelayChangeAlarm'
+            - $ref: '#/components/schemas/CancelledAlarm'
+      required:
+        - id
+        - urgency
+        - createdAt
+        - connection
+        - content
+
+    BahnConnectionsList:
+      type: object
+      properties:
+        connections:
+          type: array
+          items:
+            $ref: '#/components/schemas/BahnConnection'
+      required:
+        - connections
+    BahnConnection:
+      type: object
+      properties:
+        departure:
+          type: object
+          properties:
+            scheduledTime:
+              type: string
+              format: date-time
+          required:
+            - scheduledTime
+      required:
+        - departure
+
+    BahnPlacesList:
+      type: object
+      properties:
+        places:
+          type: array
+          items:
+            $ref: '#/components/schemas/BahnPlace'
+      required:
+        - places
+    BahnPlace:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        label:
+          type: string
+        stationId:
+          type: string
+      required:
+        - id
+        - name
+        - label
+        - stationId
+
+    PushNotificationSubscriptionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        subscriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PushNotificationSubscription'
+      required:
+        - pagination
+        - subscriptions
+    PushNotificationSubscriptionPartialUpdate:
+      type: object
+      properties:
+        isEnabled:
+          type: boolean
+        name:
+          type: string
+        subscription:
+          $ref: '#/components/schemas/RawSubscription'
+    RawSubscription:
+      type: object
+      properties:
+        endpoint:
+          type: string
+        keys:
+          type: object
+          properties:
+            auth:
+              type: string
+            p256dh:
+              type: string
+          required:
+            - auth
+            - p256dh
+      required:
+        - endpoint
+        - keys
+    PushNotificationSubscription:
+      type: object
+      properties:
+        id:
+          type: number
+          readOnly: true
+        isEnabled:
+          type: boolean
+          default: true
+        name:
+          type: string
+          default: ''
+        subscription:
+          $ref: '#/components/schemas/RawSubscription'
+      required:
+        - id
+        - name
+        - isEnabled
+        - subscription
+    TrackedDeparture:
+      type: object
+      properties:
+        departure:
+          type: string
+          format: date-time
+          example: 0001-01-01T13:48:00Z
+        status:
+          readOnly: true
+          type: string
+          enum:
+            - on-time
+            - delayed
+            - canceled
+          example: on-time
+      required:
+        - departure
+        - status
+    TrackedConnectionUpdate:
+      type: object
+      properties:
+        departures:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackedDeparture'
+      required:
+        - departures
+    TrackedConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        connections:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackedConnection'
+      required:
+        - connections
+        - pagination
+    TrackedConnection:
+      type: object
+      properties:
+        id:
+          type: number
+          readOnly: true
+        fromId:
+          type: string
+          example: 69
+        fromName:
+          type: string
+          example: Dedenhausen Bahnhof
+        toId:
+          type: string
+          example: 420
+        toName:
+          type: string
+          example: Hannover, Hbf
+        departures:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackedDeparture'
+      required:
+        - id
+        - fromId
+        - fromName
+        - toId
+        - toName
+        - departures
+    User:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+          example: ute
+        isAdmin:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - isAdmin
+        - createdAt
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: ute
+        password:
+          type: string
+          format: password
+          example: secret
+      required:
+        - username
+        - password
+    RegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: ute
+          minLength: 3
+        password:
+          type: string
+          format: password
+          example: superSecret1!
+          minLength: 8
+        inviteToken:
+          type: string
+          example: '1234'
+      required:
+        - username
+        - password
+        - inviteToken
+    ValidationFailed:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Field 'username' missing in request
