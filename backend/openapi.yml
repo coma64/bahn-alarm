@@ -634,34 +634,36 @@ components:
       required:
         - connections
         - pagination
+    BahnStation:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 69
+        name:
+          type: string
+          example: Hannover, Hbf
+      required:
+        - id
+        - name
     TrackedConnection:
       type: object
       properties:
         id:
           type: integer
           readOnly: true
-        fromId:
-          type: string
-          example: 69
-        fromName:
-          type: string
-          example: Dedenhausen Bahnhof
-        toId:
-          type: string
-          example: 420
-        toName:
-          type: string
-          example: Hannover, Hbf
+        from:
+          $ref: '#/components/schemas/BahnStation'
+        to:
+          $ref: '#/components/schemas/BahnStation'
         departures:
           type: array
           items:
             $ref: '#/components/schemas/TrackedDeparture'
       required:
         - id
-        - fromId
-        - fromName
-        - toId
-        - toName
+        - from
+        - to
         - departures
     User:
       type: object
