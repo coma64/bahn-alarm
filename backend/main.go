@@ -68,7 +68,7 @@ func main() {
 			},
 		}),
 		middleware.CORSWithConfig(middleware.CORSConfig{
-			AllowOrigins:     []string{"http://localhost:5000"},
+			AllowOrigins:     []string{"http://localhost:8080"},
 			AllowCredentials: true,
 		}),
 		middleware.TimeoutWithConfig(middleware.TimeoutConfig{

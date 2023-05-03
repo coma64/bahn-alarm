@@ -3,14 +3,15 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/Masterminds/squirrel"
 	"github.com/coma64/bahn-alarm-backend/db"
 	"github.com/coma64/bahn-alarm-backend/server"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 	"github.com/lib/pq"
-	"net/http"
-	"time"
 )
 
 type dbTrackedConnection struct {
@@ -337,7 +338,7 @@ from departures d
     inner join connections c on c.id = d.connectionId
     inner join users u on u.id = c.trackedById
 where u.name = $1
-order by now() - d.departure desc
+order by seconds_until_departure(d.departure)
 fetch first 1 row only
 		`,
 		ctx.Get("username"),

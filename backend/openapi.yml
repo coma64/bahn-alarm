@@ -289,6 +289,7 @@ paths:
           required: true
           schema:
             type: string
+            minLength: 2
       responses:
         200:
           description: All places matching name
@@ -296,6 +297,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BahnPlacesList'
+        400:
+          description: Name too short
         401:
           description: Not logged in
         503:

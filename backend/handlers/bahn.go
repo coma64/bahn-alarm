@@ -46,6 +46,10 @@ func bahnPlaceToSchema(place *bahn.Place) server.BahnPlace {
 }
 
 func (b *BahnAlarmApi) GetBahnPlaces(ctx echo.Context, params server.GetBahnPlacesParams) error {
+	if len(params.Name) < 2 {
+		return ctx.NoContent(http.StatusBadRequest)
+	}
+
 	places, err := bahn.FetchPlaces(ctx.Request().Context(), params.Name)
 	if err != nil {
 		return &echo.HTTPError{
