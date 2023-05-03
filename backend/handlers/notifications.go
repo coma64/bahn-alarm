@@ -62,9 +62,7 @@ func (b *BahnAlarmApi) GetNotificationsPushSubscriptions(ctx echo.Context, param
 }
 
 func (b *BahnAlarmApi) PostNotificationsPushSubscriptions(ctx echo.Context) error {
-	body := server.PostNotificationsPushSubscriptionsJSONRequestBody{
-		IsEnabled: true,
-	}
+	body := server.PostNotificationsPushSubscriptionsJSONRequestBody{}
 	if err := ctx.Bind(&body); err != nil {
 		return err
 	}
@@ -78,11 +76,10 @@ func (b *BahnAlarmApi) PostNotificationsPushSubscriptions(ctx echo.Context) erro
 	if err := db.Db.GetContext(
 		ctx.Request().Context(),
 		&pushSub,
-		"insert into pushNotificationSubs (ownerId, rawSubscription, name, isEnabled) values ((select id from users where name = $1), $2, $3, $4) returning *",
+		"insert into pushNotificationSubs (ownerId, rawSubscription, name) values ((select id from users where name = $1), $2, $3) returning *",
 		ctx.Get("username"),
 		rawSub,
 		body.Name,
-		body.IsEnabled,
 	); err != nil {
 		return fmt.Errorf("error inserting push sub: %w", err)
 	}

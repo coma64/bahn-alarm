@@ -33,4 +33,8 @@ func init() {
 	if err := configor.New(&configor.Config{ErrorOnUnmatchedKeys: true}).Load(&Conf, "config.yml"); err != nil {
 		panic(err)
 	}
+
+	if Conf.PushNotifications.VapidKeys.Public == "" {
+		panic("Public vapid key not set. Did you forgot to specify a configor env using 'CONFIGOR_ENV=dev'?")
+	}
 }
