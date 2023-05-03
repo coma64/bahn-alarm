@@ -40,8 +40,6 @@ func doRequest[T interface{}](ctx context.Context, query string, responseBody *T
 		return fmt.Errorf("error creating request: %w", err)
 	}
 
-	log.Debug().Str("url", request.URL.String()).Msg("requesting bahn api")
-
 	var response *http.Response
 	if response, err = http.DefaultClient.Do(request); err != nil {
 		return fmt.Errorf("error sending request: %w", err)
@@ -76,6 +74,8 @@ func logResponse(response *http.Response) {
 }
 
 func FetchPlaces(ctx context.Context, query string) (*PlacesResponse, error) {
+	log.Debug().Str("package", "bahn").Str("query", query).Msg("Fetching places")
+
 	stations := &PlacesResponse{}
 	return stations, doRequest(ctx, "/spam/v1/places?query="+query, stations)
 }
@@ -86,6 +86,13 @@ func FetchConnections(
 	originStationId string,
 	destinationStationId string,
 ) (*ConnectionsResponse, error) {
+	log.Debug().
+		Str("package", "bahn").
+		Str("originStationId", originStationId).
+		Str("destinationStationid", destinationStationId).
+		Time("departure", departure).
+		Msg("Fetching connections")
+
 	query := url.Values{}
 
 	query.Set("departureTime", departure.Format(time.RFC3339))
@@ -100,8 +107,4 @@ func FetchConnections(
 
 	connections := &ConnectionsResponse{}
 	return connections, doRequest(ctx, "/navigation/v2/search/trips?"+query.Encode(), connections)
-}
-
-func FetchConnectionsByPlace(ctx context.Context, departure time.Time, origin, destination *Place) (*ConnectionsResponse, error) {
-	return FetchConnections(ctx, departure, origin.StationID, destination.StationID)
 }

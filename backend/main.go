@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"github.com/coma64/bahn-alarm-backend/config"
 	"github.com/coma64/bahn-alarm-backend/handlers"
 	"github.com/coma64/bahn-alarm-backend/server"
+	"github.com/coma64/bahn-alarm-backend/watcher"
 	"github.com/golang-jwt/jwt/v4"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -45,7 +47,15 @@ func main() {
 	if config.Conf.Debug {
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 		zerolog.DurationFieldUnit = time.Minute
+	} else {
+		log.Logger = log.Logger.Level(zerolog.InfoLevel)
 	}
+
+	watcherCtx, cancelWatcher := context.WithCancel(context.Background())
+	defer cancelWatcher()
+	go func() {
+		watcher.WatchBahnApi(watcherCtx)
+	}()
 
 	e.Use(
 		middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{

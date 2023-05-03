@@ -450,34 +450,20 @@ components:
         - info
         - warn
         - error
-    DelayChangeAlarm:
+    ConnectionAlarm:
       properties:
         type:
           type: string
           enum:
-            - delay-change-alarm
-        newDelayMinutes:
-          type: integer
-        connection:
-          $ref: '#/components/schemas/SimpleConnection'
-      required:
-        - type
-        - newDelayMinutes
-        - connection
-    CancelledAlarm:
-      properties:
-        type:
+            - connection-alarm
+        message:
           type: string
-          enum:
-            - cancelled-alarm
-        isCanceled:
-          type: boolean
         connection:
           $ref: '#/components/schemas/SimpleConnection'
       required:
         - type
-        - isCanceled
         - connection
+        - message
     Alarm:
       properties:
         id:
@@ -489,8 +475,7 @@ components:
           format: date-time
         content:
           oneOf:
-            - $ref: '#/components/schemas/DelayChangeAlarm'
-            - $ref: '#/components/schemas/CancelledAlarm'
+            - $ref: '#/components/schemas/ConnectionAlarm'
       required:
         - id
         - urgency

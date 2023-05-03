@@ -158,5 +158,9 @@ func (r *ConnectionsResponse) ProcessResponse() {
 		r.Trips[i].Departure.ActualTime = r.Trips[i].Departure.ActualTime.UTC()
 		r.Trips[i].Arrival.ScheduledTime = r.Trips[i].Arrival.ScheduledTime.UTC()
 		r.Trips[i].Arrival.ActualTime = r.Trips[i].Arrival.ActualTime.UTC()
+
+		if r.Trips[i].Departure.ActualTime.IsZero() {
+			r.Trips[i].Departure.ActualTime = r.Trips[i].Departure.ScheduledTime
+		}
 	}
 }
