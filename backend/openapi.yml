@@ -39,8 +39,12 @@ paths:
             schema:
               $ref: '#/components/schemas/LoginRequest'
       responses:
-        204:
+        200:
           description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
         400:
           description: Validation failed, or invalid username or password
           content:

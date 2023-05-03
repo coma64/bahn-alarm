@@ -47,7 +47,12 @@ func (b *BahnAlarmApi) PostAuthLogin(ctx echo.Context) error {
 		SameSite: http.SameSiteNoneMode,
 	})
 
-	return ctx.NoContent(http.StatusNoContent)
+	return ctx.JSON(http.StatusOK, &server.User{
+		CreatedAt: user.CreatedAt,
+		Id:        user.Id,
+		IsAdmin:   user.IsAdmin,
+		Name:      user.Name,
+	})
 }
 
 func (b *BahnAlarmApi) PostAuthLogout(ctx echo.Context) error {
