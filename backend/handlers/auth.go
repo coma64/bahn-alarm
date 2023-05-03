@@ -32,7 +32,7 @@ func (b *BahnAlarmApi) PostAuthLogin(ctx echo.Context) error {
 		return ctx.NoContent(http.StatusBadRequest)
 	}
 
-	token, err := auth.GenerateJwt(user.Name)
+	token, expiresAt, err := auth.GenerateJwt(user.Name)
 	if err != nil {
 		return err
 	}
@@ -40,16 +40,25 @@ func (b *BahnAlarmApi) PostAuthLogin(ctx echo.Context) error {
 	ctx.SetCookie(&http.Cookie{
 		Name:     config.Conf.Jwt.Cookie,
 		Value:    token,
-		Expires:  time.Time{},
+		Expires:  expiresAt,
 		Secure:   true,
 		HttpOnly: true,
+		SameSite: http.SameSiteNoneMode,
 	})
 
 	return ctx.NoContent(http.StatusNoContent)
 }
 
 func (b *BahnAlarmApi) PostAuthLogout(ctx echo.Context) error {
-	return nil
+	ctx.SetCookie(&http.Cookie{
+		Name:     config.Conf.Jwt.Cookie,
+		Value:    "",
+		MaxAge:   -1,
+		Secure:   true,
+		HttpOnly: true,
+		SameSite: http.SameSiteNoneMode,
+	})
+	return ctx.NoContent(http.StatusNoContent)
 }
 
 func (b *BahnAlarmApi) GetAuthMe(ctx echo.Context) error {

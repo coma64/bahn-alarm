@@ -6,12 +6,13 @@ import (
 	"time"
 )
 
-func GenerateJwt(username string) (string, error) {
-	expiration := time.Now().Add(time.Hour * 24 * time.Duration(config.Conf.Jwt.ExpirationDays))
+func GenerateJwt(username string) (jwtToken string, expiresAt time.Time, err error) {
+	expiresAt = time.Now().Add(time.Hour * 24 * time.Duration(config.Conf.Jwt.ExpirationDays))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": username,
-		"exp": expiration.Unix(),
+		"exp": expiresAt.Unix(),
 	})
 
-	return token.SignedString([]byte(config.Conf.Jwt.Secret))
+	jwtToken, err = token.SignedString([]byte(config.Conf.Jwt.Secret))
+	return jwtToken, expiresAt, err
 }
