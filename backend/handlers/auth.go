@@ -41,6 +41,7 @@ func (b *BahnAlarmApi) PostAuthLogin(ctx echo.Context) error {
 		Name:     config.Conf.Jwt.Cookie,
 		Value:    token,
 		Expires:  expiresAt,
+		Path:     "/",
 		Secure:   true,
 		HttpOnly: true,
 		SameSite: http.SameSiteNoneMode,
