@@ -3,9 +3,14 @@ info:
   title: Bahn Alarm
   description: |-
     An app for live tracking of train delays from the DB
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
+    
+    - In case of a request validation failure a `400` status code is returned regardless of what's documented
+    - All endpoints that document a `401` response require authentication
+      - If the JWT is expired or invalid a `401` status code is returned
+      - If the `jwt` cookie is not present a `400` status code is returned
+#  license:
+#    name: Apache 2.0
+#    url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 0.0.1
 servers:
   - url: http://localhost:8090
@@ -64,11 +69,13 @@ paths:
         201:
           description: Successfully registered
         400:
-          description: Validation failed or invalid invite token
+          description: Validation failed
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationFailed'
+        409:
+          description: Invite token used or expired
   /auth/me:
     get:
       tags:
@@ -426,14 +433,20 @@ components:
       properties:
         newDelayMinutes:
           type: number
+        connection:
+          $ref: '#/components/schemas/SimpleConnection'
       required:
         - newDelayMinutes
+        - connection
     CancelledAlarm:
       properties:
         isCanceled:
           type: boolean
+        connection:
+          $ref: '#/components/schemas/SimpleConnection'
       required:
         - isCanceled
+        - connection
     Alarm:
       properties:
         id:
@@ -443,20 +456,6 @@ components:
         createdAt:
           type: string
           format: date-time
-        connection:
-          type: object
-          properties:
-            fromName:
-              type: string
-            toName:
-              type: string
-            departure:
-              type: string
-              format: date-time
-          required:
-            - fromName
-            - toName
-            - departure
         content:
           oneOf:
             - $ref: '#/components/schemas/DelayChangeAlarm'
@@ -467,6 +466,21 @@ components:
         - createdAt
         - connection
         - content
+
+    SimpleConnection:
+      type: object
+      properties:
+        fromName:
+          type: string
+        toName:
+          type: string
+        departure:
+          type: string
+          format: date-time
+      required:
+        - fromName
+        - toName
+        - departure
 
     BahnConnectionsList:
       type: object
@@ -568,12 +582,16 @@ components:
         name:
           type: string
           default: ''
+        createdAt:
+          type: string
+          format: date-time
         subscription:
           $ref: '#/components/schemas/RawSubscription'
       required:
         - id
         - name
         - isEnabled
+        - createdAt
         - subscription
     TrackedDeparture:
       type: object
@@ -589,6 +607,7 @@ components:
             - on-time
             - delayed
             - canceled
+            - not-checked
           example: on-time
       required:
         - departure
@@ -647,7 +666,7 @@ components:
       type: object
       properties:
         id:
-          type: number
+          type: integer
         name:
           type: string
           example: ute

@@ -1,14 +1,14 @@
 package handlers
 
 import (
-	"context"
 	"github.com/coma64/bahn-alarm-backend/server"
+	"github.com/labstack/echo/v4"
 )
 
-func (b *BahnAlarmApi) GetAlarms(ctx context.Context, request server.GetAlarmsRequestObject) (server.GetAlarmsResponseObject, error) {
-	return server.GetAlarms200JSONResponse{}, nil
+func (b *BahnAlarmApi) GetAlarms(ctx echo.Context, params server.GetAlarmsParams) error {
+	return nil
 }
 
-func (b *BahnAlarmApi) DeleteAlarmsId(ctx context.Context, request server.DeleteAlarmsIdRequestObject) (server.DeleteAlarmsIdResponseObject, error) {
-	return server.DeleteAlarmsId204Response{}, nil
+func (b *BahnAlarmApi) DeleteAlarmsId(ctx echo.Context, id int) error {
+	return nil
 }

@@ -1,0 +1,5 @@
+push-notifications:
+  subject: user@example.com
+  vapid-keys:
+    public: BCNhAZ9TELhuMPPakP-ZNaxhPxOmY3T3l3ztppwa02qLrk8xA7pFZJBUP96mNsFlBkmrjvwFg9NVIXFQFrbkePY
+    private: xak4v96yQLPW25NlrO0VaDPltjcxESPPP1Fo-9SyWCM

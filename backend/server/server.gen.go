@@ -6,7 +6,6 @@ package server
 import (
 	"bytes"
 	"compress/gzip"
-	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -23,9 +22,10 @@ import (
 
 // Defines values for TrackedDepartureStatus.
 const (
-	Canceled TrackedDepartureStatus = "canceled"
-	Delayed  TrackedDepartureStatus = "delayed"
-	OnTime   TrackedDepartureStatus = "on-time"
+	Canceled   TrackedDepartureStatus = "canceled"
+	Delayed    TrackedDepartureStatus = "delayed"
+	NotChecked TrackedDepartureStatus = "not-checked"
+	OnTime     TrackedDepartureStatus = "on-time"
 )
 
 // Defines values for Urgency.
@@ -37,11 +37,6 @@ const (
 
 // Alarm defines model for Alarm.
 type Alarm struct {
-	Connection struct {
-		Departure time.Time `json:"departure"`
-		FromName  string    `json:"fromName"`
-		ToName    string    `json:"toName"`
-	} `json:"connection"`
 	Content   Alarm_Content `json:"content"`
 	CreatedAt time.Time     `json:"createdAt"`
 	Id        int           `json:"id"`
@@ -86,17 +81,14 @@ type BahnPlacesList struct {
 
 // CancelledAlarm defines model for CancelledAlarm.
 type CancelledAlarm struct {
-	IsCanceled bool `json:"isCanceled"`
+	Connection SimpleConnection `json:"connection"`
+	IsCanceled bool             `json:"isCanceled"`
 }
 
 // DelayChangeAlarm defines model for DelayChangeAlarm.
 type DelayChangeAlarm struct {
-	NewDelayMinutes float32 `json:"newDelayMinutes"`
-}
-
-// InvalidRequest defines model for InvalidRequest.
-type InvalidRequest struct {
-	Message string `json:"message"`
+	Connection      SimpleConnection `json:"connection"`
+	NewDelayMinutes float32          `json:"newDelayMinutes"`
 }
 
 // LoginRequest defines model for LoginRequest.
@@ -113,6 +105,7 @@ type Pagination struct {
 
 // PushNotificationSubscription defines model for PushNotificationSubscription.
 type PushNotificationSubscription struct {
+	CreatedAt    time.Time       `json:"createdAt"`
 	Id           *float32        `json:"id,omitempty"`
 	IsEnabled    bool            `json:"isEnabled"`
 	Name         string          `json:"name"`
@@ -146,6 +139,13 @@ type RegisterRequest struct {
 	InviteToken string `json:"inviteToken"`
 	Password    string `json:"password"`
 	Username    string `json:"username"`
+}
+
+// SimpleConnection defines model for SimpleConnection.
+type SimpleConnection struct {
+	Departure time.Time `json:"departure"`
+	FromName  string    `json:"fromName"`
+	ToName    string    `json:"toName"`
 }
 
 // TrackedConnection defines model for TrackedConnection.
@@ -195,9 +195,14 @@ type Urgency string
 // User defines model for User.
 type User struct {
 	CreatedAt time.Time `json:"createdAt"`
-	Id        float32   `json:"id"`
+	Id        int       `json:"id"`
 	IsAdmin   bool      `json:"isAdmin"`
 	Name      string    `json:"name"`
+}
+
+// ValidationFailed defines model for ValidationFailed.
+type ValidationFailed struct {
+	Message *string `json:"message,omitempty"`
 }
 
 // GetAlarmsParams defines parameters for GetAlarms.
@@ -694,1061 +699,48 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 
 }
 
-type GetAlarmsRequestObject struct {
-	Params GetAlarmsParams
-}
-
-type GetAlarmsResponseObject interface {
-	VisitGetAlarmsResponse(w http.ResponseWriter) error
-}
-
-type GetAlarms200JSONResponse AlarmsList
-
-func (response GetAlarms200JSONResponse) VisitGetAlarmsResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetAlarms401Response struct {
-}
-
-func (response GetAlarms401Response) VisitGetAlarmsResponse(w http.ResponseWriter) error {
-	w.WriteHeader(401)
-	return nil
-}
-
-type DeleteAlarmsIdRequestObject struct {
-	Id int `json:"id"`
-}
-
-type DeleteAlarmsIdResponseObject interface {
-	VisitDeleteAlarmsIdResponse(w http.ResponseWriter) error
-}
-
-type DeleteAlarmsId204Response struct {
-}
-
-func (response DeleteAlarmsId204Response) VisitDeleteAlarmsIdResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type DeleteAlarmsId401Response struct {
-}
-
-func (response DeleteAlarmsId401Response) VisitDeleteAlarmsIdResponse(w http.ResponseWriter) error {
-	w.WriteHeader(401)
-	return nil
-}
-
-type DeleteAlarmsId404Response struct {
-}
-
-func (response DeleteAlarmsId404Response) VisitDeleteAlarmsIdResponse(w http.ResponseWriter) error {
-	w.WriteHeader(404)
-	return nil
-}
-
-type PostAuthLoginRequestObject struct {
-	Body *PostAuthLoginJSONRequestBody
-}
-
-type PostAuthLoginResponseObject interface {
-	VisitPostAuthLoginResponse(w http.ResponseWriter) error
-}
-
-type PostAuthLogin204Response struct {
-}
-
-func (response PostAuthLogin204Response) VisitPostAuthLoginResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type PostAuthLogin400Response struct {
-}
-
-func (response PostAuthLogin400Response) VisitPostAuthLoginResponse(w http.ResponseWriter) error {
-	w.WriteHeader(400)
-	return nil
-}
-
-type PostAuthLogin422JSONResponse InvalidRequest
-
-func (response PostAuthLogin422JSONResponse) VisitPostAuthLoginResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(422)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type PostAuthLogoutRequestObject struct {
-}
-
-type PostAuthLogoutResponseObject interface {
-	VisitPostAuthLogoutResponse(w http.ResponseWriter) error
-}
-
-type PostAuthLogout204Response struct {
-}
-
-func (response PostAuthLogout204Response) VisitPostAuthLogoutResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type PostAuthLogout401Response struct {
-}
-
-func (response PostAuthLogout401Response) VisitPostAuthLogoutResponse(w http.ResponseWriter) error {
-	w.WriteHeader(401)
-	return nil
-}
-
-type GetAuthMeRequestObject struct {
-}
-
-type GetAuthMeResponseObject interface {
-	VisitGetAuthMeResponse(w http.ResponseWriter) error
-}
-
-type GetAuthMe200JSONResponse User
-
-func (response GetAuthMe200JSONResponse) VisitGetAuthMeResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetAuthMe401Response struct {
-}
-
-func (response GetAuthMe401Response) VisitGetAuthMeResponse(w http.ResponseWriter) error {
-	w.WriteHeader(401)
-	return nil
-}
-
-type PostAuthRegisterRequestObject struct {
-	Body *PostAuthRegisterJSONRequestBody
-}
-
-type PostAuthRegisterResponseObject interface {
-	VisitPostAuthRegisterResponse(w http.ResponseWriter) error
-}
-
-type PostAuthRegister201Response struct {
-}
-
-func (response PostAuthRegister201Response) VisitPostAuthRegisterResponse(w http.ResponseWriter) error {
-	w.WriteHeader(201)
-	return nil
-}
-
-type PostAuthRegister400Response struct {
-}
-
-func (response PostAuthRegister400Response) VisitPostAuthRegisterResponse(w http.ResponseWriter) error {
-	w.WriteHeader(400)
-	return nil
-}
-
-type PostAuthRegister422JSONResponse InvalidRequest
-
-func (response PostAuthRegister422JSONResponse) VisitPostAuthRegisterResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(422)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetBahnConnectionsRequestObject struct {
-	Params GetBahnConnectionsParams
-}
-
-type GetBahnConnectionsResponseObject interface {
-	VisitGetBahnConnectionsResponse(w http.ResponseWriter) error
-}
-
-type GetBahnConnections200JSONResponse BahnConnectionsList
-
-func (response GetBahnConnections200JSONResponse) VisitGetBahnConnectionsResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetBahnConnections401Response struct {
-}
-
-func (response GetBahnConnections401Response) VisitGetBahnConnectionsResponse(w http.ResponseWriter) error {
-	w.WriteHeader(401)
-	return nil
-}
-
-type GetBahnPlacesRequestObject struct {
-	Params GetBahnPlacesParams
-}
-
-type GetBahnPlacesResponseObject interface {
-	VisitGetBahnPlacesResponse(w http.ResponseWriter) error
-}
-
-type GetBahnPlaces200JSONResponse BahnPlacesList
-
-func (response GetBahnPlaces200JSONResponse) VisitGetBahnPlacesResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetBahnPlaces401Response struct {
-}
-
-func (response GetBahnPlaces401Response) VisitGetBahnPlacesResponse(w http.ResponseWriter) error {
-	w.WriteHeader(401)
-	return nil
-}
-
-type GetNotificationsPushSubscriptionsRequestObject struct {
-	Params GetNotificationsPushSubscriptionsParams
-}
-
-type GetNotificationsPushSubscriptionsResponseObject interface {
-	VisitGetNotificationsPushSubscriptionsResponse(w http.ResponseWriter) error
-}
-
-type GetNotificationsPushSubscriptions200JSONResponse PushNotificationSubscriptionList
-
-func (response GetNotificationsPushSubscriptions200JSONResponse) VisitGetNotificationsPushSubscriptionsResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetNotificationsPushSubscriptions401Response struct {
-}
-
-func (response GetNotificationsPushSubscriptions401Response) VisitGetNotificationsPushSubscriptionsResponse(w http.ResponseWriter) error {
-	w.WriteHeader(401)
-	return nil
-}
-
-type PostNotificationsPushSubscriptionsRequestObject struct {
-	Body *PostNotificationsPushSubscriptionsJSONRequestBody
-}
-
-type PostNotificationsPushSubscriptionsResponseObject interface {
-	VisitPostNotificationsPushSubscriptionsResponse(w http.ResponseWriter) error
-}
-
-type PostNotificationsPushSubscriptions201JSONResponse PushNotificationSubscription
-
-func (response PostNotificationsPushSubscriptions201JSONResponse) VisitPostNotificationsPushSubscriptionsResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type PostNotificationsPushSubscriptions401Response struct {
-}
-
-func (response PostNotificationsPushSubscriptions401Response) VisitPostNotificationsPushSubscriptionsResponse(w http.ResponseWriter) error {
-	w.WriteHeader(401)
-	return nil
-}
-
-type PostNotificationsPushSubscriptions422JSONResponse InvalidRequest
-
-func (response PostNotificationsPushSubscriptions422JSONResponse) VisitPostNotificationsPushSubscriptionsResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(422)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type DeleteNotificationsPushSubscriptionsIdRequestObject struct {
-	Id int `json:"id"`
-}
-
-type DeleteNotificationsPushSubscriptionsIdResponseObject interface {
-	VisitDeleteNotificationsPushSubscriptionsIdResponse(w http.ResponseWriter) error
-}
-
-type DeleteNotificationsPushSubscriptionsId204Response struct {
-}
-
-func (response DeleteNotificationsPushSubscriptionsId204Response) VisitDeleteNotificationsPushSubscriptionsIdResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type DeleteNotificationsPushSubscriptionsId401Response struct {
-}
-
-func (response DeleteNotificationsPushSubscriptionsId401Response) VisitDeleteNotificationsPushSubscriptionsIdResponse(w http.ResponseWriter) error {
-	w.WriteHeader(401)
-	return nil
-}
-
-type DeleteNotificationsPushSubscriptionsId404Response struct {
-}
-
-func (response DeleteNotificationsPushSubscriptionsId404Response) VisitDeleteNotificationsPushSubscriptionsIdResponse(w http.ResponseWriter) error {
-	w.WriteHeader(404)
-	return nil
-}
-
-type PatchNotificationsPushSubscriptionsIdRequestObject struct {
-	Id   int `json:"id"`
-	Body *PatchNotificationsPushSubscriptionsIdJSONRequestBody
-}
-
-type PatchNotificationsPushSubscriptionsIdResponseObject interface {
-	VisitPatchNotificationsPushSubscriptionsIdResponse(w http.ResponseWriter) error
-}
-
-type PatchNotificationsPushSubscriptionsId204Response struct {
-}
-
-func (response PatchNotificationsPushSubscriptionsId204Response) VisitPatchNotificationsPushSubscriptionsIdResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type PatchNotificationsPushSubscriptionsId401Response struct {
-}
-
-func (response PatchNotificationsPushSubscriptionsId401Response) VisitPatchNotificationsPushSubscriptionsIdResponse(w http.ResponseWriter) error {
-	w.WriteHeader(401)
-	return nil
-}
-
-type PatchNotificationsPushSubscriptionsId404Response struct {
-}
-
-func (response PatchNotificationsPushSubscriptionsId404Response) VisitPatchNotificationsPushSubscriptionsIdResponse(w http.ResponseWriter) error {
-	w.WriteHeader(404)
-	return nil
-}
-
-type GetTrackingConnectionsRequestObject struct {
-	Params GetTrackingConnectionsParams
-}
-
-type GetTrackingConnectionsResponseObject interface {
-	VisitGetTrackingConnectionsResponse(w http.ResponseWriter) error
-}
-
-type GetTrackingConnections200JSONResponse []TrackedConnectionList
-
-func (response GetTrackingConnections200JSONResponse) VisitGetTrackingConnectionsResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetTrackingConnections401Response struct {
-}
-
-func (response GetTrackingConnections401Response) VisitGetTrackingConnectionsResponse(w http.ResponseWriter) error {
-	w.WriteHeader(401)
-	return nil
-}
-
-type PostTrackingConnectionsRequestObject struct {
-	Body *PostTrackingConnectionsJSONRequestBody
-}
-
-type PostTrackingConnectionsResponseObject interface {
-	VisitPostTrackingConnectionsResponse(w http.ResponseWriter) error
-}
-
-type PostTrackingConnections201JSONResponse TrackedConnection
-
-func (response PostTrackingConnections201JSONResponse) VisitPostTrackingConnectionsResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type PostTrackingConnections401Response struct {
-}
-
-func (response PostTrackingConnections401Response) VisitPostTrackingConnectionsResponse(w http.ResponseWriter) error {
-	w.WriteHeader(401)
-	return nil
-}
-
-type PostTrackingConnections409Response struct {
-}
-
-func (response PostTrackingConnections409Response) VisitPostTrackingConnectionsResponse(w http.ResponseWriter) error {
-	w.WriteHeader(409)
-	return nil
-}
-
-type PostTrackingConnections422JSONResponse InvalidRequest
-
-func (response PostTrackingConnections422JSONResponse) VisitPostTrackingConnectionsResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(422)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type DeleteTrackingConnectionsIdRequestObject struct {
-	Id int `json:"id"`
-}
-
-type DeleteTrackingConnectionsIdResponseObject interface {
-	VisitDeleteTrackingConnectionsIdResponse(w http.ResponseWriter) error
-}
-
-type DeleteTrackingConnectionsId204Response struct {
-}
-
-func (response DeleteTrackingConnectionsId204Response) VisitDeleteTrackingConnectionsIdResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type DeleteTrackingConnectionsId401Response struct {
-}
-
-func (response DeleteTrackingConnectionsId401Response) VisitDeleteTrackingConnectionsIdResponse(w http.ResponseWriter) error {
-	w.WriteHeader(401)
-	return nil
-}
-
-type DeleteTrackingConnectionsId404Response struct {
-}
-
-func (response DeleteTrackingConnectionsId404Response) VisitDeleteTrackingConnectionsIdResponse(w http.ResponseWriter) error {
-	w.WriteHeader(404)
-	return nil
-}
-
-type PutTrackingConnectionsIdRequestObject struct {
-	Id   int `json:"id"`
-	Body *PutTrackingConnectionsIdJSONRequestBody
-}
-
-type PutTrackingConnectionsIdResponseObject interface {
-	VisitPutTrackingConnectionsIdResponse(w http.ResponseWriter) error
-}
-
-type PutTrackingConnectionsId204Response struct {
-}
-
-func (response PutTrackingConnectionsId204Response) VisitPutTrackingConnectionsIdResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type PutTrackingConnectionsId401Response struct {
-}
-
-func (response PutTrackingConnectionsId401Response) VisitPutTrackingConnectionsIdResponse(w http.ResponseWriter) error {
-	w.WriteHeader(401)
-	return nil
-}
-
-type PutTrackingConnectionsId404Response struct {
-}
-
-func (response PutTrackingConnectionsId404Response) VisitPutTrackingConnectionsIdResponse(w http.ResponseWriter) error {
-	w.WriteHeader(404)
-	return nil
-}
-
-type GetTrackingStatsRequestObject struct {
-}
-
-type GetTrackingStatsResponseObject interface {
-	VisitGetTrackingStatsResponse(w http.ResponseWriter) error
-}
-
-type GetTrackingStats200JSONResponse TrackingStats
-
-func (response GetTrackingStats200JSONResponse) VisitGetTrackingStatsResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetTrackingStats401Response struct {
-}
-
-func (response GetTrackingStats401Response) VisitGetTrackingStatsResponse(w http.ResponseWriter) error {
-	w.WriteHeader(401)
-	return nil
-}
-
-// StrictServerInterface represents all server handlers.
-type StrictServerInterface interface {
-
-	// (GET /alarms)
-	GetAlarms(ctx context.Context, request GetAlarmsRequestObject) (GetAlarmsResponseObject, error)
-
-	// (DELETE /alarms/{id})
-	DeleteAlarmsId(ctx context.Context, request DeleteAlarmsIdRequestObject) (DeleteAlarmsIdResponseObject, error)
-
-	// (POST /auth/login)
-	PostAuthLogin(ctx context.Context, request PostAuthLoginRequestObject) (PostAuthLoginResponseObject, error)
-
-	// (POST /auth/logout)
-	PostAuthLogout(ctx context.Context, request PostAuthLogoutRequestObject) (PostAuthLogoutResponseObject, error)
-
-	// (GET /auth/me)
-	GetAuthMe(ctx context.Context, request GetAuthMeRequestObject) (GetAuthMeResponseObject, error)
-
-	// (POST /auth/register)
-	PostAuthRegister(ctx context.Context, request PostAuthRegisterRequestObject) (PostAuthRegisterResponseObject, error)
-
-	// (GET /bahn/connections)
-	GetBahnConnections(ctx context.Context, request GetBahnConnectionsRequestObject) (GetBahnConnectionsResponseObject, error)
-
-	// (GET /bahn/places)
-	GetBahnPlaces(ctx context.Context, request GetBahnPlacesRequestObject) (GetBahnPlacesResponseObject, error)
-
-	// (GET /notifications/push-subscriptions)
-	GetNotificationsPushSubscriptions(ctx context.Context, request GetNotificationsPushSubscriptionsRequestObject) (GetNotificationsPushSubscriptionsResponseObject, error)
-
-	// (POST /notifications/push-subscriptions)
-	PostNotificationsPushSubscriptions(ctx context.Context, request PostNotificationsPushSubscriptionsRequestObject) (PostNotificationsPushSubscriptionsResponseObject, error)
-
-	// (DELETE /notifications/push-subscriptions/{id})
-	DeleteNotificationsPushSubscriptionsId(ctx context.Context, request DeleteNotificationsPushSubscriptionsIdRequestObject) (DeleteNotificationsPushSubscriptionsIdResponseObject, error)
-
-	// (PATCH /notifications/push-subscriptions/{id})
-	PatchNotificationsPushSubscriptionsId(ctx context.Context, request PatchNotificationsPushSubscriptionsIdRequestObject) (PatchNotificationsPushSubscriptionsIdResponseObject, error)
-
-	// (GET /tracking/connections)
-	GetTrackingConnections(ctx context.Context, request GetTrackingConnectionsRequestObject) (GetTrackingConnectionsResponseObject, error)
-
-	// (POST /tracking/connections)
-	PostTrackingConnections(ctx context.Context, request PostTrackingConnectionsRequestObject) (PostTrackingConnectionsResponseObject, error)
-
-	// (DELETE /tracking/connections/{id})
-	DeleteTrackingConnectionsId(ctx context.Context, request DeleteTrackingConnectionsIdRequestObject) (DeleteTrackingConnectionsIdResponseObject, error)
-
-	// (PUT /tracking/connections/{id})
-	PutTrackingConnectionsId(ctx context.Context, request PutTrackingConnectionsIdRequestObject) (PutTrackingConnectionsIdResponseObject, error)
-
-	// (GET /tracking/stats)
-	GetTrackingStats(ctx context.Context, request GetTrackingStatsRequestObject) (GetTrackingStatsResponseObject, error)
-}
-
-type StrictHandlerFunc func(ctx echo.Context, args interface{}) (interface{}, error)
-
-type StrictMiddlewareFunc func(f StrictHandlerFunc, operationID string) StrictHandlerFunc
-
-func NewStrictHandler(ssi StrictServerInterface, middlewares []StrictMiddlewareFunc) ServerInterface {
-	return &strictHandler{ssi: ssi, middlewares: middlewares}
-}
-
-type strictHandler struct {
-	ssi         StrictServerInterface
-	middlewares []StrictMiddlewareFunc
-}
-
-// GetAlarms operation middleware
-func (sh *strictHandler) GetAlarms(ctx echo.Context, params GetAlarmsParams) error {
-	var request GetAlarmsRequestObject
-
-	request.Params = params
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetAlarms(ctx.Request().Context(), request.(GetAlarmsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetAlarms")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(GetAlarmsResponseObject); ok {
-		return validResponse.VisitGetAlarmsResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("Unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// DeleteAlarmsId operation middleware
-func (sh *strictHandler) DeleteAlarmsId(ctx echo.Context, id int) error {
-	var request DeleteAlarmsIdRequestObject
-
-	request.Id = id
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.DeleteAlarmsId(ctx.Request().Context(), request.(DeleteAlarmsIdRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "DeleteAlarmsId")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(DeleteAlarmsIdResponseObject); ok {
-		return validResponse.VisitDeleteAlarmsIdResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("Unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// PostAuthLogin operation middleware
-func (sh *strictHandler) PostAuthLogin(ctx echo.Context) error {
-	var request PostAuthLoginRequestObject
-
-	var body PostAuthLoginJSONRequestBody
-	if err := ctx.Bind(&body); err != nil {
-		return err
-	}
-	request.Body = &body
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.PostAuthLogin(ctx.Request().Context(), request.(PostAuthLoginRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "PostAuthLogin")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(PostAuthLoginResponseObject); ok {
-		return validResponse.VisitPostAuthLoginResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("Unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// PostAuthLogout operation middleware
-func (sh *strictHandler) PostAuthLogout(ctx echo.Context) error {
-	var request PostAuthLogoutRequestObject
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.PostAuthLogout(ctx.Request().Context(), request.(PostAuthLogoutRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "PostAuthLogout")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(PostAuthLogoutResponseObject); ok {
-		return validResponse.VisitPostAuthLogoutResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("Unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// GetAuthMe operation middleware
-func (sh *strictHandler) GetAuthMe(ctx echo.Context) error {
-	var request GetAuthMeRequestObject
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetAuthMe(ctx.Request().Context(), request.(GetAuthMeRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetAuthMe")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(GetAuthMeResponseObject); ok {
-		return validResponse.VisitGetAuthMeResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("Unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// PostAuthRegister operation middleware
-func (sh *strictHandler) PostAuthRegister(ctx echo.Context) error {
-	var request PostAuthRegisterRequestObject
-
-	var body PostAuthRegisterJSONRequestBody
-	if err := ctx.Bind(&body); err != nil {
-		return err
-	}
-	request.Body = &body
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.PostAuthRegister(ctx.Request().Context(), request.(PostAuthRegisterRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "PostAuthRegister")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(PostAuthRegisterResponseObject); ok {
-		return validResponse.VisitPostAuthRegisterResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("Unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// GetBahnConnections operation middleware
-func (sh *strictHandler) GetBahnConnections(ctx echo.Context, params GetBahnConnectionsParams) error {
-	var request GetBahnConnectionsRequestObject
-
-	request.Params = params
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetBahnConnections(ctx.Request().Context(), request.(GetBahnConnectionsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetBahnConnections")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(GetBahnConnectionsResponseObject); ok {
-		return validResponse.VisitGetBahnConnectionsResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("Unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// GetBahnPlaces operation middleware
-func (sh *strictHandler) GetBahnPlaces(ctx echo.Context, params GetBahnPlacesParams) error {
-	var request GetBahnPlacesRequestObject
-
-	request.Params = params
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetBahnPlaces(ctx.Request().Context(), request.(GetBahnPlacesRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetBahnPlaces")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(GetBahnPlacesResponseObject); ok {
-		return validResponse.VisitGetBahnPlacesResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("Unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// GetNotificationsPushSubscriptions operation middleware
-func (sh *strictHandler) GetNotificationsPushSubscriptions(ctx echo.Context, params GetNotificationsPushSubscriptionsParams) error {
-	var request GetNotificationsPushSubscriptionsRequestObject
-
-	request.Params = params
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetNotificationsPushSubscriptions(ctx.Request().Context(), request.(GetNotificationsPushSubscriptionsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetNotificationsPushSubscriptions")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(GetNotificationsPushSubscriptionsResponseObject); ok {
-		return validResponse.VisitGetNotificationsPushSubscriptionsResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("Unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// PostNotificationsPushSubscriptions operation middleware
-func (sh *strictHandler) PostNotificationsPushSubscriptions(ctx echo.Context) error {
-	var request PostNotificationsPushSubscriptionsRequestObject
-
-	var body PostNotificationsPushSubscriptionsJSONRequestBody
-	if err := ctx.Bind(&body); err != nil {
-		return err
-	}
-	request.Body = &body
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.PostNotificationsPushSubscriptions(ctx.Request().Context(), request.(PostNotificationsPushSubscriptionsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "PostNotificationsPushSubscriptions")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(PostNotificationsPushSubscriptionsResponseObject); ok {
-		return validResponse.VisitPostNotificationsPushSubscriptionsResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("Unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// DeleteNotificationsPushSubscriptionsId operation middleware
-func (sh *strictHandler) DeleteNotificationsPushSubscriptionsId(ctx echo.Context, id int) error {
-	var request DeleteNotificationsPushSubscriptionsIdRequestObject
-
-	request.Id = id
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.DeleteNotificationsPushSubscriptionsId(ctx.Request().Context(), request.(DeleteNotificationsPushSubscriptionsIdRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "DeleteNotificationsPushSubscriptionsId")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(DeleteNotificationsPushSubscriptionsIdResponseObject); ok {
-		return validResponse.VisitDeleteNotificationsPushSubscriptionsIdResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("Unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// PatchNotificationsPushSubscriptionsId operation middleware
-func (sh *strictHandler) PatchNotificationsPushSubscriptionsId(ctx echo.Context, id int) error {
-	var request PatchNotificationsPushSubscriptionsIdRequestObject
-
-	request.Id = id
-
-	var body PatchNotificationsPushSubscriptionsIdJSONRequestBody
-	if err := ctx.Bind(&body); err != nil {
-		return err
-	}
-	request.Body = &body
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.PatchNotificationsPushSubscriptionsId(ctx.Request().Context(), request.(PatchNotificationsPushSubscriptionsIdRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "PatchNotificationsPushSubscriptionsId")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(PatchNotificationsPushSubscriptionsIdResponseObject); ok {
-		return validResponse.VisitPatchNotificationsPushSubscriptionsIdResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("Unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// GetTrackingConnections operation middleware
-func (sh *strictHandler) GetTrackingConnections(ctx echo.Context, params GetTrackingConnectionsParams) error {
-	var request GetTrackingConnectionsRequestObject
-
-	request.Params = params
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetTrackingConnections(ctx.Request().Context(), request.(GetTrackingConnectionsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetTrackingConnections")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(GetTrackingConnectionsResponseObject); ok {
-		return validResponse.VisitGetTrackingConnectionsResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("Unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// PostTrackingConnections operation middleware
-func (sh *strictHandler) PostTrackingConnections(ctx echo.Context) error {
-	var request PostTrackingConnectionsRequestObject
-
-	var body PostTrackingConnectionsJSONRequestBody
-	if err := ctx.Bind(&body); err != nil {
-		return err
-	}
-	request.Body = &body
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.PostTrackingConnections(ctx.Request().Context(), request.(PostTrackingConnectionsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "PostTrackingConnections")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(PostTrackingConnectionsResponseObject); ok {
-		return validResponse.VisitPostTrackingConnectionsResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("Unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// DeleteTrackingConnectionsId operation middleware
-func (sh *strictHandler) DeleteTrackingConnectionsId(ctx echo.Context, id int) error {
-	var request DeleteTrackingConnectionsIdRequestObject
-
-	request.Id = id
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.DeleteTrackingConnectionsId(ctx.Request().Context(), request.(DeleteTrackingConnectionsIdRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "DeleteTrackingConnectionsId")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(DeleteTrackingConnectionsIdResponseObject); ok {
-		return validResponse.VisitDeleteTrackingConnectionsIdResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("Unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// PutTrackingConnectionsId operation middleware
-func (sh *strictHandler) PutTrackingConnectionsId(ctx echo.Context, id int) error {
-	var request PutTrackingConnectionsIdRequestObject
-
-	request.Id = id
-
-	var body PutTrackingConnectionsIdJSONRequestBody
-	if err := ctx.Bind(&body); err != nil {
-		return err
-	}
-	request.Body = &body
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.PutTrackingConnectionsId(ctx.Request().Context(), request.(PutTrackingConnectionsIdRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "PutTrackingConnectionsId")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(PutTrackingConnectionsIdResponseObject); ok {
-		return validResponse.VisitPutTrackingConnectionsIdResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("Unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// GetTrackingStats operation middleware
-func (sh *strictHandler) GetTrackingStats(ctx echo.Context) error {
-	var request GetTrackingStatsRequestObject
-
-	handler := func(ctx echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetTrackingStats(ctx.Request().Context(), request.(GetTrackingStatsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetTrackingStats")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(GetTrackingStatsResponseObject); ok {
-		return validResponse.VisitGetTrackingStatsResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("Unexpected response type: %T", response)
-	}
-	return nil
-}
-
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
-	"RbglC3ExAAA=",
+	"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",
+	"AAD//5YrLsAyMwAA",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file
