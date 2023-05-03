@@ -298,6 +298,8 @@ paths:
                 $ref: '#/components/schemas/BahnPlacesList'
         401:
           description: Not logged in
+        503:
+          description: Cannot reach bahn API
   /bahn/connections:
     get:
       tags:
@@ -328,6 +330,8 @@ paths:
                 $ref: '#/components/schemas/BahnConnectionsList'
         401:
           description: Not logged in
+        503:
+          description: Cannot reach bahn API
 
   /alarms:
     get:
