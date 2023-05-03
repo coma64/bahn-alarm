@@ -12,12 +12,15 @@ import (
 	"github.com/rs/zerolog/log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
 var authWhitelist = []string{
 	"/auth/login",
 	"/auth/register",
+	"/docs",
+	"/static/swagger",
 }
 
 func setUsernameFromJwtToken(ctx echo.Context) {
@@ -68,7 +71,7 @@ func main() {
 			},
 		}),
 		middleware.CORSWithConfig(middleware.CORSConfig{
-			AllowOrigins:     []string{"http://localhost:8080"},
+			AllowOrigins:     []string{"http://localhost:8090", "http://localhost:4200"},
 			AllowCredentials: true,
 		}),
 		middleware.TimeoutWithConfig(middleware.TimeoutConfig{
@@ -82,7 +85,7 @@ func main() {
 			Skipper: func(c echo.Context) bool {
 				path := c.Request().URL.Path
 				for _, whitelistedPath := range authWhitelist {
-					if path == whitelistedPath {
+					if strings.HasPrefix(path, whitelistedPath) {
 						return true
 					}
 				}
@@ -95,8 +98,8 @@ func main() {
 	server.RegisterHandlers(e, bahnAlarmApi)
 
 	e.File("/docs", "static/docs.html")
+	e.File("/docs/openapi.yml", "openapi.yml")
 	e.Static("/static/swagger", "swagger-ui/dist")
-	e.File("/openapi.yml", "openapi.yml")
 
 	log.Fatal().Err(e.Start(config.Conf.Bind))
 }
