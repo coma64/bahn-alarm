@@ -343,7 +343,9 @@ fetch first 1 row only
 		`,
 		ctx.Get("username"),
 	); err != nil {
-		return fmt.Errorf("error getting next departure: %w", err)
+		if err != sql.ErrNoRows {
+			return fmt.Errorf("error getting next departure: %w", err)
+		}
 	}
 
 	return ctx.JSON(http.StatusOK, &stats)
