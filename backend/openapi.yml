@@ -241,7 +241,7 @@ paths:
         401:
           description: Not logged in
   /notifications/push-subscriptions/{id}:
-    patch:
+    put:
       tags:
         - notifications
       parameters:
@@ -254,7 +254,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PushNotificationSubscriptionPartialUpdate'
+              $ref: '#/components/schemas/PushNotificationSubscription'
       responses:
         204:
           description: Updated
@@ -432,7 +432,7 @@ components:
     DelayChangeAlarm:
       properties:
         newDelayMinutes:
-          type: number
+          type: integer
         connection:
           $ref: '#/components/schemas/SimpleConnection'
       required:
@@ -574,7 +574,7 @@ components:
       type: object
       properties:
         id:
-          type: number
+          type: integer
           readOnly: true
         isEnabled:
           type: boolean
@@ -585,6 +585,7 @@ components:
         createdAt:
           type: string
           format: date-time
+          readOnly: true
         subscription:
           $ref: '#/components/schemas/RawSubscription'
       required:
@@ -637,7 +638,7 @@ components:
       type: object
       properties:
         id:
-          type: number
+          type: integer
           readOnly: true
         fromId:
           type: string
