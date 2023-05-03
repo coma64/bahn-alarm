@@ -124,9 +124,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TrackedConnectionList'
+                $ref: '#/components/schemas/TrackedConnectionList'
         401:
           description: Not logged in
     post:
