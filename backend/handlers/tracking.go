@@ -306,5 +306,44 @@ func (b *BahnAlarmApi) PutTrackingConnectionsId(ctx echo.Context, id int) error 
 }
 
 func (b *BahnAlarmApi) GetTrackingStats(ctx echo.Context) error {
-	return nil
+	var stats server.TrackingStats
+	if err := db.Db.GetContext(
+		ctx.Request().Context(),
+		&stats,
+		`
+select
+    count(d.id) totalConnectionCount,
+    count(d.id) filter (where i.actualTime is not null and i.actualTime != i.scheduledTime) delayedConnectionCount,
+    count(d.id) filter (where i.departureId is not null and i.actualTime is null) canceledConnectionCount
+from departures d
+    left outer join departureInfos i on i.departureId = d.id
+	inner join connections c on c.id = d.connectionId
+	inner join users u on u.id = c.trackedById
+where u.name = $1
+		`,
+		ctx.Get("username"),
+	); err != nil {
+		return fmt.Errorf("error getting connection counts: %w", err)
+	}
+
+	if err := db.Db.GetContext(
+		ctx.Request().Context(),
+		&stats.NextDeparture,
+		`
+select
+    d.departure,
+    d.connectionId
+from departures d
+    inner join connections c on c.id = d.connectionId
+    inner join users u on u.id = c.trackedById
+where u.name = $1
+order by now() - d.departure desc
+fetch first 1 row only
+		`,
+		ctx.Get("username"),
+	); err != nil {
+		return fmt.Errorf("error getting next departure: %w", err)
+	}
+
+	return ctx.JSON(http.StatusOK, &stats)
 }
