@@ -9,15 +9,16 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { AlarmContent } from './alarmContent';
 import { Urgency } from './urgency';
+import { SimpleConnection } from './simpleConnection';
 
 
 export interface Alarm { 
     id: number;
     urgency: Urgency;
     createdAt: string;
-    content: AlarmContent;
+    connection: SimpleConnection;
+    message: string;
 }
 export namespace Alarm {
 }

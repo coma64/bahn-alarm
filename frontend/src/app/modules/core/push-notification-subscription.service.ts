@@ -41,6 +41,10 @@ export class PushNotificationSubscriptionService implements OnDestroy {
     this.swPush.subscription
       .pipe(takeUntil(this.destroy$))
       .subscribe((sub) => (this._isRegistered = !!sub));
+
+    this.swPush.messages
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((message) => console.log({ message }));
   }
 
   ngOnDestroy(): void {

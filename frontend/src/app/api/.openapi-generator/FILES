@@ -12,7 +12,6 @@ encoder.ts
 git_push.sh
 index.ts
 model/alarm.ts
-model/alarmContent.ts
 model/alarmsList.ts
 model/bahnConnection.ts
 model/bahnConnectionDeparture.ts
@@ -20,8 +19,6 @@ model/bahnConnectionsList.ts
 model/bahnPlace.ts
 model/bahnPlacesList.ts
 model/bahnStation.ts
-model/cancelledAlarm.ts
-model/delayChangeAlarm.ts
 model/loginRequest.ts
 model/models.ts
 model/pagination.ts

@@ -1,5 +1,4 @@
 export * from './alarm';
-export * from './alarmContent';
 export * from './alarmsList';
 export * from './bahnConnection';
 export * from './bahnConnectionDeparture';
@@ -7,8 +6,6 @@ export * from './bahnConnectionsList';
 export * from './bahnPlace';
 export * from './bahnPlacesList';
 export * from './bahnStation';
-export * from './cancelledAlarm';
-export * from './delayChangeAlarm';
 export * from './loginRequest';
 export * from './pagination';
 export * from './pushNotificationSubscription';

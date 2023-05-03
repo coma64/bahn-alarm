@@ -18,34 +18,9 @@
       </button>
     </div>
 
-    <ng-container *ngIf="alarm.content as content">
-      <p
-        *ngIf="
-          content.type === 'delay-change-alarm' && content.newDelayMinutes !== 0
-        "
-      >
-        New delay of {{ content.newDelayMinutes }}m
-      </p>
+    <p>{{ alarm.message }}</p>
 
-      <p *ngIf="content.type === 'cancelled-alarm' && content.isCanceled">
-        Connection was canceled
-      </p>
-
-      <p
-        *ngIf="
-          (content.type === 'delay-change-alarm' &&
-            content.newDelayMinutes === 0) ||
-          (content.type === 'cancelled-alarm' && !content.isCanceled)
-        "
-      >
-        Connection is no longer delayed
-      </p>
-
-      <app-connection-info
-        *ngIf="content.connection"
-        [connection]="content.connection"
-      ></app-connection-info>
-    </ng-container>
+    <app-connection-info [connection]="alarm.connection"></app-connection-info>
   </div>
 </section>
 
