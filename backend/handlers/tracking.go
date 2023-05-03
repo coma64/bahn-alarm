@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/Masterminds/squirrel"
@@ -137,6 +138,12 @@ where connectionId in (?)
 				connSchemas[connIndex].Departures = append(connSchemas[connIndex].Departures, departure.TrackedDeparture)
 			}
 		}
+	}
+
+	for _, conn := range connSchemas {
+		sort.Slice(conn.Departures, func(i, j int) bool {
+			return conn.Departures[i].Departure.Before(conn.Departures[j].Departure)
+		})
 	}
 
 	return ctx.JSON(http.StatusOK, server.TrackedConnectionList{
