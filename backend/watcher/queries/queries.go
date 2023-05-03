@@ -9,50 +9,12 @@ import (
 	"time"
 )
 
-type DepartureModel struct {
-	models.Departure
-	FromStationId          string
-	FromStationName        string
-	ToStationId            string
-	ToStationName          string
-	DepartureMarginMinutes int
-	TrackedById            int
-}
-
-func TimeOnly(t time.Time) time.Time {
-	year, month, day := t.Date()
-	return t.AddDate(-year, -int(month)+1, -day+1)
-}
-
-func (d *DepartureModel) TimeUntilNextDeparture() time.Duration {
-	nowTime := TimeOnly(time.Now().UTC())
-	diff := d.Departure.Departure.Sub(nowTime)
-	if d.Departure.Departure.Before(nowTime) {
-		diff += time.Hour * 24
-	}
-	return diff
-}
-
-func SelectDueDepartures(ctx context.Context) ([]DepartureModel, error) {
-	departures := []DepartureModel{}
+func SelectDueDepartures(ctx context.Context) ([]FatDeparture, error) {
+	departures := []FatDeparture{}
 	return departures, db.Db.SelectContext(
 		ctx,
 		&departures,
-		`
-select
-	d.*,
-	f.externalId fromStationId,
-	f.name fromStationName,
-	t.externalId toStationId,
-	t.name toStationName,
-	c.departureMarginMinutes,
-	c.trackedById
-from departures d
-	inner join connections c on d.connectionId = c.id
-	inner join bahnStations f on c.fromId = f.id
-	inner join bahnStations t on c.toId = t.id
-where d.nextCheck < now();
-`,
+		`select * from fatDepartures where nextCheck < now()`,
 	)
 }
 
@@ -61,7 +23,7 @@ func UpdateDepartureNextCheck(ctx context.Context, id int, newNextCheck time.Tim
 	return err
 }
 
-func CreateOrUpdateDepartureInfo(ctx context.Context, departure *DepartureModel, trip *bahn.Trip) (*models.DepartureInfo, error) {
+func CreateOrUpdateDepartureInfo(ctx context.Context, departure *FatDeparture, trip *bahn.Trip) (*models.DepartureInfo, error) {
 	var departureInfo models.DepartureInfo
 	return &departureInfo, db.Db.GetContext(
 		ctx,

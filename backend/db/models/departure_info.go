@@ -1,15 +1,9 @@
 package models
 
-import "time"
-
-const (
-	DepartureStatusNotChecked DepartureStatus = iota
-	DepartureStatusDelayed
-	DepartureStatusCanceled
-	DepartureStatusOnTime
+import (
+	"github.com/coma64/bahn-alarm-backend/server"
+	"time"
 )
-
-type DepartureStatus int
 
 type DepartureInfo struct {
 	DepartureId   int
@@ -18,15 +12,15 @@ type DepartureInfo struct {
 	ActualTime    *time.Time
 }
 
-func (d *DepartureInfo) DepartureStatus() DepartureStatus {
+func (d *DepartureInfo) DepartureStatus() server.TrackedDepartureStatus {
 	if d == nil {
-		return DepartureStatusNotChecked
+		return server.NotChecked
 	} else if d.ActualTime == nil {
-		return DepartureStatusCanceled
+		return server.Canceled
 	} else if d.ScheduledTime.Equal(*d.ActualTime) {
-		return DepartureStatusOnTime
+		return server.OnTime
 	} else {
-		return DepartureStatusDelayed
+		return server.Delayed
 	}
 }
 

@@ -450,20 +450,6 @@ components:
         - info
         - warn
         - error
-    ConnectionAlarm:
-      properties:
-        type:
-          type: string
-          enum:
-            - connection-alarm
-        message:
-          type: string
-        connection:
-          $ref: '#/components/schemas/SimpleConnection'
-      required:
-        - type
-        - connection
-        - message
     Alarm:
       properties:
         id:
@@ -473,15 +459,16 @@ components:
         createdAt:
           type: string
           format: date-time
-        content:
-          oneOf:
-            - $ref: '#/components/schemas/ConnectionAlarm'
+        connection:
+          $ref: '#/components/schemas/SimpleConnection'
+        message:
+          type: string
       required:
         - id
         - urgency
         - createdAt
         - connection
-        - content
+        - message
 
     SimpleConnection:
       type: object

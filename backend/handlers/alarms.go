@@ -12,15 +12,24 @@ func (b *BahnAlarmApi) GetAlarms(ctx echo.Context, params server.GetAlarmsParams
 	offset, size := defaultPagination(params.Page, params.Size)
 	isNotFilteringUrgency := params.Urgency == nil
 
-	alarms := []models.Alarm{}
+	alarms := []struct {
+		models.Alarm
+		server.SimpleConnection
+	}{}
 	if err := db.Db.SelectContext(
 		ctx.Request().Context(),
 		&alarms,
 		`
-select a.*
+select
+    a.*,
+    f.departure,
+    f.fromStationName fromName,
+    f.toStationName toName
 from alarms a
     inner join users u on a.receiverId = u.id
+	inner join fatDepartures f on f.id = a.departureId
 where u.name = $1 and ($2 or a.urgency = $3)
+order by a.createdAt desc
 offset $4 fetch first $5 rows only
 `,
 		ctx.Get("username"),
@@ -46,7 +55,7 @@ offset $4 fetch first $5 rows only
 
 	alarmSchemas := make([]server.Alarm, 0, len(alarms))
 	for _, alarm := range alarms {
-		schema, err := alarm.ToSchema()
+		schema, err := alarm.ToSchema(&alarm.SimpleConnection)
 		if err != nil {
 			return err
 		}

@@ -43,7 +43,7 @@ func nowAddWithJitter(sleep time.Duration) time.Time {
 	return time.Now().Add(sleep + time.Duration(rand.Int63n(int64(sleep*5/100))))
 }
 
-func getNewNextCheck(connection *queries.DepartureModel) time.Time {
+func getNewNextCheck(connection *queries.FatDeparture) time.Time {
 	nextDeparture := connection.TimeUntilNextDeparture()
 	if nextDeparture < time.Minute*2 {
 		return nowAddWithJitter(nextDeparture)

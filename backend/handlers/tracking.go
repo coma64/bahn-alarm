@@ -97,19 +97,7 @@ offset $2 fetch first $3 rows only
 	}
 
 	departuresQuery, args, err := sqlx.In(`
-select
-	connectionId,
-	departure,
-    floor((extract(epoch from i.actualTime) - extract(epoch from i.scheduledTime)) / 60) as delay,
-	case
-	    when i.departureId is null then 'not-checked'
-	    when i.actualTime = i.scheduledTime then 'on-time'
-	    when i.actualTime is null then 'canceled'
-	    else 'delayed'
-	end status
-from departures d
-    left outer join departureInfos i on i.departureId = d.id
-where connectionId in (?)
+select connectionId, departure, delayMinutes, status from fatDepartures where connectionId in (?)
 		`,
 		extractConnectionIds(conns),
 	)
@@ -121,7 +109,7 @@ where connectionId in (?)
 
 	var departures []struct {
 		server.TrackedDeparture
-		Delay        *int
+		DelayMinutes int
 		ConnectionId int
 	}
 	if err = db.Db.SelectContext(
@@ -137,9 +125,7 @@ where connectionId in (?)
 	for _, departure := range departures {
 		for connIndex := range connSchemas {
 			if departure.ConnectionId == conns[connIndex].Id {
-				if departure.Delay != nil {
-					departure.TrackedDeparture.Delay = *departure.Delay
-				}
+				departure.TrackedDeparture.Delay = departure.DelayMinutes
 				connSchemas[connIndex].Departures = append(connSchemas[connIndex].Departures, departure.TrackedDeparture)
 			}
 		}

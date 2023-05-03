@@ -10,7 +10,7 @@ import (
 
 var TripNotFound = fmt.Errorf("trip not found")
 
-func fetchTrip(ctx context.Context, departure *queries.DepartureModel) (*bahn.Trip, error) {
+func fetchTrip(ctx context.Context, departure *queries.FatDeparture) (*bahn.Trip, error) {
 	response, err := bahn.FetchConnections(
 		ctx,
 		time.Now().UTC().Add(
@@ -34,7 +34,7 @@ func fetchTrip(ctx context.Context, departure *queries.DepartureModel) (*bahn.Tr
 	return trip, nil
 }
 
-func getMatchingTrip(trips []bahn.Trip, departure *queries.DepartureModel) (*bahn.Trip, error) {
+func getMatchingTrip(trips []bahn.Trip, departure *queries.FatDeparture) (*bahn.Trip, error) {
 	for _, trip := range trips {
 		if isWithinMargin(trip.Departure.ScheduledTime, departure.Departure.Departure, departure.DepartureMarginMinutes) {
 			return &trip, nil
