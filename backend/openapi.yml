@@ -195,6 +195,18 @@ paths:
         404:
           description: Not found
 
+  /notifications/vapid-keys:
+    get:
+      tags:
+        - notifications
+      responses:
+        200:
+          description: Public vapid key for registering with the service worker
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VapidKeys'
+
   /notifications/push-subscriptions:
     get:
       tags:
@@ -440,20 +452,30 @@ components:
         - error
     DelayChangeAlarm:
       properties:
+        type:
+          type: string
+          enum:
+            - delay-change-alarm
         newDelayMinutes:
           type: integer
         connection:
           $ref: '#/components/schemas/SimpleConnection'
       required:
+        - type
         - newDelayMinutes
         - connection
     CancelledAlarm:
       properties:
+        type:
+          type: string
+          enum:
+            - cancelled-alarm
         isCanceled:
           type: boolean
         connection:
           $ref: '#/components/schemas/SimpleConnection'
       required:
+        - type
         - isCanceled
         - connection
     Alarm:
@@ -539,6 +561,15 @@ components:
         - name
         - label
         - stationId
+
+    VapidKeys:
+      type: object
+      properties:
+        publicKey:
+          type: string
+          example: 1234abc
+      required:
+        - publicKey
 
     PushNotificationSubscriptionList:
       type: object

@@ -4,12 +4,17 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"github.com/coma64/bahn-alarm-backend/config"
 	"github.com/coma64/bahn-alarm-backend/db"
 	"github.com/coma64/bahn-alarm-backend/db/models"
 	"github.com/coma64/bahn-alarm-backend/server"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
+
+func (b *BahnAlarmApi) GetNotificationsVapidKeys(ctx echo.Context) error {
+	return ctx.JSON(http.StatusOK, server.VapidKeys{PublicKey: config.Conf.PushNotifications.VapidKeys.Public})
+}
 
 func (b *BahnAlarmApi) GetNotificationsPushSubscriptions(ctx echo.Context, params server.GetNotificationsPushSubscriptionsParams) error {
 	var body server.GetNotificationsPushSubscriptionsParams
