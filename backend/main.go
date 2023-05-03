@@ -13,5 +13,9 @@ func main() {
 	apiHandler := server.NewStrictHandler(bahnAlarmApi, nil)
 	server.RegisterHandlers(e, apiHandler)
 
+	e.File("/docs", "static/docs.html")
+	e.Static("/static/swagger", "swagger-ui/dist")
+	e.File("/openapi.yml", "openapi.yml")
+
 	e.Logger.Fatal(e.Start(":8090"))
 }
