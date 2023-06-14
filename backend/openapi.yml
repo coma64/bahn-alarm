@@ -3,14 +3,14 @@ info:
   title: Bahn Alarm
   description: |-
     An app for live tracking of train delays from the DB
-    
+
     - In case of a request validation failure a `400` status code is returned regardless of what's documented
     - All endpoints that document a `401` response require authentication
       - If the JWT is expired or invalid a `401` status code is returned
       - If the `jwt` cookie is not present a `400` status code is returned
-#  license:
-#    name: Apache 2.0
-#    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  #  license:
+  #    name: Apache 2.0
+  #    url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 0.0.1
 servers:
   - url: http://localhost:8090
@@ -37,20 +37,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
+              $ref: "#/components/schemas/LoginRequest"
       responses:
         200:
           description: Successful login
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: "#/components/schemas/User"
         400:
           description: Validation failed, or invalid username or password
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationFailed'
+                $ref: "#/components/schemas/ValidationFailed"
   /auth/logout:
     post:
       tags:
@@ -68,7 +68,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterRequest'
+              $ref: "#/components/schemas/RegisterRequest"
       responses:
         201:
           description: Successfully registered
@@ -77,7 +77,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationFailed'
+                $ref: "#/components/schemas/ValidationFailed"
         409:
           description: Invite token used or expired
   /auth/me:
@@ -90,7 +90,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: "#/components/schemas/User"
         401:
           description: Not logged in
 
@@ -104,7 +104,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TrackingStats'
+                $ref: "#/components/schemas/TrackingStats"
         401:
           description: Not logged in
   /tracking/connections:
@@ -128,7 +128,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TrackedConnectionList'
+                $ref: "#/components/schemas/TrackedConnectionList"
         401:
           description: Not logged in
     post:
@@ -138,20 +138,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TrackedConnectionWrite'
+              $ref: "#/components/schemas/TrackedConnectionWrite"
       responses:
         201:
           description: Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TrackedConnection'
+                $ref: "#/components/schemas/TrackedConnection"
         400:
           description: Validation failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationFailed'
+                $ref: "#/components/schemas/ValidationFailed"
         401:
           description: Not logged in
         409:
@@ -170,7 +170,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TrackedConnectionUpdate'
+              $ref: "#/components/schemas/TrackedConnectionUpdate"
       responses:
         204:
           description: Updated
@@ -205,7 +205,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VapidKeys'
+                $ref: "#/components/schemas/VapidKeys"
 
   /notifications/push-subscriptions:
     get:
@@ -228,7 +228,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PushNotificationSubscriptionList'
+                $ref: "#/components/schemas/PushNotificationSubscriptionList"
         401:
           description: Not logged in
     post:
@@ -238,20 +238,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PushNotificationSubscriptionCreate'
+              $ref: "#/components/schemas/PushNotificationSubscriptionCreate"
       responses:
         201:
           description: Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PushNotificationSubscription'
+                $ref: "#/components/schemas/PushNotificationSubscription"
         400:
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationFailed'
+                $ref: "#/components/schemas/ValidationFailed"
         401:
           description: Not logged in
   /notifications/push-subscriptions/{id}:
@@ -268,7 +268,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PushNotificationSubscription'
+              $ref: "#/components/schemas/PushNotificationSubscription"
       responses:
         204:
           description: Updated
@@ -310,7 +310,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BahnPlacesList'
+                $ref: "#/components/schemas/BahnPlacesList"
         400:
           description: Name too short
         401:
@@ -344,7 +344,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BahnConnectionsList'
+                $ref: "#/components/schemas/BahnConnectionsList"
         401:
           description: Not logged in
         503:
@@ -368,14 +368,14 @@ paths:
         - name: urgency
           in: query
           schema:
-            $ref: '#/components/schemas/Urgency'
+            $ref: "#/components/schemas/Urgency"
       responses:
         200:
           description: All alarms
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AlarmsList'
+                $ref: "#/components/schemas/AlarmsList"
         401:
           description: Not logged in
   /alarms/{id}:
@@ -436,11 +436,11 @@ components:
       type: object
       properties:
         pagination:
-          $ref: '#/components/schemas/Pagination'
+          $ref: "#/components/schemas/Pagination"
         alarms:
           type: array
           items:
-            $ref: '#/components/schemas/Alarm'
+            $ref: "#/components/schemas/Alarm"
       required:
         - alarms
         - pagination
@@ -455,12 +455,12 @@ components:
         id:
           type: integer
         urgency:
-          $ref: '#/components/schemas/Urgency'
+          $ref: "#/components/schemas/Urgency"
         createdAt:
           type: string
           format: date-time
         connection:
-          $ref: '#/components/schemas/SimpleConnection'
+          $ref: "#/components/schemas/SimpleConnection"
         message:
           type: string
       required:
@@ -491,7 +491,7 @@ components:
         connections:
           type: array
           items:
-            $ref: '#/components/schemas/BahnConnection'
+            $ref: "#/components/schemas/BahnConnection"
       required:
         - connections
     BahnConnection:
@@ -514,7 +514,7 @@ components:
         places:
           type: array
           items:
-            $ref: '#/components/schemas/BahnPlace'
+            $ref: "#/components/schemas/BahnPlace"
       required:
         - places
     BahnPlace:
@@ -547,11 +547,11 @@ components:
       type: object
       properties:
         pagination:
-          $ref: '#/components/schemas/Pagination'
+          $ref: "#/components/schemas/Pagination"
         subscriptions:
           type: array
           items:
-            $ref: '#/components/schemas/PushNotificationSubscription'
+            $ref: "#/components/schemas/PushNotificationSubscription"
       required:
         - pagination
         - subscriptions
@@ -561,7 +561,7 @@ components:
         name:
           type: string
         subscription:
-          $ref: '#/components/schemas/RawSubscription'
+          $ref: "#/components/schemas/RawSubscription"
       required:
         - name
         - subscription
@@ -573,7 +573,7 @@ components:
         name:
           type: string
         subscription:
-          $ref: '#/components/schemas/RawSubscription'
+          $ref: "#/components/schemas/RawSubscription"
     RawSubscription:
       type: object
       properties:
@@ -594,13 +594,13 @@ components:
           default: true
         name:
           type: string
-          default: ''
+          default: ""
         createdAt:
           type: string
           format: date-time
           readOnly: true
         subscription:
-          $ref: '#/components/schemas/RawSubscription'
+          $ref: "#/components/schemas/RawSubscription"
       required:
         - id
         - name
@@ -644,18 +644,18 @@ components:
         departures:
           type: array
           items:
-            $ref: '#/components/schemas/TrackedDepartureWrite'
+            $ref: "#/components/schemas/TrackedDepartureWrite"
       required:
         - departures
     TrackedConnectionList:
       type: object
       properties:
         pagination:
-          $ref: '#/components/schemas/Pagination'
+          $ref: "#/components/schemas/Pagination"
         connections:
           type: array
           items:
-            $ref: '#/components/schemas/TrackedConnection'
+            $ref: "#/components/schemas/TrackedConnection"
       required:
         - connections
         - pagination
@@ -675,13 +675,13 @@ components:
       type: object
       properties:
         from:
-          $ref: '#/components/schemas/BahnStation'
+          $ref: "#/components/schemas/BahnStation"
         to:
-          $ref: '#/components/schemas/BahnStation'
+          $ref: "#/components/schemas/BahnStation"
         departures:
           type: array
           items:
-            $ref: '#/components/schemas/TrackedDepartureWrite'
+            $ref: "#/components/schemas/TrackedDepartureWrite"
       required:
         - from
         - to
@@ -693,13 +693,13 @@ components:
           type: integer
           readOnly: true
         from:
-          $ref: '#/components/schemas/BahnStation'
+          $ref: "#/components/schemas/BahnStation"
         to:
-          $ref: '#/components/schemas/BahnStation'
+          $ref: "#/components/schemas/BahnStation"
         departures:
           type: array
           items:
-            $ref: '#/components/schemas/TrackedDeparture'
+            $ref: "#/components/schemas/TrackedDeparture"
       required:
         - id
         - from
@@ -750,7 +750,7 @@ components:
           minLength: 8
         inviteToken:
           type: string
-          example: '1234'
+          example: "1234"
       required:
         - username
         - password

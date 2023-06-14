@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: bahn-alarm
+  name: bahn-alarm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bahn-alarm
+  template:
+    metadata:
+      labels:
+        app: bahn-alarm
+    spec:
+      containers:
+        - image: bahn-alarm
+          name: bahn-alarm
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8090
