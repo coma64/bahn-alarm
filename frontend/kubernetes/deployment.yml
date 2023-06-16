@@ -16,6 +16,6 @@ spec:
         - name: zatong-registry-creds
       containers:
         - name: nginx
-          image: registry.zat.ong/bahn-alarm-frontend:v2
+          image: registry.zat.ong/bahn-alarm-frontend:v3
           ports:
             - containerPort: 80

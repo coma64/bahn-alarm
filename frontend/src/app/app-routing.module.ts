@@ -4,6 +4,11 @@ import { isLoggedInGuard } from './guards/logged-in.guard';
 
 const routes: Routes = [
   {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'connections',
+  },
+  {
     path: 'login',
     loadChildren: async () =>
       (await import('./modules/login/login.module')).LoginModule,
@@ -13,6 +18,10 @@ const routes: Routes = [
     loadChildren: async () =>
       (await import('./modules/core/core.module')).CoreModule,
     canActivate: [isLoggedInGuard],
+  },
+  {
+    path: '**',
+    redirectTo: 'connections',
   },
 ];
 
