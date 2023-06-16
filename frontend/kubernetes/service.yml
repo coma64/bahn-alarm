@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bahn-alarm-frontend
+  namespace: bahn-alarm
+spec:
+  selector:
+    app: bahn-alarm-frontend
+  ports:
+    - port: 80
+      name: web

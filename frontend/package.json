@@ -8,7 +8,9 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "generate-api": "openapi-generator-cli generate --input-spec 'http://localhost:8090/docs/openapi.yml' --generator-name typescript-angular --output src/app/api",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "docker": "./scripts/build-docker-image.bash",
+    "deploy": "kubectl apply -k ./kubernetes"
   },
   "private": true,
   "dependencies": {
