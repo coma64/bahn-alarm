@@ -6,7 +6,7 @@ import { TrackedConnection } from '../api';
 export type ConnectionsStateModel = {
   items: TrackedConnection[];
   page: number;
-}
+};
 
 const defaults = {
   items: [],

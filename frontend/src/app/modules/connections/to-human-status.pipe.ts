@@ -6,7 +6,7 @@ import { TrackedDeparture } from '../../api';
 })
 export class ToHumanStatusPipe implements PipeTransform {
   transform(departure: TrackedDeparture): string {
-    const {status} = departure;
+    const { status } = departure;
     if (status === 'on-time') return 'on time';
     if (status === 'delayed') return `+${departure.delay}m delay`;
     if (status === 'canceled') return 'canceled';

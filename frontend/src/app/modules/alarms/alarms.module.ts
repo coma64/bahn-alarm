@@ -10,7 +10,12 @@ import { ConnectionInfoComponent } from './connection-info/connection-info.compo
 import { FiltersComponent } from './filters/filters.component';
 
 @NgModule({
-  declarations: [AlarmsComponent, AlarmsListComponent, ConnectionInfoComponent, FiltersComponent],
+  declarations: [
+    AlarmsComponent,
+    AlarmsListComponent,
+    ConnectionInfoComponent,
+    FiltersComponent,
+  ],
   imports: [CommonModule, AlarmsRoutingModule, SharedModule, IconsModule],
 })
 export class AlarmsModule {}
