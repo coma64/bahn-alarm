@@ -12,11 +12,13 @@ spec:
       labels:
         app: bahn-alarm-frontend
     spec:
+      terminationGracePeriodSeconds: 60
       imagePullSecrets:
         - name: zatong-registry-creds
       containers:
         - name: nginx
-          image: registry.zat.ong/bahn-alarm-frontend:v3
+          image: registry.zat.ong/bahn-alarm-frontend:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
           resources:
