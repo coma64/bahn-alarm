@@ -65,5 +65,9 @@ func isFirstCheckAndIsOnTime(oldStatus, newStatus server.TrackedDepartureStatus)
 }
 
 func shouldSendNotification(oldStatus, newStatus server.TrackedDepartureStatus, oldDelay, newDelay int) bool {
-	return !isFirstCheckAndIsOnTime(oldStatus, newStatus) && (oldStatus != newStatus || !hasDelayChanged(oldStatus, newStatus, oldDelay, newDelay))
+	if oldStatus != newStatus && !isFirstCheckAndIsOnTime(oldStatus, newStatus) {
+		return true
+	}
+
+	return hasDelayChanged(oldStatus, newStatus, oldDelay, newDelay)
 }

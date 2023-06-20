@@ -43,13 +43,15 @@ func setUsernameFromJwtToken(ctx echo.Context) {
 func main() {
 	e := echo.New()
 	e.Debug = config.Conf.Debug
+	e.HideBanner = !config.Conf.Debug
+	e.HidePort = !config.Conf.Debug
 
 	if config.Conf.Debug {
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 		zerolog.DurationFieldUnit = time.Minute
-	} else {
-		log.Logger = log.Logger.Level(zerolog.InfoLevel)
 	}
+
+	log.Logger = log.Logger.Level(zerolog.Level(config.Conf.LogLevel))
 
 	watcherCtx, cancelWatcher := context.WithCancel(context.Background())
 	defer cancelWatcher()
@@ -65,9 +67,11 @@ func main() {
 			LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
 				var event *zerolog.Event
 				status := v.Status
-				if _, isHttpErr := v.Error.(*echo.HTTPError); v.Error != nil && !isHttpErr {
+				if httpErr, isHttpErr := v.Error.(*echo.HTTPError); v.Error != nil && !isHttpErr {
 					event = log.Err(v.Error)
 					status = http.StatusInternalServerError
+				} else if v.Error != nil && isHttpErr && httpErr.Code >= 500 {
+					event = log.Err(v.Error)
 				} else {
 					event = log.Info()
 				}
@@ -81,11 +85,11 @@ func main() {
 			},
 		}),
 		middleware.CORSWithConfig(middleware.CORSConfig{
-			AllowOrigins:     []string{"http://localhost:8090", "http://localhost:4200"},
+			AllowOrigins:     config.Conf.Requests.CorsOrigins,
 			AllowCredentials: true,
 		}),
 		middleware.TimeoutWithConfig(middleware.TimeoutConfig{
-			Timeout: time.Duration(config.Conf.RequestTimeoutSeconds) * time.Second,
+			Timeout: time.Duration(config.Conf.Requests.TimeoutSeconds) * time.Second,
 		}),
 		echojwt.WithConfig(echojwt.Config{
 			SigningKey:     []byte(config.Conf.Jwt.Secret),

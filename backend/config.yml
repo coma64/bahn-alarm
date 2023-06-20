@@ -1,12 +1,16 @@
 bind: ":8090"
-debug: true
-db:
-  dsn: user=postgres password=pass dbname=bahn_alarm sslmode=disable
-bahn:
-  api-key: J5RsB5Ramw2cb9gu8XmAWg3gWBiiNutP
-  base-url: https://api.prd.mobimeo.com
+debug: false
+log-level: 0
 jwt:
   cookie: jwt
   expiration-days: 30
-  secret: 6da28186bd7716bcabbd40dcdf69a177bde5ff3b3669bfab1b75c369084a08d7
-request-timeout-seconds: 120
+bahn:
+  api-key: J5RsB5Ramw2cb9gu8XmAWg3gWBiiNutP
+  base-url: https://api.prd.mobimeo.com
+requests:
+  timeout-seconds: 120
+db:
+  user: postgres
+  db-name: bahn_alarm
+push-notifications:
+  ttl: 30

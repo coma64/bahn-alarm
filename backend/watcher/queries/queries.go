@@ -3,10 +3,11 @@ package queries
 import (
 	"context"
 	"database/sql"
+	"time"
+
 	"github.com/coma64/bahn-alarm-backend/db"
 	"github.com/coma64/bahn-alarm-backend/db/models"
 	"github.com/coma64/bahn-alarm-backend/external_apis/bahn"
-	"time"
 )
 
 func SelectDueDepartures(ctx context.Context) ([]FatDeparture, error) {
@@ -61,5 +62,5 @@ func GetNextCheck(ctx context.Context) (*time.Time, error) {
 		NextCheck time.Time
 	}{}
 
-	return &result.NextCheck, db.Db.GetContext(ctx, &result, "select min(nextCheck) nextCheck from departures;")
+	return &result.NextCheck, db.Db.GetContext(ctx, &result, "select coalesce(min(nextCheck), now() + '5 minutes') nextCheck from departures;")
 }

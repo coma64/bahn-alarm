@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bahn-alarm-backend
+  namespace: bahn-alarm
+spec:
+  selector:
+    matchLabels:
+      app: bahn-alarm-backend
+  template:
+    metadata:
+      labels:
+        app: bahn-alarm-backend
+    spec:
+      terminationGracePeriodSeconds: 60
+      imagePullSecrets:
+      - name: zatong-registry-creds
+      containers:
+        - name: bahn-alarm-backend
+          image: registry.zat.ong/bahn-alarm-backend:latest
+          imagePullPolicy: Always
+          env:
+          - name: CONFIGOR_DB_HOST
+            value: postgres.bahn-alarm.svc.cluster.local
+          - name: CONFIGOR_REQUESTS_CORSORIGINS
+            value: '[https://bahn-alarm.com, https://docs.bahn-alarm.com]'
+          - name: CONFIGOR_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: POSTGRES_PASSWORD
+                name: postgres-bahn-alarm-user
+          envFrom:
+            - secretRef:
+                name: bahn-alarm-backend-settings
+          resources:
+            limits:
+                memory: 250M
+                cpu: 100m

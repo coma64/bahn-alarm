@@ -1,0 +1,8 @@
+resources:
+- namespace.yml
+- postgres/headless-service.yml
+- postgres/statefulset.yml
+- postgres/service.yml
+- backend/deployment.yml
+- backend/service.yml
+- backend/ingress-route.yml

@@ -85,8 +85,8 @@ func (a *Alarm) SendPushNotification(ctx context.Context) error {
 	}
 
 	_, err = webpush.SendNotificationWithContext(ctx, notificationJson, webpushSub, &webpush.Options{
-		Subscriber:      "coma64@outlook.com",
-		TTL:             30,
+		Subscriber:      config.Conf.PushNotifications.Subject,
+		TTL:             config.Conf.PushNotifications.Ttl,
 		VAPIDPublicKey:  config.Conf.PushNotifications.VapidKeys.Public,
 		VAPIDPrivateKey: config.Conf.PushNotifications.VapidKeys.Private,
 	})

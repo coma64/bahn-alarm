@@ -1,5 +1,15 @@
+debug: true
 push-notifications:
   subject: user@example.com
   vapid-keys:
     public: BCNhAZ9TELhuMPPakP-ZNaxhPxOmY3T3l3ztppwa02qLrk8xA7pFZJBUP96mNsFlBkmrjvwFg9NVIXFQFrbkePY
     private: xak4v96yQLPW25NlrO0VaDPltjcxESPPP1Fo-9SyWCM
+jwt:
+  secret: 6da28186bd7716bcabbd40dcdf69a177bde5ff3b3669bfab1b75c369084a08d7
+db:
+  host: localhost
+  password: pass
+requests:
+  cors-origins:
+    - http://localhost:8090
+    - http://localhost:4200

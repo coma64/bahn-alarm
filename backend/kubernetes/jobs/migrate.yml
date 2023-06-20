@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: run-migrations
+  namespace: bahn-alarm
+spec:
+  # one hour
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      containers:
+      - name: migrate
+        image: registry.zat.ong/bahn-alarm-backend:v18
+        env:
+          - name: CONFIGOR_DB_HOST
+            value: postgres.bahn-alarm.svc.cluster.local
+          - name: CONFIGOR_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: POSTGRES_PASSWORD
+                name: postgres-bahn-alarm-user
+        envFrom:
+          - secretRef:
+              name: bahn-alarm-backend-settings
+        command:
+          - "/app/bin/migrate"
+          - up
+          - "-dir /app/migrations"
+      restartPolicy: Never

@@ -38,37 +38,47 @@ func main() {
 		log.Fatal().Err(err).Send()
 	}
 
-	var sub models.PushNotificationSub
-	if err := db.Db.Get(
-		&sub,
+	subs := []models.PushNotificationSub{}
+	if err := db.Db.Select(
+		&subs,
 		"select p.* from pushNotificationSubs p join users u on u.id = p.ownerId where u.name = $1",
 		response.Name,
 	); err != nil {
 		log.Fatal().Err(err).Send()
 	}
 
-	webpushSub := &webpush.Subscription{}
-	if err := json.Unmarshal(sub.RawSubscription, &webpushSub); err != nil {
-		log.Fatal().Err(err).Send()
-	}
+	for _, sub := range subs {
+		subLog := log.With().Int("subId", sub.Id).Str("subName", sub.Name).Logger()
 
-	webpushResponse, err := webpush.SendNotification([]byte(response.Content), webpushSub, &webpush.Options{
-		Subscriber:      "coma64@outlook.com",
-		TTL:             30,
-		VAPIDPublicKey:  config.Conf.PushNotifications.VapidKeys.Public,
-		VAPIDPrivateKey: config.Conf.PushNotifications.VapidKeys.Private,
-	})
-	if err != nil {
-		log.Fatal().Err(err).Send()
-	}
+		webpushSub := &webpush.Subscription{}
+		if err := json.Unmarshal(sub.RawSubscription, webpushSub); err != nil {
+			log.Err(err).Int("subId", sub.Id).Str("subName", sub.Name).Msg("Unable to unmarshal push subscription. Skipping")
+			continue
+		}
 
-	if dump, err := httputil.DumpResponse(webpushResponse, true); err != nil {
-		log.Fatal().Err(err).Send()
-	} else {
-		fmt.Printf("%q", dump)
-	}
+		webpushResponse, err := webpush.SendNotification([]byte(response.Content), webpushSub, &webpush.Options{
+			Subscriber:      config.Conf.PushNotifications.Subject,
+			TTL:             config.Conf.PushNotifications.Ttl,
+			VAPIDPublicKey:  config.Conf.PushNotifications.VapidKeys.Public,
+			VAPIDPrivateKey: config.Conf.PushNotifications.VapidKeys.Private,
+		})
+		if err != nil {
+			subLog.Err(err).Str("content", response.Content).Msg("Failed to send push notification. Skipping")
+			continue
+		} else {
+			subLog.Info().Msg("Successfully sent push notification")
+		}
 
-	if err = webpushResponse.Body.Close(); err != nil {
-		log.Fatal().Err(err).Send()
+		var dump []byte
+		if dump, err = httputil.DumpResponse(webpushResponse, true); err != nil {
+			subLog.Err(err).Msg("Failed to dump webpush response body")
+		} else {
+			fmt.Println("--- Response ---")
+			fmt.Println(string(dump))
+		}
+
+		if err = webpushResponse.Body.Close(); err != nil {
+			subLog.Err(err).Msg("Failed to close webpush response body")
+		}
 	}
 }
