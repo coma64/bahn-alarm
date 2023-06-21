@@ -91,5 +91,10 @@ func (a *Alarm) ToPushNotification(ctx context.Context, db *sqlx.DB) (*notificat
 	return &notifications.Notification{
 		Title: departure + " " + stations.FromStationName + " -> " + stations.ToStationName,
 		Body:  a.Message,
+		Data: &notifications.NotificationData{
+			OnActionClick: map[string]notifications.ActionClickOperation{
+				"default": {Operation: "openWindow", Url: "/alarms"},
+			},
+		},
 	}, nil
 }
