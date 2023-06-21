@@ -18,6 +18,9 @@ FROM alpine:3.18.0
 WORKDIR /app
 ENV PATH="/app/bin:$PATH"
 
+# need this for timezone conversions
+RUN apk update && apk add tzdata
+
 COPY --from=builder /app/bin /app/bin
 COPY --from=builder /app/migrations /app/migrations
 COPY config.yml config.dev.yml ./
