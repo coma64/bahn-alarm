@@ -5,7 +5,7 @@ deploy:
 	kubectl apply -k ./kubernetes/
 
 docker:
-	toilet --filter metal $$(git describe --tags | sed 's/^v//' | cut -d- -f1)
+	figlet $$(git describe --tags | sed 's/^v//' | cut -d- -f1)
 	docker buildx build \
 		--platform linux/amd64 \
 		--push \
