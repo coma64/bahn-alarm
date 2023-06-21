@@ -17,7 +17,7 @@ type Notification struct {
 }
 
 type NotificationData struct {
-	OnActionClick map[string]ActionClickOperation
+	OnActionClick map[string]ActionClickOperation `json:"onActionClick"`
 }
 
 type ActionClickOperation struct {
