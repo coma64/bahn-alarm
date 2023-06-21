@@ -3,7 +3,10 @@ package checking
 import (
 	"context"
 	"fmt"
+	"github.com/coma64/bahn-alarm-backend/db"
 	"github.com/coma64/bahn-alarm-backend/db/models"
+	"github.com/coma64/bahn-alarm-backend/notifications"
+	"github.com/coma64/bahn-alarm-backend/notifications/web_push_notifier"
 	"github.com/coma64/bahn-alarm-backend/server"
 	"github.com/coma64/bahn-alarm-backend/watcher/queries"
 	"github.com/rs/zerolog/log"
@@ -44,8 +47,13 @@ func CheckDeparture(ctx context.Context, departure *queries.FatDeparture) error 
 		return fmt.Errorf("error creating alarm: %w", err)
 	}
 
+	var notification *notifications.Notification
+	if notification, err = alarm.ToPushNotification(ctx, db.Db); err != nil {
+		return fmt.Errorf("error converting alarm %d for user %d to notification: %w", alarm.Id, alarm.ReceiverId, err)
+	}
+
 	go func() {
-		if err = alarm.SendPushNotification(ctx); err != nil {
+		if err = web_push_notifier.New(db.Db).SendNotification(ctx, *notification, alarm.ReceiverId); err != nil {
 			log.Err(err).
 				Int("receiverId", alarm.ReceiverId).
 				Int("alarmId", alarm.Id).

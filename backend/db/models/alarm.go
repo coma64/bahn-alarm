@@ -2,13 +2,11 @@ package models
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"github.com/SherClockHolmes/webpush-go"
-	"github.com/coma64/bahn-alarm-backend/config"
 	"github.com/coma64/bahn-alarm-backend/db"
+	"github.com/coma64/bahn-alarm-backend/notifications"
 	"github.com/coma64/bahn-alarm-backend/server"
-	"github.com/rs/zerolog/log"
+	"github.com/jmoiron/sqlx"
 	"time"
 )
 
@@ -23,15 +21,15 @@ type Alarm struct {
 	Message     string
 }
 
-// https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification
-type notificationOptions struct {
-	Title string      `json:"title"`
-	Body  string      `json:"body"`
-	Data  interface{} `json:"data"`
-}
+var germanTimezone *time.Location
 
-type pushNotification struct {
-	Notification notificationOptions `json:"notification"`
+func init() {
+	loc, err := time.LoadLocation("Europe/Berlin")
+	if err != nil {
+		panic(fmt.Errorf("unable to get german timezone: %w", err))
+	}
+
+	germanTimezone = loc
 }
 
 func (a *Alarm) ToSchema(connection *server.SimpleConnection) (*server.Alarm, error) {
@@ -57,49 +55,26 @@ func InsertAlarm(ctx context.Context, receiverId int, urgency server.Urgency, de
 	)
 }
 
-func (a *Alarm) SendPushNotification(ctx context.Context) error {
-	var sub PushNotificationSub
-	if err := db.Db.Get(
-		&sub,
-		"select p.* from pushNotificationSubs p join users u on u.id = p.ownerId where u.id = $1",
-		a.ReceiverId,
-	); err != nil {
-		log.Debug().Int("receiverId", a.ReceiverId).Int("alarmId", a.Id).Msg("No push subscription found for alarm receiver")
-		return nil
+func (a *Alarm) getNotificationDeparture(ctx context.Context, db *sqlx.DB) (string, error) {
+	var departure time.Time
+	if row := db.QueryRowxContext(ctx, "select departure from departures where id = $1", a.DepartureId); row.Err() != nil {
+		return "", fmt.Errorf("error getting departure time: %w", row.Err())
+	} else if err := row.Scan(&departure); err != nil {
+		return "", fmt.Errorf("error scanning departure time: %w", err)
 	}
 
-	webpushSub := &webpush.Subscription{}
-	if err := json.Unmarshal(sub.RawSubscription, &webpushSub); err != nil {
-		return fmt.Errorf("error unmarshaling webpush subscription: %w", err)
-	}
+	// TODO: convert to users actual timezone
+	departure = departure.In(germanTimezone)
 
-	notification, err := a.toPushNotification(ctx)
-	if err != nil {
-		return fmt.Errorf("error creating push notification: %w", err)
-	}
-
-	var notificationJson []byte
-	notificationJson, err = json.Marshal(notification)
-	if err != nil {
-		return fmt.Errorf("error marshaling push notification: %w", err)
-	}
-
-	_, err = webpush.SendNotificationWithContext(ctx, notificationJson, webpushSub, &webpush.Options{
-		Subscriber:      config.Conf.PushNotifications.Subject,
-		TTL:             config.Conf.PushNotifications.Ttl,
-		VAPIDPublicKey:  config.Conf.PushNotifications.VapidKeys.Public,
-		VAPIDPrivateKey: config.Conf.PushNotifications.VapidKeys.Private,
-	})
-
-	return nil
+	return departure.Format("15:04"), nil
 }
 
-func (a *Alarm) toPushNotification(ctx context.Context) (*pushNotification, error) {
+func (a *Alarm) ToPushNotification(ctx context.Context, db *sqlx.DB) (*notifications.Notification, error) {
 	stations := struct {
 		FromStationName string
 		ToStationName   string
 	}{}
-	if err := db.Db.GetContext(
+	if err := db.GetContext(
 		ctx,
 		&stations,
 		"select fromStationName, toStationname from fatDepartures where id = $1",
@@ -108,10 +83,13 @@ func (a *Alarm) toPushNotification(ctx context.Context) (*pushNotification, erro
 		return nil, fmt.Errorf("error getting station names: %w", err)
 	}
 
-	return &pushNotification{
-		Notification: notificationOptions{
-			Title: stations.FromStationName + " -> " + stations.ToStationName,
-			Body:  a.Message,
-		},
+	departure, err := a.getNotificationDeparture(ctx, db)
+	if err != nil {
+		return nil, fmt.Errorf("error getting alarm departure for alarm %d on departure %d: %w", a.Id, a.DepartureId, err)
+	}
+
+	return &notifications.Notification{
+		Title: departure + " " + stations.FromStationName + " -> " + stations.ToStationName,
+		Body:  a.Message,
 	}, nil
 }
