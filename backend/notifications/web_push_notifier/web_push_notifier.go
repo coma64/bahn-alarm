@@ -18,6 +18,10 @@ type WebPushNotifier struct {
 	db *sqlx.DB
 }
 
+type webPushNotification struct {
+	Notification notifications.Notification `json:"notification"`
+}
+
 func New(db *sqlx.DB) WebPushNotifier {
 	return WebPushNotifier{db: db}
 }
@@ -29,7 +33,7 @@ func (w WebPushNotifier) SendNotification(ctx context.Context, notification noti
 	}
 
 	var notificationJson []byte
-	notificationJson, err = json.Marshal(notification)
+	notificationJson, err = json.Marshal(webPushNotification{Notification: notification})
 	if err != nil {
 		return fmt.Errorf("error marshaling notification: %w", err)
 	}
