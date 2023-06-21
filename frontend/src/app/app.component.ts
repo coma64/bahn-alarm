@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { SwPush, SwUpdate } from '@angular/service-worker';
-import { exhaustMap, filter, interval, Subject, takeUntil } from 'rxjs';
+import { SwUpdate } from '@angular/service-worker';
+import { exhaustMap, filter, Subject, takeUntil, timer } from 'rxjs';
 import { fromPromise } from 'rxjs/internal/observable/innerFrom';
 
 @Component({
@@ -15,7 +15,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // if a new version is available it is handled by the below subscription
-    interval(5 * 60_000)
+    timer(0, 5 * 60_000)
       .pipe(
         exhaustMap(() => fromPromise(this.swUpdate.checkForUpdate())),
         takeUntil(this.destroy$),
