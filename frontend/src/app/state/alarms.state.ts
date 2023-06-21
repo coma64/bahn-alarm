@@ -29,8 +29,6 @@ export class AlarmsState {
     getState,
     patchState,
   }: StateContext<AlarmsStateModel>): Observable<unknown> {
-    patchState({ items: undefined });
-
     const { page, size, filteredUrgency } = getState();
 
     return this.alarms.alarmsGet(page, size, filteredUrgency).pipe(
