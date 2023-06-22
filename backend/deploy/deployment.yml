@@ -14,9 +14,17 @@ spec:
       labels:
         app: bahn-alarm
     spec:
+      initContainers:
+        - name: wait-for-migrations
+          image: bahn-alarm:latest
+          imagePullPolicy: Always
+          command:
+            - sh
+            - -c
+            - 'until ! CONFIGOR_ENV=dev ./migrate status 2>&1 | tail -n +3 | grep Pending > /dev/null; do echo "Waiting for DB to be migrated"; sleep 1; done'
       containers:
-        - image: bahn-alarm
-          name: bahn-alarm
+        - name: bahn-alarm
+          image: bahn-alarm:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8090

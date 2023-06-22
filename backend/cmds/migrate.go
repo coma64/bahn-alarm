@@ -8,6 +8,7 @@ import (
 	"os"
 )
 
+// See goose.run for available sub commands
 func main() {
 	dbConn, err := goose.OpenDBWithDriver("postgres", db.CreateConnectionStr())
 	if err != nil {
