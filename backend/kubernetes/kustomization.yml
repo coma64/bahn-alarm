@@ -5,4 +5,5 @@ resources:
 - postgres/service.yml
 - backend/deployment.yml
 - backend/service.yml
+- backend/metrics-service.yml
 - backend/ingress-route.yml

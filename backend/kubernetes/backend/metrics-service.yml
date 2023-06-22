@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bahn-alarm-backend-metrics
+  namespace: bahn-alarm
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/path: '/metrics'
+    prometheus.io/port: '2112'
+spec:
+  selector:
+    app: bahn-alarm-backend
+  ports:
+    - port: 2112

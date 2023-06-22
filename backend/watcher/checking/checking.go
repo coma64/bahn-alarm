@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/coma64/bahn-alarm-backend/db"
 	"github.com/coma64/bahn-alarm-backend/db/models"
+	"github.com/coma64/bahn-alarm-backend/metrics"
 	"github.com/coma64/bahn-alarm-backend/notifications"
 	"github.com/coma64/bahn-alarm-backend/notifications/web_push_notifier"
 	"github.com/coma64/bahn-alarm-backend/server"
@@ -51,6 +52,8 @@ func CheckDeparture(ctx context.Context, departure *queries.FatDeparture) error 
 	if notification, err = alarm.ToPushNotification(ctx, db.Db); err != nil {
 		return fmt.Errorf("error converting alarm %d for user %d to notification: %w", alarm.Id, alarm.ReceiverId, err)
 	}
+
+	metrics.AlarmsSent.Inc()
 
 	go func() {
 		if err = web_push_notifier.New(db.Db).SendNotification(ctx, *notification, alarm.ReceiverId); err != nil {

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/coma64/bahn-alarm-backend/config"
+	"github.com/coma64/bahn-alarm-backend/metrics"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
 	"net/http"
@@ -39,6 +40,8 @@ func doRequest[T interface{}](ctx context.Context, query string, responseBody *T
 	if err != nil {
 		return fmt.Errorf("error creating request: %w", err)
 	}
+
+	metrics.BahnApiRequests.Inc()
 
 	var response *http.Response
 	if response, err = http.DefaultClient.Do(request); err != nil {

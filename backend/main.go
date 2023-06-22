@@ -4,12 +4,14 @@ import (
 	"context"
 	"github.com/coma64/bahn-alarm-backend/config"
 	"github.com/coma64/bahn-alarm-backend/handlers"
+	"github.com/coma64/bahn-alarm-backend/metrics"
 	"github.com/coma64/bahn-alarm-backend/server"
 	"github.com/coma64/bahn-alarm-backend/watcher"
 	"github.com/golang-jwt/jwt/v4"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"net/http"
@@ -59,12 +61,16 @@ func main() {
 		watcher.WatchBahnApi(watcherCtx)
 	}()
 
+	go exposePrometheusMetrics()
+
 	e.Use(
 		middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 			LogURI:    true,
 			LogStatus: true,
 			LogError:  true,
 			LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+				metrics.RequestDuration.Observe(v.Latency.Seconds())
+
 				var event *zerolog.Event
 				status := v.Status
 				if httpErr, isHttpErr := v.Error.(*echo.HTTPError); v.Error != nil && !isHttpErr {
@@ -116,5 +122,11 @@ func main() {
 	e.File("/docs/openapi.yml", "openapi.yml")
 	e.Static("/static/swagger", "swagger-ui/dist")
 
-	log.Fatal().Err(e.Start(config.Conf.Bind))
+	log.Fatal().Err(e.Start(config.Conf.Bind)).Send()
+}
+
+func exposePrometheusMetrics() {
+	handler := http.NewServeMux()
+	handler.Handle("/metrics", promhttp.Handler())
+	log.Fatal().Err(http.ListenAndServe(":2112", handler)).Send()
 }
