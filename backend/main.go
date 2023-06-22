@@ -79,6 +79,7 @@ func main() {
 				event.
 					Str("URI", v.URI).
 					Int("status", status).
+					Dur("duration", v.Latency).
 					Msg("request")
 
 				return nil
