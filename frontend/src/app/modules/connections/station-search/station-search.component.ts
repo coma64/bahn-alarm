@@ -15,16 +15,17 @@ import {
 import { CdkPortal, TemplatePortal } from '@angular/cdk/portal';
 import { Overlay } from '@angular/cdk/overlay';
 import {
+  catchError,
   debounceTime,
   distinctUntilChanged,
   EMPTY,
+  of,
   shareReplay,
   startWith,
   Subject,
   switchMap,
   take,
   takeUntil,
-  tap,
 } from 'rxjs';
 import { BahnPlace, BahnService, BahnStation } from '../../../api';
 import { NotifyService } from '../../shared/services/notify.service';
@@ -59,9 +60,9 @@ export class StationSearchComponent implements ControlValueAccessor, OnDestroy {
       // Start with undefined to show the loading spinner again
       return this.bahn.bahnPlacesGet(stationName).pipe(startWith(undefined));
     }),
-    tap({
-      error: () =>
-        this.notify.error('An error occurred while loading the stations'),
+    catchError(() => {
+      this.notify.error('An error occurred while loading the stations');
+      return of(undefined);
     }),
     shareReplay(1),
   );
