@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"strconv"
 	"time"
 )
 
@@ -35,23 +36,25 @@ func createBahnRequest(ctx context.Context, path string) (*http.Request, error) 
 	return request, err
 }
 
-func doRequest[T interface{}](ctx context.Context, query string, responseBody *T) error {
-	request, err := createBahnRequest(ctx, query)
+func doRequest[T interface{}](ctx context.Context, path, query string, responseBody *T) error {
+	request, err := createBahnRequest(ctx, path+query)
 	if err != nil {
 		return fmt.Errorf("error creating request: %w", err)
 	}
 
-	metrics.BahnApiRequests.Inc()
-
 	var response *http.Response
 	if response, err = http.DefaultClient.Do(request); err != nil {
+		metrics.BahnApiRequests.WithLabelValues(path, "-1").Inc()
 		return fmt.Errorf("error sending request: %w", err)
 	}
+
 	defer func() {
 		if err = response.Body.Close(); err != nil {
 			log.Err(err).Msg("failed to close response body")
 		}
 	}()
+
+	metrics.BahnApiRequests.WithLabelValues(path, strconv.Itoa(response.StatusCode)).Inc()
 
 	if response.StatusCode != 200 {
 		if config.Conf.Debug {
@@ -80,7 +83,7 @@ func FetchPlaces(ctx context.Context, query string) (*PlacesResponse, error) {
 	log.Debug().Str("package", "bahn").Str("query", query).Msg("Fetching places")
 
 	stations := &PlacesResponse{}
-	return stations, doRequest(ctx, "/spam/v1/places?query="+query, stations)
+	return stations, doRequest(ctx, "/spam/v1/places", "?query="+query, stations)
 }
 
 func FetchConnections(
@@ -109,5 +112,5 @@ func FetchConnections(
 	query.Set("destinationStationId", destinationStationId)
 
 	connections := &ConnectionsResponse{}
-	return connections, doRequest(ctx, "/navigation/v2/search/trips?"+query.Encode(), connections)
+	return connections, doRequest(ctx, "/navigation/v2/search/trips", "?"+query.Encode(), connections)
 }

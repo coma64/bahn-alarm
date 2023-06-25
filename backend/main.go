@@ -2,16 +2,16 @@ package main
 
 import (
 	"context"
+	"errors"
 	"github.com/coma64/bahn-alarm-backend/config"
 	"github.com/coma64/bahn-alarm-backend/handlers"
-	"github.com/coma64/bahn-alarm-backend/metrics"
 	"github.com/coma64/bahn-alarm-backend/server"
 	"github.com/coma64/bahn-alarm-backend/watcher"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/labstack/echo-contrib/echoprometheus"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"net/http"
@@ -43,10 +43,7 @@ func setUsernameFromJwtToken(ctx echo.Context) {
 }
 
 func main() {
-	e := echo.New()
-	e.Debug = config.Conf.Debug
-	e.HideBanner = !config.Conf.Debug
-	e.HidePort = !config.Conf.Debug
+	e := createEchoServer()
 
 	if config.Conf.Debug {
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
@@ -64,13 +61,12 @@ func main() {
 	go exposePrometheusMetrics()
 
 	e.Use(
+		echoprometheus.NewMiddleware("bahn_alarm"),
 		middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 			LogURI:    true,
 			LogStatus: true,
 			LogError:  true,
 			LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
-				metrics.RequestDuration.Observe(v.Latency.Seconds())
-
 				var event *zerolog.Event
 				status := v.Status
 				if httpErr, isHttpErr := v.Error.(*echo.HTTPError); v.Error != nil && !isHttpErr {
@@ -122,11 +118,23 @@ func main() {
 	e.File("/docs/openapi.yml", "openapi.yml")
 	e.Static("/static/swagger", "swagger-ui/dist")
 
-	log.Fatal().Err(e.Start(config.Conf.Bind)).Send()
+	if err := e.Start(config.Conf.Bind); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		log.Fatal().Err(err).Msg("Failed to start bahn alarm server")
+	}
+}
+
+func createEchoServer() *echo.Echo {
+	e := echo.New()
+	e.Debug = config.Conf.Debug
+	e.HideBanner = !config.Conf.Debug
+	e.HidePort = !config.Conf.Debug
+	return e
 }
 
 func exposePrometheusMetrics() {
-	handler := http.NewServeMux()
-	handler.Handle("/metrics", promhttp.Handler())
-	log.Fatal().Err(http.ListenAndServe(":2112", handler)).Send()
+	metricsServer := createEchoServer()
+	metricsServer.GET("/metrics", echoprometheus.NewHandler())
+	if err := metricsServer.Start(":2112"); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		log.Fatal().Err(err).Msg("Failed to start metrics server")
+	}
 }
