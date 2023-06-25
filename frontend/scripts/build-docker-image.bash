@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION=$(git describe --tags | cut -c 2-)
+VERSION=$(git describe --tags --match="fe-v*" | cut -c 5-)
 echo "${VERSION}" | figlet
 
 docker buildx build \

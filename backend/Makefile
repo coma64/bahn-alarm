@@ -5,11 +5,11 @@ deploy:
 	kubectl apply -k ./kubernetes/
 
 docker:
-	figlet $$(git describe --tags | sed 's/^v//' | cut -d- -f1)
+	figlet $$(git describe --tags --match="be-v*" | cut -c 5-)
 	docker buildx build \
 		--platform linux/amd64 \
 		--push \
-		--tag registry.zat.ong/bahn-alarm-backend:$$(git describe --tags | sed 's/^v//' | cut -d- -f1) \
+		--tag registry.zat.ong/bahn-alarm-backend:$$(git describe --tags --match="be-v*" | cut -c 5-) \
 		--tag registry.zat.ong/bahn-alarm-backend:latest \
 		.
 
