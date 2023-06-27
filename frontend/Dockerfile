@@ -11,7 +11,6 @@ COPY . .
 
 RUN NODE_OPTIONS=--max-old-space-size=8192 pnpm run build
 
-
 FROM nginx:1.25.1
 
 COPY --from=builder /app/dist/bahn-alarm-frontend-v3 /usr/share/nginx/html

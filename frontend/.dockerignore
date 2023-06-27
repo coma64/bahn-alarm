@@ -12,3 +12,4 @@ scripts/
 .prettierrc.json
 openapitools.json
 README.md
+Dockerfile

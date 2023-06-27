@@ -24,8 +24,9 @@ RUN apk update && apk add tzdata
 COPY --from=builder /app/bin /app/bin
 COPY --from=builder /app/migrations /app/migrations
 COPY config.yml config.dev.yml ./
+COPY scripts/ ./scripts/
 
-EXPOSE 8080
+EXPOSE 8090
 USER nobody:nobody
 
-CMD ["/app/bin/server"]
+CMD ["/app/scripts/start-server-after-db-is-migrated.sh"]

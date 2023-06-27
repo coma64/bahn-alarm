@@ -1,0 +1,28 @@
+services:
+  backend:
+    build: ./backend/
+    restart: always
+    ports:
+      - 8090:8090
+    environment:
+      CONFIGOR_ENV: dev
+      CONFIGOR_DB_HOST: db
+  frontend:
+    build:
+      context: ./frontend/
+      dockerfile: development.Dockerfile
+    ports:
+      - 4200:4200
+  db:
+    image: postgres:15.1-bullseye
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: bahn_alarm
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+volumes:
+  pg_data:

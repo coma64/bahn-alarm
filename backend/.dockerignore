@@ -1,6 +1,7 @@
-/swagger-ui/
+swagger-ui/
 *.drawio
-/oapi-codegen.config.yml
-/Makefile
-/.idea
-/.git
+oapi-codegen.config.yml
+Makefile
+.idea
+.git
+Dockerfile

@@ -7,3 +7,6 @@ resources:
 - backend/service.yml
 - backend/metrics-service.yml
 - backend/ingress-route.yml
+- frontend/deployment.yml
+- frontend/service.yml
+- frontend/traefik-ingress-route.yml
