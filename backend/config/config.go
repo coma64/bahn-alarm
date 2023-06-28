@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/jinzhu/configor"
+	"github.com/rs/zerolog/log"
 )
 
 var Conf = struct {
@@ -44,6 +45,6 @@ func init() {
 	}
 
 	if Conf.PushNotifications.VapidKeys.Public == "" {
-		panic("Public vapid key not set. Did you forgot to specify a configor env using 'CONFIGOR_ENV=dev'?")
+		log.Warn().Msg("Public vapid key not set. Did you forgot to specify a configor env using 'CONFIGOR_ENV=dev'?")
 	}
 }

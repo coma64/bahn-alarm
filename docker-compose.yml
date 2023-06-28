@@ -1,5 +1,7 @@
 services:
   backend:
+    profiles:
+      - full
     build: ./backend/
     restart: always
     ports:
@@ -12,6 +14,8 @@ services:
       - -c
       - '/app/scripts/wait-for-db-to-be-migrated.sh && /app/bin/server'
   frontend:
+    profiles:
+      - full
     build:
       context: ./frontend/
       dockerfile: development.Dockerfile
