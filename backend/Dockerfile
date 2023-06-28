@@ -24,11 +24,10 @@ ENV PATH="/app:$PATH"
 RUN apk add tzdata
 
 COPY --from=builder $BIN $BIN
-COPY --from=builder /app/migrations /app/migrations
 COPY config.yml config.dev.yml ./
 COPY scripts/ ./scripts/
 
 EXPOSE 8090
 USER nobody:nobody
 
-CMD $BIN serve
+ENTRYPOINT ["/app/bahn-alarm", "serve"]

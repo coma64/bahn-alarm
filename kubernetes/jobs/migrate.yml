@@ -8,9 +8,12 @@ spec:
   ttlSecondsAfterFinished: 3600
   template:
     spec:
+      imagePullSecrets:
+        - name: zatong-registry-creds
       containers:
       - name: migrate
-        image: registry.zat.ong/bahn-alarm-backend:v18
+        image: registry.zat.ong/bahn-alarm-backend:latest
+        imagePullPolicy: Always
         env:
           - name: CONFIGOR_DB_HOST
             value: postgres.bahn-alarm.svc.cluster.local
@@ -23,7 +26,7 @@ spec:
           - secretRef:
               name: bahn-alarm-backend-settings
         command:
-          - "/app/bin/migrate"
+          - bahn-alarm
+          - migrate
           - up
-          - "-dir /app/migrations"
       restartPolicy: Never
