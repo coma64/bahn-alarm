@@ -29,4 +29,4 @@ COPY scripts/ ./scripts/
 EXPOSE 8090
 USER nobody:nobody
 
-CMD ["/app/scripts/start-server-after-db-is-migrated.sh"]
+CMD ["/app/bin/server"]

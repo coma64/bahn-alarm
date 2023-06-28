@@ -7,6 +7,10 @@ services:
     environment:
       CONFIGOR_ENV: dev
       CONFIGOR_DB_HOST: db
+    command:
+      - sh
+      - -c
+      - '/app/scripts/wait-for-db-to-be-migrated.sh && /app/bin/server'
   frontend:
     build:
       context: ./frontend/

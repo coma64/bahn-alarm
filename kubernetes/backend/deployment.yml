@@ -12,6 +12,25 @@ spec:
       labels:
         app: bahn-alarm-backend
     spec:
+      initContainers:
+        - name: wait-for-migrations
+          image: registry.zat.ong/bahn-alarm-backend:latest
+          imagePullPolicy: Always
+          command:
+            - /app/scripts/wait-for-db-to-be-migrated.sh
+          env:
+            - name: CONFIGOR_DB_HOST
+              value: postgres.bahn-alarm.svc.cluster.local
+            - name: CONFIGOR_REQUESTS_CORSORIGINS
+              value: '[https://bahn-alarm.com, https://docs.bahn-alarm.com]'
+            - name: CONFIGOR_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_PASSWORD
+                  name: postgres-bahn-alarm-user
+          envFrom:
+            - secretRef:
+                name: bahn-alarm-backend-settings
       terminationGracePeriodSeconds: 60
       imagePullSecrets:
       - name: zatong-registry-creds
