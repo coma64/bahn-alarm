@@ -49,6 +49,8 @@ func doRequest[T interface{}](ctx context.Context, path, query string, responseB
 		return fmt.Errorf("error sending request: %w", err)
 	}
 
+	elapsed := metrics.AccurateSecondsSince(start)
+
 	defer func() {
 		if err = response.Body.Close(); err != nil {
 			log.Err(err).Msg("failed to close response body")
@@ -57,7 +59,7 @@ func doRequest[T interface{}](ctx context.Context, path, query string, responseB
 
 	metrics.BahnApiRequestDuration.
 		WithLabelValues(strconv.Itoa(response.StatusCode), path).
-		Observe(metrics.AccurateSecondsSince(start))
+		Observe(elapsed)
 
 	if response.StatusCode != 200 {
 		if config.Conf.Debug {
@@ -70,6 +72,14 @@ func doRequest[T interface{}](ctx context.Context, path, query string, responseB
 	if err = json.NewDecoder(response.Body).Decode(responseBody); err != nil {
 		return fmt.Errorf("error decoding response: %w", err)
 	}
+
+	log.Debug().
+		Str("path", path).
+		Str("query", query).
+		Int("statusCode", response.StatusCode).
+		Float64("durationSeconds", elapsed).
+		Interface("response", responseBody).
+		Msg("Requested bahn API")
 
 	return nil
 }
