@@ -13,7 +13,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func CheckDeparture(ctx context.Context, departure *queries.FatDeparture) error {
+func CheckDeparture(ctx context.Context, departure *queries.FatDeparture) (hasSentNotification, departureIsOnTime bool, err error) {
 	log.Debug().
 		Int("departureId", departure.Id).
 		Time("departureTime", departure.Departure.Departure).
@@ -22,13 +22,13 @@ func CheckDeparture(ctx context.Context, departure *queries.FatDeparture) error 
 
 	trip, err := fetchTrip(ctx, departure)
 	if err != nil {
-		return fmt.Errorf("error fetching trip: %w", err)
+		return false, false, fmt.Errorf("error fetching trip: %w", err)
 	}
 
 	var newDepartureInfos *models.DepartureInfo
 	newDepartureInfos, err = queries.CreateOrUpdateDepartureInfo(ctx, departure, trip)
 	if err != nil {
-		return fmt.Errorf("error upserting delay infos: %w", err)
+		return false, false, fmt.Errorf("error upserting delay infos: %w", err)
 	}
 
 	oldStatus := departure.Status
@@ -37,7 +37,7 @@ func CheckDeparture(ctx context.Context, departure *queries.FatDeparture) error 
 	newDelay := newDepartureInfos.DelayMinutes()
 	if !shouldSendNotification(oldStatus, newStatus, oldDelay, newDelay) {
 		log.Debug().Int("departureId", departure.Id).Msg("Not sending notification")
-		return nil
+		return false, newStatus == server.OnTime, nil
 	}
 	log.Debug().Int("departureId", departure.Id).Msg("Sending notification")
 
@@ -45,15 +45,15 @@ func CheckDeparture(ctx context.Context, departure *queries.FatDeparture) error 
 
 	var alarm *models.Alarm
 	if alarm, err = models.InsertAlarm(ctx, departure.TrackedById, urgency, departure.Id, message); err != nil {
-		return fmt.Errorf("error creating alarm: %w", err)
+		return false, false, fmt.Errorf("error creating alarm: %w", err)
 	}
 
 	var notification *notifications.Notification
 	if notification, err = alarm.ToPushNotification(ctx, db.Db); err != nil {
-		return fmt.Errorf("error converting alarm %d for user %d to notification: %w", alarm.Id, alarm.ReceiverId, err)
+		return false, false, fmt.Errorf("error converting alarm %d for user %d to notification: %w", alarm.Id, alarm.ReceiverId, err)
 	}
 
-	metrics.AlarmsSent.Inc()
+	metrics.AlarmsSent.WithLabelValues(string(alarm.Urgency)).Inc()
 
 	go func() {
 		if err = web_push_notifier.New(db.Db).SendNotification(ctx, *notification, alarm.ReceiverId); err != nil {
@@ -64,7 +64,7 @@ func CheckDeparture(ctx context.Context, departure *queries.FatDeparture) error 
 		}
 	}()
 
-	return nil
+	return true, newStatus == server.OnTime, nil
 }
 
 func hasDelayChanged(oldStatus, newStatus server.TrackedDepartureStatus, oldDelay, newDelay int) bool {

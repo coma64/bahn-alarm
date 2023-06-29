@@ -3,10 +3,12 @@ package watcher
 import (
 	"context"
 	"fmt"
+	"github.com/coma64/bahn-alarm-backend/metrics"
 	"github.com/coma64/bahn-alarm-backend/watcher/checking"
 	"github.com/coma64/bahn-alarm-backend/watcher/queries"
 	"github.com/rs/zerolog/log"
 	"math/rand"
+	"strconv"
 	"time"
 )
 
@@ -17,8 +19,23 @@ func checkDueDepartures(ctx context.Context) error {
 	}
 
 	for _, departure := range departures {
+		start := time.Now()
+		hasSentNotification, departureIsOnTime, err := checking.CheckDeparture(ctx, &departure)
+		elapsed := metrics.AccurateSecondsSince(start)
+
+		metrics.WatcherCheckDuration.
+			WithLabelValues(
+				strconv.FormatBool(hasSentNotification),
+				strconv.FormatBool(departureIsOnTime),
+				departure.FromStationName,
+				departure.ToStationName,
+				departure.Departure.Departure.Format(time.RFC3339),
+				strconv.FormatBool(err == nil),
+			).
+			Observe(elapsed)
+
 		var newNextCheck time.Time
-		if err = checking.CheckDeparture(ctx, &departure); err != nil {
+		if err != nil {
 			log.Err(err).Msg("Failed to check departure")
 			newNextCheck = time.Now().UTC().Add(time.Hour)
 		} else {

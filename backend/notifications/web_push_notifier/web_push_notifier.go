@@ -7,11 +7,15 @@ import (
 	"github.com/SherClockHolmes/webpush-go"
 	"github.com/coma64/bahn-alarm-backend/config"
 	"github.com/coma64/bahn-alarm-backend/db/models"
+	"github.com/coma64/bahn-alarm-backend/metrics"
 	"github.com/coma64/bahn-alarm-backend/notifications"
 	"github.com/jmoiron/sqlx"
 	"github.com/rs/zerolog/log"
 	"net/http"
 	"net/http/httputil"
+	"net/url"
+	"strconv"
+	"time"
 )
 
 type WebPushNotifier struct {
@@ -39,6 +43,13 @@ func (w WebPushNotifier) SendNotification(ctx context.Context, notification noti
 	}
 
 	for _, sub := range webPushSubscriptions {
+		var subEndpointUrl *url.URL
+		if subEndpointUrl, err = url.Parse(sub.WebPushSubscription.Endpoint); err != nil {
+			return fmt.Errorf("error parsing web push subscription %d from user %d endpoint for metrics: %w", sub.Id, userId, err)
+		}
+
+		start := time.Now()
+
 		var response *http.Response
 		if response, err = webpush.SendNotificationWithContext(
 			ctx,
@@ -51,8 +62,16 @@ func (w WebPushNotifier) SendNotification(ctx context.Context, notification noti
 				VAPIDPrivateKey: config.Conf.PushNotifications.VapidKeys.Private,
 			},
 		); err != nil {
+			metrics.PushApiRequestDuration.
+				WithLabelValues("-1", subEndpointUrl.Host).
+				Observe(0)
+
 			return fmt.Errorf("error sending push notification to web push subscription %d from user %d: %w", sub.Id, userId, err)
 		}
+
+		metrics.PushApiRequestDuration.
+			WithLabelValues(strconv.Itoa(response.StatusCode), subEndpointUrl.Host).
+			Observe(metrics.AccurateSecondsSince(start))
 
 		if err = w.handleResponse(ctx, response, sub); err != nil {
 			return err

@@ -42,9 +42,10 @@ func doRequest[T interface{}](ctx context.Context, path, query string, responseB
 		return fmt.Errorf("error creating request: %w", err)
 	}
 
+	start := time.Now()
 	var response *http.Response
 	if response, err = http.DefaultClient.Do(request); err != nil {
-		metrics.BahnApiRequests.WithLabelValues(path, "-1").Inc()
+		metrics.BahnApiRequestDuration.WithLabelValues("-1", path).Observe(0)
 		return fmt.Errorf("error sending request: %w", err)
 	}
 
@@ -54,7 +55,9 @@ func doRequest[T interface{}](ctx context.Context, path, query string, responseB
 		}
 	}()
 
-	metrics.BahnApiRequests.WithLabelValues(path, strconv.Itoa(response.StatusCode)).Inc()
+	metrics.BahnApiRequestDuration.
+		WithLabelValues(strconv.Itoa(response.StatusCode), path).
+		Observe(metrics.AccurateSecondsSince(start))
 
 	if response.StatusCode != 200 {
 		if config.Conf.Debug {
