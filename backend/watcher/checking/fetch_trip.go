@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/coma64/bahn-alarm-backend/external_apis/bahn"
+	"github.com/coma64/bahn-alarm-backend/time_conversion"
 	"github.com/coma64/bahn-alarm-backend/watcher/queries"
 	"time"
 )
@@ -44,7 +45,7 @@ func getMatchingTrip(trips []bahn.Trip, departure *queries.FatDeparture) (*bahn.
 }
 
 func isWithinMargin(tripDeparture, expectedDeparture time.Time, departureMarginMinutes int) bool {
-	tripTime := queries.TimeOnly(tripDeparture)
+	tripTime := time_conversion.TimeOnly(tripDeparture)
 	minimumDeparture := expectedDeparture.Add(time.Duration(-departureMarginMinutes) * time.Minute)
 	maximumDeparture := expectedDeparture.Add(time.Duration(departureMarginMinutes) * time.Minute)
 	return tripTime.After(minimumDeparture) && tripTime.Before(maximumDeparture)

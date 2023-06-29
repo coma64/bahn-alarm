@@ -6,6 +6,7 @@ import (
 	"github.com/coma64/bahn-alarm-backend/db"
 	"github.com/coma64/bahn-alarm-backend/notifications"
 	"github.com/coma64/bahn-alarm-backend/server"
+	"github.com/coma64/bahn-alarm-backend/time_conversion"
 	"github.com/jmoiron/sqlx"
 	"time"
 )
@@ -64,9 +65,7 @@ func (a *Alarm) getNotificationDeparture(ctx context.Context, db *sqlx.DB) (stri
 	}
 
 	// TODO: convert to users actual timezone
-	departure = departure.In(germanTimezone)
-
-	return departure.Format("15:04"), nil
+	return time_conversion.ToToday(departure).In(germanTimezone).Format("15:04"), nil
 }
 
 func (a *Alarm) ToPushNotification(ctx context.Context, db *sqlx.DB) (*notifications.Notification, error) {
