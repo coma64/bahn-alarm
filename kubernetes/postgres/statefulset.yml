@@ -12,6 +12,8 @@ spec:
       labels:
         app: postgres
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: kube-node01
       containers:
         - name: postgres
           image: postgres:15.3-alpine3.18
