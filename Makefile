@@ -7,3 +7,9 @@ deploy:
 
 migrate:
 	kubectl create -f ./kubernetes/jobs/migrate.yml
+
+fe:
+	cd frontend/; pnpm start
+
+be:
+	cd backend/; nodemon -e go --signal SIGTERM --exec 'CONFIGOR_ENV=dev go run . serve'

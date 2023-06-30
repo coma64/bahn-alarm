@@ -19,5 +19,5 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.AddCommand(serve.ServeCmd)
+	rootCmd.AddCommand(serve.Cmd)
 }
