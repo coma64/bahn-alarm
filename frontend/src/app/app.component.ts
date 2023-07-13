@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, isDevMode, OnDestroy, OnInit} from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
-import { exhaustMap, filter, Subject, takeUntil, timer } from 'rxjs';
+import {catchError, EMPTY, exhaustMap, filter, Subject, takeUntil, timer} from 'rxjs';
 import { fromPromise } from 'rxjs/internal/observable/innerFrom';
 
 @Component({
@@ -18,6 +18,10 @@ export class AppComponent implements OnInit, OnDestroy {
     timer(0, 5 * 60_000)
       .pipe(
         exhaustMap(() => fromPromise(this.swUpdate.checkForUpdate())),
+        catchError((e: Error) => {
+          if (isDevMode()) return EMPTY;
+          throw e;
+        }),
         takeUntil(this.destroy$),
       )
       .subscribe();

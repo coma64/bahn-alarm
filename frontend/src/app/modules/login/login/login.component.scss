@@ -60,7 +60,7 @@ button {
 
   :host {
     grid-template-columns: 1fr;
-    justify-content: start;
+    justify-content: flex-start;
   }
 }
 

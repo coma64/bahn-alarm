@@ -1,11 +1,4 @@
-import * as dayjs from 'dayjs';
-import * as utc from 'dayjs/plugin/utc';
-import * as relativeTime from 'dayjs/plugin/relativeTime';
-import * as duration from 'dayjs/plugin/duration';
-
-dayjs.extend(utc);
-dayjs.extend(relativeTime);
-dayjs.extend(duration);
+import dayjs from 'dayjs/esm';
 
 export type TimeUntilOptions = Partial<{
   alwaysShowMinutes: boolean;

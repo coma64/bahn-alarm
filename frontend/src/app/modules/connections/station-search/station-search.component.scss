@@ -20,7 +20,7 @@ app-spinner,
     border: none;
     border-radius: 0;
     width: 100%;
-    justify-content: start;
+    justify-content: flex-start;
 
     &:hover {
       background: var(--surface4) !important;
