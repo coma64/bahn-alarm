@@ -38,7 +38,7 @@
 
     <button
       (click)="onToggle(departure)"
-      [class.is-selected]="departure | isIncludedIn : selectedDepartures"
+      [class.is-selected]="departure | isIncludedIn : selectedDepartures : 'timestamp'"
       *ngFor="let departure of departures; trackBy: trackByDeparture"
     >
       {{ departure.str }}

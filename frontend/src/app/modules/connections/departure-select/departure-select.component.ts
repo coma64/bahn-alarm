@@ -6,7 +6,7 @@ import {
   Output,
   TrackByFunction,
 } from '@angular/core';
-import { BahnPlace, BahnService } from '../../../api';
+import { BahnService, BahnStation } from '../../../api';
 import { RelativeTime } from '../relative-time/relative-time';
 import { FormControl } from '@angular/forms';
 import {
@@ -26,19 +26,19 @@ import {
   styleUrls: ['./departure-select.component.scss'],
 })
 export class DepartureSelectComponent implements OnDestroy {
-  get from(): BahnPlace | undefined {
+  get from(): BahnStation | undefined {
     return this.from$.value;
   }
 
-  @Input() set from(station: BahnPlace | undefined) {
+  @Input() set from(station: BahnStation | undefined) {
     this.from$.next(station);
   }
 
-  get to(): BahnPlace | undefined {
+  get to(): BahnStation | undefined {
     return this.to$.value;
   }
 
-  @Input() set to(station: BahnPlace | undefined) {
+  @Input() set to(station: BahnStation | undefined) {
     this.to$.next(station);
   }
 
@@ -54,11 +54,13 @@ export class DepartureSelectComponent implements OnDestroy {
     readonly RelativeTime[]
   >();
 
-  private readonly from$ = new BehaviorSubject<BahnPlace | undefined>(
+  private readonly from$ = new BehaviorSubject<BahnStation | undefined>(
     undefined,
   );
 
-  private readonly to$ = new BehaviorSubject<BahnPlace | undefined>(undefined);
+  private readonly to$ = new BehaviorSubject<BahnStation | undefined>(
+    undefined,
+  );
 
   constructor(private readonly bahn: BahnService) {
     this.foundDepartures$ = combineLatest([
@@ -72,7 +74,7 @@ export class DepartureSelectComponent implements OnDestroy {
         if (!from || !to) return EMPTY;
 
         return this.bahn
-          .bahnConnectionsGet(departure.toIso(), from.stationId, to.stationId)
+          .bahnConnectionsGet(departure.toIso(), from.id, to.id)
           .pipe(startWith(undefined));
       }),
       map((response) =>

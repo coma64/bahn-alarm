@@ -3,6 +3,8 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"github.com/coma64/bahn-alarm-backend/db/models"
+	"github.com/coma64/bahn-alarm-backend/watcher/queries"
 	"net/http"
 	"sort"
 	"time"
@@ -141,6 +143,56 @@ select connectionId, departure, delayMinutes, status from fatDepartures where co
 		Connections: connSchemas,
 		Pagination:  pagination,
 	})
+}
+
+func (b *BahnAlarmApi) GetTrackingConnectionsId(ctx echo.Context, id int) error {
+	var connection struct {
+		models.Connection
+		queries.StationInfo
+	}
+
+	if err := db.Db.GetContext(
+		ctx.Request().Context(),
+		&connection,
+		`
+select
+    c.*,
+    f.name fromStationName,
+    f.externalId fromStationId,
+    t.name toStationName,
+    t.externalId toStationId
+from connections c
+    full outer join users u on u.id = c.trackedById
+	full outer join bahnStations f on f.id = c.fromId
+    full outer join bahnStations t on t.id = c.toId
+where c.id = $1 and u.name = $2
+		`,
+		id,
+		ctx.Get("username"),
+	); err == sql.ErrNoRows {
+		return ctx.NoContent(http.StatusNotFound)
+	} else if err != nil {
+		return fmt.Errorf("error checking if requesting user owns the connection: %w", err)
+	}
+
+	departures := make([]queries.FatDeparture, 0)
+	if err := db.Db.SelectContext(ctx.Request().Context(), &departures, "select * from fatDepartures where connectionId = $1", id); err != nil {
+		return fmt.Errorf("error getting connection departures: %w", err)
+	}
+
+	var response server.TrackedConnection
+	response.Id = &id
+	response.From.Id = connection.FromStationId
+	response.From.Name = connection.FromStationName
+	response.To.Id = connection.ToStationId
+	response.To.Name = connection.ToStationName
+	response.Departures = make([]server.TrackedDeparture, 0, len(departures))
+
+	for _, d := range departures {
+		response.Departures = append(response.Departures, d.ToTrackedDeparture())
+	}
+
+	return ctx.JSON(http.StatusOK, response)
 }
 
 func (b *BahnAlarmApi) PostTrackingConnections(ctx echo.Context) error {
@@ -310,7 +362,7 @@ func (b *BahnAlarmApi) PutTrackingConnectionsId(ctx echo.Context, id int) error 
 		return fmt.Errorf("error committing transaction: %w", err)
 	}
 
-	return ctx.NoContent(http.StatusNoContent)
+	return b.GetTrackingConnectionsId(ctx, id)
 }
 
 func (b *BahnAlarmApi) GetTrackingStats(ctx echo.Context) error {

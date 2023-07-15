@@ -16,7 +16,6 @@ model/alarmsList.ts
 model/bahnConnection.ts
 model/bahnConnectionDeparture.ts
 model/bahnConnectionsList.ts
-model/bahnPlace.ts
 model/bahnPlacesList.ts
 model/bahnStation.ts
 model/loginRequest.ts

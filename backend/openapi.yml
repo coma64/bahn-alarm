@@ -157,6 +157,26 @@ paths:
         409:
           description: Connection is already being tracked
   /tracking/connections/{id}:
+    get:
+      tags:
+        - tracking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Retrieved connection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrackedConnection"
+        401:
+          description: Not logged in
+        404:
+          description: Not found
     put:
       tags:
         - tracking
@@ -172,8 +192,12 @@ paths:
             schema:
               $ref: "#/components/schemas/TrackedConnectionUpdate"
       responses:
-        204:
-          description: Updated
+        200:
+          description: Retrieved connection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrackedConnection"
         401:
           description: Not logged in
         404:
@@ -514,25 +538,9 @@ components:
         places:
           type: array
           items:
-            $ref: "#/components/schemas/BahnPlace"
+            $ref: "#/components/schemas/BahnStation"
       required:
         - places
-    BahnPlace:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        label:
-          type: string
-        stationId:
-          type: string
-      required:
-        - id
-        - name
-        - label
-        - stationId
 
     VapidKeys:
       type: object

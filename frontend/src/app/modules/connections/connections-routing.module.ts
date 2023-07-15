@@ -12,6 +12,10 @@ const routes: Routes = [
     path: 'add',
     component: EditConnectionComponent,
   },
+  {
+    path: 'edit/:connectionId',
+    component: EditConnectionComponent,
+  },
 ];
 
 @NgModule({

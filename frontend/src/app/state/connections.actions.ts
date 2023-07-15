@@ -11,4 +11,10 @@ export namespace Connections {
 
     constructor(public readonly newConnection: TrackedConnection) {}
   }
+
+  export class Updated {
+    static readonly type = '[Connections] Updated';
+
+    constructor(public readonly updatedConnection: TrackedConnection) {}
+  }
 }

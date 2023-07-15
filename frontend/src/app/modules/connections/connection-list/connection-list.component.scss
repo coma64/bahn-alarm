@@ -33,6 +33,18 @@ header {
   padding: 10px;
   border-radius: var(--radius);
   box-shadow: 0 6px 10px hsl(var(--surface-shadow) / var(--shadow-strength));
+  position: relative;
+
+  .edit {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+
+    i-feather {
+      height: 1.5rem;
+      width: 1.5rem;
+    }
+  }
 }
 
 .stations {

@@ -18,6 +18,10 @@
     *ngFor="let connection of connections; trackBy: trackById"
     class="connection"
   >
+    <button (click)="router.navigate(['/connections/edit', connection.id])" class="icon edit">
+      <i-feather name="edit"></i-feather>
+    </button>
+
     <div class="stations">
       <div class="label">From</div>
       <div>{{ connection.from.name }}</div>

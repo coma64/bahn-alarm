@@ -7,12 +7,16 @@ import (
 	"time"
 )
 
+type StationInfo struct {
+	FromStationId   string
+	FromStationName string
+	ToStationId     string
+	ToStationName   string
+}
+
 type FatDeparture struct {
 	models.Departure
-	FromStationId          string
-	FromStationName        string
-	ToStationId            string
-	ToStationName          string
+	StationInfo
 	DepartureMarginMinutes int
 	TrackedById            int
 	DelayMinutes           int
@@ -31,4 +35,12 @@ func (d *FatDeparture) TimeUntilNextDeparture() time.Duration {
 		diff += time.Hour * 24
 	}
 	return diff
+}
+
+func (f *FatDeparture) ToTrackedDeparture() server.TrackedDeparture {
+	return server.TrackedDeparture{
+		Delay:     f.DelayMinutes,
+		Departure: f.Departure.Departure,
+		Status:    f.Status,
+	}
 }

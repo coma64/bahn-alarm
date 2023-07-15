@@ -1,13 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RelativeTime } from '../relative-time/relative-time';
 import { FormBuilder, Validators } from '@angular/forms';
-import { BahnPlace, TrackingService } from '../../../api';
+import { BahnStation, TrackingService } from '../../../api';
 import { Store } from '@ngxs/store';
 import { Navigate } from '@ngxs/router-plugin';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Subject, takeUntil } from 'rxjs';
+import { EMPTY, finalize, map, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { NotifyService } from '../../shared/services/notify.service';
 import { Connections } from '../../../state/connections.actions';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-edit-connection',
@@ -16,31 +17,69 @@ import { Connections } from '../../../state/connections.actions';
 })
 export class EditConnectionComponent implements OnInit, OnDestroy {
   readonly stationForm = this.fb.nonNullable.group({
-    from: [undefined as BahnPlace | undefined, Validators.required],
-    to: [undefined as BahnPlace | undefined, Validators.required],
+    from: [undefined as BahnStation | undefined, Validators.required],
+    to: [undefined as BahnStation | undefined, Validators.required],
   });
 
   selectedDepartures: readonly RelativeTime[] = [];
   hasTriedSubmitting = false;
+  isEditing = false;
+  isLoading = true;
 
-  get from(): BahnPlace | undefined {
+  get from(): BahnStation | undefined {
     return this.stationForm.value.from;
   }
 
-  get to(): BahnPlace | undefined {
+  get to(): BahnStation | undefined {
     return this.stationForm.value.to;
   }
 
+  private connectionId?: number;
   private readonly destroy$ = new Subject<void>();
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly tracking: TrackingService,
     private readonly notify: NotifyService,
+    private readonly activatedRoute: ActivatedRoute,
     protected readonly store: Store,
   ) {}
 
   ngOnInit(): void {
+    this.activatedRoute.params
+      .pipe(
+        map(({ connectionId }) =>
+          connectionId ? Number(connectionId) : undefined,
+        ),
+        tap((id) => {
+          this.isLoading = this.isEditing = !!id;
+          this.connectionId = id;
+          if (id !== undefined) {
+            this.stationForm.disable();
+          } else {
+            this.stationForm.enable();
+          }
+        }),
+        switchMap((id) =>
+          id
+            ? this.tracking
+                .trackingConnectionsIdGet(id)
+                .pipe(finalize(() => (this.isLoading = false)))
+            : EMPTY,
+        ),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(
+        ({ from, to, departures }) => {
+          this.stationForm.setValue({ from, to });
+          this.selectedDepartures = departures.map((d) =>
+            RelativeTime.fromIso(d.departure),
+          );
+        },
+        () =>
+          this.notify.error('An error occurred while loading the connection'),
+      );
+
     this.stationForm.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => (this.selectedDepartures = []));
@@ -65,21 +104,28 @@ export class EditConnectionComponent implements OnInit, OnDestroy {
       return;
 
     // TODO: store pagination issues
-    this.tracking
-      .trackingConnectionsPost({
-        from: {
-          id: this.from.stationId,
-          name: this.from.name,
-        },
-        to: {
-          id: this.to.stationId,
-          name: this.to.name,
-        },
-        departures: this.selectedDepartures.map((d) => ({
-          departure: d.toIsoZeroBased(),
-        })),
-      })
-      .subscribe({
+    const apiConnection = {
+      from: this.from,
+      to: this.to,
+      departures: this.selectedDepartures.map((d) => ({
+        departure: d.toIsoZeroBased(),
+      })),
+    };
+
+    if (this.isEditing) {
+      if (!this.connectionId) return;
+      this.tracking
+        .trackingConnectionsIdPut(this.connectionId, apiConnection)
+        .subscribe({
+          next: (connection) =>
+            this.store.dispatch([
+              new Connections.Updated(connection),
+              new Navigate(['/connections']),
+            ]),
+          error: () => this.notify.error('An unknown error occurred'),
+        });
+    } else {
+      this.tracking.trackingConnectionsPost(apiConnection).subscribe({
         next: (connection) =>
           this.store.dispatch([
             new Connections.Created(connection),
@@ -93,6 +139,7 @@ export class EditConnectionComponent implements OnInit, OnDestroy {
           else this.notify.error('An unknown error occurred');
         },
       });
+    }
   }
 
   onNavigateBack(): void {

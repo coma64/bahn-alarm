@@ -36,12 +36,10 @@ func (b *BahnAlarmApi) GetBahnConnections(ctx echo.Context, params server.GetBah
 	return ctx.JSON(http.StatusOK, server.BahnConnectionsList{Connections: schemas})
 }
 
-func bahnPlaceToSchema(place *bahn.Place) server.BahnPlace {
-	return server.BahnPlace{
-		Id:        place.ID,
-		Label:     place.Label,
-		Name:      place.Name,
-		StationId: place.StationID,
+func bahnPlaceToSchema(place *bahn.Place) server.BahnStation {
+	return server.BahnStation{
+		Id:   place.StationID,
+		Name: place.Name,
 	}
 }
 
@@ -59,7 +57,7 @@ func (b *BahnAlarmApi) GetBahnPlaces(ctx echo.Context, params server.GetBahnPlac
 		}
 	}
 
-	schemas := make([]server.BahnPlace, 0, len(places.Places))
+	schemas := make([]server.BahnStation, 0, len(places.Places))
 	for _, place := range places.Places {
 		schemas = append(schemas, bahnPlaceToSchema(&place))
 	}

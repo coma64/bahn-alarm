@@ -3,7 +3,6 @@ export * from './alarmsList';
 export * from './bahnConnection';
 export * from './bahnConnectionDeparture';
 export * from './bahnConnectionsList';
-export * from './bahnPlace';
 export * from './bahnPlacesList';
 export * from './bahnStation';
 export * from './loginRequest';

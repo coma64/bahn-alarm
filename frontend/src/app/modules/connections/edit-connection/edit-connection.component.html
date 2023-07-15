@@ -1,4 +1,4 @@
-<main>
+<main *ngIf="!isLoading else loadingSpinner">
   <header>
     <button
       (click)="onNavigateBack()"
@@ -21,7 +21,7 @@
     <app-station-search formControlName="to" inputId="to"></app-station-search>
   </form>
 
-  <section class="departures" *ngIf="stationForm.valid">
+  <section class="departures" *ngIf="stationForm.valid || stationForm.disabled">
     <header>
       <h2>Tracked departures</h2>
       <p class="help">
@@ -53,3 +53,7 @@
     Save connection
   </button>
 </main>
+
+<ng-template #loadingSpinner>
+  <app-spinner></app-spinner>
+</ng-template>

@@ -27,7 +27,7 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
-import { BahnPlace, BahnService, BahnStation } from '../../../api';
+import { BahnService, BahnStation } from '../../../api';
 import { NotifyService } from '../../shared/services/notify.service';
 
 @Component({
@@ -164,5 +164,5 @@ export class StationSearchComponent implements ControlValueAccessor, OnDestroy {
     if (this.suggestionsPortal?.isAttached) this.suggestionsPortal.detach();
   }
 
-  trackByPlace: TrackByFunction<BahnPlace> = (_, { id }) => id;
+  trackByPlace: TrackByFunction<BahnStation> = (_, { id }) => id;
 }

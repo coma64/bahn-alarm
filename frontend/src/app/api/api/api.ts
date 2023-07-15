@@ -8,10 +8,4 @@ export * from './notifications.service';
 import { NotificationsService } from './notifications.service';
 export * from './tracking.service';
 import { TrackingService } from './tracking.service';
-export const APIS = [
-  AlarmsService,
-  AuthService,
-  BahnService,
-  NotificationsService,
-  TrackingService,
-];
+export const APIS = [AlarmsService, AuthService, BahnService, NotificationsService, TrackingService];

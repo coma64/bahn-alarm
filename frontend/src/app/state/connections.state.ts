@@ -35,4 +35,16 @@ export class ConnectionsState {
     const { items, page } = getState();
     setState({ items: [...items, newConnection], page });
   }
+
+  @Action(Connections.Updated)
+  updated(
+    { getState, patchState }: StateContext<ConnectionsStateModel>,
+    { updatedConnection }: Connections.Updated,
+  ): void {
+    patchState({
+      items: getState().items.map((c) =>
+        c.id === updatedConnection.id ? updatedConnection : c,
+      ),
+    });
+  }
 }
