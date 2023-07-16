@@ -162,9 +162,9 @@ select
     t.name toStationName,
     t.externalId toStationId
 from connections c
-    full outer join users u on u.id = c.trackedById
-	full outer join bahnStations f on f.id = c.fromId
-    full outer join bahnStations t on t.id = c.toId
+    inner join users u on u.id = c.trackedById
+	inner join bahnStations f on f.id = c.fromId
+    inner join bahnStations t on t.id = c.toId
 where c.id = $1 and u.name = $2
 		`,
 		id,
@@ -372,13 +372,11 @@ func (b *BahnAlarmApi) GetTrackingStats(ctx echo.Context) error {
 		&stats,
 		`
 select
-    count(d.id) totalConnectionCount,
-    count(d.id) filter (where i.actualTime is not null and i.actualTime != i.scheduledTime) delayedConnectionCount,
-    count(d.id) filter (where i.departureId is not null and i.actualTime is null) canceledConnectionCount
-from departures d
-    left outer join departureInfos i on i.departureId = d.id
-	inner join connections c on c.id = d.connectionId
-	inner join users u on u.id = c.trackedById
+    count(f.id) totalConnectionCount,
+    count(f.id) filter (where f.status = 'delayed') delayedConnectionCount,
+    count(f.id) filter (where f.status = 'canceled') canceledConnectionCount
+from fatDepartures f
+	inner join users u on u.id = f.trackedById
 where u.name = $1
 		`,
 		ctx.Get("username"),
