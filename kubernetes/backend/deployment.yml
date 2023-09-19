@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: bahn-alarm-backend
   namespace: bahn-alarm
+  labels:
+    app: bahn-alarm-backend
 spec:
   selector:
     matchLabels:
@@ -12,6 +14,9 @@ spec:
       labels:
         app: bahn-alarm-backend
     spec:
+      terminationGracePeriodSeconds: 60
+      imagePullSecrets:
+        - name: zatong-registry-creds
       initContainers:
         - name: wait-for-migrations
           image: registry.zat.ong/bahn-alarm-backend:latest
@@ -31,9 +36,6 @@ spec:
           envFrom:
             - secretRef:
                 name: bahn-alarm-backend-settings
-      terminationGracePeriodSeconds: 60
-      imagePullSecrets:
-      - name: zatong-registry-creds
       containers:
         - name: bahn-alarm-backend
           image: registry.zat.ong/bahn-alarm-backend:latest

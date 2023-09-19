@@ -1,0 +1,16 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: bahn-alarm-api-docs
+  namespace: bahn-alarm
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`docs.api.bahn-alarm.com`)
+      kind: Rule
+      services:
+        - name: bahn-alarm-api-docs
+          port: 80
+  tls:
+    certResolver: letsencrypt-production

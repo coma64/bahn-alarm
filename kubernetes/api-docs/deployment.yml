@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bahn-alarm-api-docs
+  namespace: bahn-alarm
+  labels:
+    app: bahn-alarm-api-docs
+spec:
+  selector:
+    matchLabels:
+      app: bahn-alarm-api-docs
+  template:
+    metadata:
+      labels:
+        app: bahn-alarm-api-docs
+    spec:
+      terminationGracePeriodSeconds: 60
+      imagePullSecrets:
+        - name: zatong-registry-creds
+      containers:
+        - name: nginx
+          image: registry.zat.ong/bahn-alarm-api-docs:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: web

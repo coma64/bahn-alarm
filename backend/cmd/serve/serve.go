@@ -35,10 +35,6 @@ func serve() {
 	bahnAlarmApi := &handlers.BahnAlarmApi{}
 	server.RegisterHandlers(e, bahnAlarmApi)
 
-	e.File("/docs", "static/docs.html")
-	e.File("/docs/openapi.yml", "openapi.yml")
-	e.Static("/static/swagger", "swagger-ui/dist")
-
 	if err := e.Start(config.Conf.Bind); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Fatal().Err(err).Msg("Failed to start bahn alarm server")
 	}

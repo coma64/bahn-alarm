@@ -1,12 +1,19 @@
 resources:
 - namespace.yml
+
 - postgres/headless-service.yml
 - postgres/statefulset.yml
 - postgres/service.yml
+
 - backend/deployment.yml
 - backend/service.yml
 - backend/metrics-service.yml
 - backend/ingress-route.yml
+
+- api-docs/deployment.yml
+- api-docs/service.yml
+- api-docs/ingress-route.yml
+
 - frontend/deployment.yml
 - frontend/service.yml
 - frontend/traefik-ingress-route.yml
