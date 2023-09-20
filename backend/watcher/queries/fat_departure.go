@@ -30,7 +30,7 @@ func (d *FatDeparture) HasDepartedToday() bool {
 
 func (d *FatDeparture) TimeUntilNextDeparture() time.Duration {
 	nowTime := time_conversion.TimeOnly(time.Now().UTC())
-	diff := d.Departure.Departure.Sub(nowTime)
+	diff := d.Departure.Departure.Add(time.Minute * time.Duration(d.DelayMinutes)).Sub(nowTime)
 	if d.HasDepartedToday() {
 		diff += time.Hour * 24
 	}
