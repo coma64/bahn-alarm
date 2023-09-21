@@ -7,7 +7,6 @@ import (
 	"github.com/pressly/goose/v3"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 // See goose.run for available sub commands
@@ -33,7 +32,7 @@ var migrateCmd = &cobra.Command{
 			}
 		}()
 
-		if err = goose.Run(args[0], dbConn, ".", os.Args[1:]...); err != nil {
+		if err = goose.Run(args[0], dbConn, "migrations", args[1:]...); err != nil {
 			log.Fatal().Err(err).Send()
 		}
 	},
