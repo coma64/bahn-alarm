@@ -1,6 +1,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,angular,go,jetbrains
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,angular,go,jetbrains
 
+.envrc
+
 ### Angular ###
 ## Angular ##
 # compiled output
