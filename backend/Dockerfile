@@ -27,6 +27,11 @@ COPY --from=builder $BIN $BIN
 COPY config.yml config.dev.yml ./
 COPY scripts/ ./scripts/
 
+# Theoretically not needed because the migrations are embedded into the binary
+# but the migrate command automatically cds into this directory in case you try to
+# create a new migration
+RUN mkdir migrations
+
 EXPOSE 8090
 USER nobody:nobody
 
