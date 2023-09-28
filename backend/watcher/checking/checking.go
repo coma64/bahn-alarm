@@ -35,7 +35,13 @@ func CheckDeparture(ctx context.Context, departure *queries.FatDeparture) (hasSe
 	oldDelay := departure.DelayMinutes
 	newStatus := newDepartureInfos.DepartureStatus()
 	newDelay := newDepartureInfos.DelayMinutes()
-	if !shouldSendNotification(oldStatus, newStatus, oldDelay, newDelay) {
+
+	notificationThreshold := 0
+	if err = db.Db.GetContext(ctx, &notificationThreshold, "select notificationthresholdminutes from users where id = $1", departure.TrackedById); err != nil {
+		return false, false, fmt.Errorf("error getting notification threshold: %w", err)
+	}
+
+	if !shouldSendNotification(oldStatus, newStatus, oldDelay, newDelay, notificationThreshold) {
 		log.Debug().Int("departureId", departure.Id).Msg("Not sending notification")
 		return false, newStatus == server.OnTime, nil
 	}
@@ -75,7 +81,12 @@ func isFirstCheckAndIsOnTime(oldStatus, newStatus server.TrackedDepartureStatus)
 	return oldStatus == server.NotChecked && newStatus == server.OnTime
 }
 
-func shouldSendNotification(oldStatus, newStatus server.TrackedDepartureStatus, oldDelay, newDelay int) bool {
+func shouldSendNotification(oldStatus, newStatus server.TrackedDepartureStatus, oldDelay, newDelay, notificationThreshold int) bool {
+	if newStatus == server.Delayed && newDelay <= notificationThreshold {
+		log.Debug().Int("delay", newDelay).Int("threshold", notificationThreshold).Str("status", string(newStatus)).Msg("Not sending notification because of notification threshold")
+		return false
+	}
+
 	if oldStatus != newStatus && !isFirstCheckAndIsOnTime(oldStatus, newStatus) {
 		return true
 	}
