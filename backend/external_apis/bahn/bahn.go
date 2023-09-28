@@ -5,13 +5,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/coma64/bahn-alarm-backend/config"
+	"github.com/coma64/bahn-alarm-backend/db"
 	"github.com/coma64/bahn-alarm-backend/metrics"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
+	"io"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -69,8 +72,17 @@ func doRequest[T interface{}](ctx context.Context, path, query string, responseB
 		return BadResponse
 	}
 
-	if err = json.NewDecoder(response.Body).Decode(responseBody); err != nil {
+	buf := strings.Builder{}
+	if _, err = io.Copy(&buf, response.Body); err != nil {
+		return fmt.Errorf("error reading response: %w", err)
+	}
+
+	if err = json.Unmarshal([]byte(buf.String()), responseBody); err != nil {
 		return fmt.Errorf("error decoding response: %w", err)
+	}
+
+	if _, err = db.Db.ExecContext(ctx, "insert into bahnapisearchresponses (data) values ($1)", buf.String()); err != nil {
+		return fmt.Errorf("error writing bahn api response to db: %w", err)
 	}
 
 	log.Debug().
@@ -78,7 +90,6 @@ func doRequest[T interface{}](ctx context.Context, path, query string, responseB
 		Str("query", query).
 		Int("statusCode", response.StatusCode).
 		Float64("durationSeconds", elapsed).
-		Interface("response", responseBody).
 		Msg("Requested bahn API")
 
 	return nil

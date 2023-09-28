@@ -7,6 +7,7 @@ import (
 	"github.com/pressly/goose/v3"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"os"
 )
 
 // See goose.run for available sub commands
@@ -31,6 +32,10 @@ var migrateCmd = &cobra.Command{
 				log.Err(err).Msg("failed to close db")
 			}
 		}()
+
+		if err = os.Chdir("migrations"); err != nil {
+			log.Fatal().Err(err).Msg("Failed to cd into migration directory")
+		}
 
 		if err = goose.Run(args[0], dbConn, "migrations", args[1:]...); err != nil {
 			log.Fatal().Err(err).Send()
