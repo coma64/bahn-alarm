@@ -8,10 +8,11 @@ import (
 
 type User struct {
 	db.IdModel
-	Name         string
-	PasswordHash string
-	IsAdmin      bool
-	CreatedAt    time.Time
+	Name                         string
+	PasswordHash                 string
+	IsAdmin                      bool
+	CreatedAt                    time.Time
+	NotificationThresholdMinutes int
 }
 
 func (u *User) ToSchema() *server.User {
