@@ -107,7 +107,7 @@ func FetchPlaces(ctx context.Context, query string) (*PlacesResponse, error) {
 	log.Debug().Str("package", "bahn").Str("query", query).Msg("Fetching places")
 
 	stations := &PlacesResponse{}
-	return stations, doRequest(ctx, "/spam/v1/places", "?query="+query, stations)
+	return stations, doRequest(ctx, "/spam/v1/places", "?query="+url.QueryEscape(query), stations)
 }
 
 func FetchConnections(
