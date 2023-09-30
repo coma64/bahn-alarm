@@ -30,9 +30,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.error('Htest error console')
-    throw new Error('hellow orld');
-
     // if a new version is available it is handled by the below subscription
     timer(0, 5 * 60_000)
       .pipe(
