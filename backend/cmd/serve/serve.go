@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/coma64/bahn-alarm-backend/config"
+	"github.com/coma64/bahn-alarm-backend/db"
 	"github.com/coma64/bahn-alarm-backend/handlers"
 	"github.com/coma64/bahn-alarm-backend/server"
 	"github.com/coma64/bahn-alarm-backend/watcher"
@@ -32,8 +33,8 @@ func serve() {
 	e := createEchoServer()
 	e.Use(middlewares...)
 
-	bahnAlarmApi := &handlers.BahnAlarmApi{}
-	server.RegisterHandlers(e, bahnAlarmApi)
+	api := handlers.NewBahnAlarmApi(db.Db)
+	server.RegisterHandlers(e, api)
 
 	if err := e.Start(config.Conf.Bind); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Fatal().Err(err).Msg("Failed to start bahn alarm server")

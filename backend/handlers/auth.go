@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/coma64/bahn-alarm-backend/auth"
 	"github.com/coma64/bahn-alarm-backend/config"
 	"github.com/coma64/bahn-alarm-backend/db"
@@ -19,16 +20,14 @@ func (b *BahnAlarmApi) PostAuthLogin(ctx echo.Context) error {
 		return err
 	}
 
-	var user models.User
-	if err := db.Db.GetContext(ctx.Request().Context(), &user, "select * from users where name = $1", body.Username); err != nil {
-		if err == sql.ErrNoRows {
-			return ctx.NoContent(http.StatusBadRequest)
-		} else {
-			return err
-		}
+	user, err := b.queries.GetUserByName(ctx.Request().Context(), body.Username)
+	if errors.Is(err, sql.ErrNoRows) {
+		return ctx.NoContent(http.StatusBadRequest)
+	} else if err != nil {
+		return err
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(body.Password)); err != nil {
+	if err = bcrypt.CompareHashAndPassword([]byte(user.Passwordhash), []byte(body.Password)); err != nil {
 		return ctx.NoContent(http.StatusBadRequest)
 	}
 
@@ -48,9 +47,9 @@ func (b *BahnAlarmApi) PostAuthLogin(ctx echo.Context) error {
 	})
 
 	return ctx.JSON(http.StatusOK, &server.User{
-		CreatedAt: user.CreatedAt,
-		Id:        user.Id,
-		IsAdmin:   user.IsAdmin,
+		CreatedAt: user.Createdat,
+		Id:        int(user.ID),
+		IsAdmin:   user.Isadmin,
 		Name:      user.Name,
 	})
 }

@@ -1,6 +1,14 @@
 package handlers
 
-type BahnAlarmApi struct{}
+import "github.com/coma64/bahn-alarm-backend/squeries"
+
+type BahnAlarmApi struct {
+	queries *squeries.Queries
+}
+
+func NewBahnAlarmApi(db squeries.DBTX) *BahnAlarmApi {
+	return &BahnAlarmApi{queries: squeries.New(db)}
+}
 
 func defaultPagination(userPage, userSize *int) (offset, size int) {
 	size = 50
