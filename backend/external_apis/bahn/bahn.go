@@ -81,7 +81,7 @@ func doRequest[T interface{}](ctx context.Context, path, query string, responseB
 		return fmt.Errorf("error decoding response: %w", err)
 	}
 
-	if _, err = db.Db.ExecContext(ctx, "insert into bahnapisearchresponses (data) values ($1)", buf.String()); err != nil {
+	if _, err = db.Db.ExecContext(ctx, "insert into bahnapisearchresponses (data, url) values ($1, $2)", buf.String(), request.URL.String()); err != nil {
 		return fmt.Errorf("error writing bahn api response to db: %w", err)
 	}
 
