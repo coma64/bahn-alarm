@@ -37,7 +37,11 @@ func checkDueDepartures(ctx context.Context) error {
 		var newNextCheck time.Time
 		if err != nil {
 			log.Err(err).Msg("Failed to check departure")
-			newNextCheck = time.Now().UTC().Add(time.Hour)
+			newNextCheck = getNewNextCheck(&departure)
+
+			if newNextCheck.Sub(time.Now()) < time.Hour {
+				newNextCheck = time.Now().UTC().Add(time.Hour)
+			}
 		} else {
 			newNextCheck = getNewNextCheck(&departure)
 		}
