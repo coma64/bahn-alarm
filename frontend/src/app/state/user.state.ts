@@ -1,13 +1,13 @@
-import {Inject, Injectable} from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Action, State, StateContext } from '@ngxs/store';
 import { UserActions } from './user.actions';
 import { Navigate } from '@ngxs/router-plugin';
 import { User } from '../api';
-import { EMPTY, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { PushNotificationSubscriptionService } from '../modules/core/push-notification-subscription.service';
-import LogRocket from "logrocket";
-import {rollbarService} from "../rollbar";
-import Rollbar from "rollbar";
+import LogRocket from 'logrocket';
+import { rollbarService } from '../rollbar';
+import Rollbar from 'rollbar';
 
 export type UserStateModel = {
   user?: User;
@@ -28,7 +28,7 @@ export class UserState {
   login(
     { patchState, dispatch }: StateContext<UserStateModel>,
     { user }: UserActions.LoginSuccess,
-  ): Observable<unknown> {
+  ): void {
     patchState({ user });
     dispatch(new Navigate(['/connections']));
 
@@ -36,9 +36,11 @@ export class UserState {
       name: user.name,
     });
 
-    this.rollbar.configure({payload: {user: {id: user.id, name: user.name}}})
+    this.rollbar.configure({
+      payload: { user: { id: user.id, name: user.name } },
+    });
 
-    return this.pushNotificationSubscription.askUserAndRegister();
+    // TODO: ask user if he wants to setup push notifications
   }
 
   @Action(UserActions.Logout)
@@ -50,8 +52,6 @@ export class UserState {
     const { pushSubId } = getState();
     setState({});
     dispatch(new Navigate(['/login']));
-
-    if (!pushSubId) return EMPTY;
 
     return this.pushNotificationSubscription.unregister(pushSubId);
   }

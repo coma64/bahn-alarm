@@ -20,13 +20,15 @@ import {
 import { fromPromise } from 'rxjs/internal/observable/innerFrom';
 import { Store } from '@ngxs/store';
 import { UserActions } from '../../state/user.actions';
+import { combineLatest } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PushNotificationSubscriptionService implements OnDestroy {
   private readonly destroy$ = new Subject<void>();
-  private _isRegistered = true;
+  private _isRegistered = false;
+  private vapidPublicKey?: string;
 
   get isRegistered(): boolean {
     return this._isRegistered;
@@ -41,6 +43,11 @@ export class PushNotificationSubscriptionService implements OnDestroy {
     this.swPush.subscription
       .pipe(takeUntil(this.destroy$))
       .subscribe((sub) => (this._isRegistered = !!sub));
+
+    this.notifications
+      .notificationsVapidKeysGet()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ publicKey }) => (this.vapidPublicKey = publicKey));
   }
 
   ngOnDestroy(): void {
@@ -48,57 +55,56 @@ export class PushNotificationSubscriptionService implements OnDestroy {
     this.destroy$.complete();
   }
 
-  askUserAndRegister(): Observable<PushNotificationSubscription> {
-    return this.notify
-      .confirm(
-        'Do you want to setup push notifications, to receive notification about delayed connections?',
+  register(): Observable<PushNotificationSubscription> {
+    return this.requestSubscription()
+      .pipe(
+        switchMap((subscription) =>
+          forkJoin([
+            this.notify.prompt('How do you want to name this device?'),
+            of(subscription),
+          ]),
+        ),
       )
       .pipe(
-        switchMap((isConfirmed) => (isConfirmed ? this.register() : EMPTY)),
+        switchMap(([name, subscription]) =>
+          this.notifications.notificationsPushSubscriptionsPost({
+            name: name ?? '',
+            subscription: subscription.toJSON() as RawSubscription,
+          }),
+        ),
+        tap({
+          next: ({ id }) =>
+            this.store.dispatch(
+              new UserActions.RegisteredPushNotifications(id),
+            ),
+          error: (err: Error) =>
+            this.notify.error(
+              `An unknown error occurred while setting up the push notification subscription.\n\n${
+                err.stack ?? err.message
+              }`,
+            ),
+        }),
+        take(1),
       );
   }
 
-  register(): Observable<PushNotificationSubscription> {
-    return this.notify.prompt('How do you want to name this device?').pipe(
-      switchMap((name) => forkJoin([of(name), this.requestSubscription()])),
-      switchMap(([name, subscription]) =>
-        this.notifications.notificationsPushSubscriptionsPost({
-          name: name ?? '',
-          subscription: subscription.toJSON() as RawSubscription,
-        }),
-      ),
-      tap({
-        next: ({ id }) =>
-          this.store.dispatch(new UserActions.RegisteredPushNotifications(id)),
-        error: (err: Error) =>
-          this.notify.error(
-            `An unknown error occurred while setting up the push notification subscription.\n\n${
-              err.stack ?? err.message
-            }`,
-          ),
-      }),
-      take(1),
-    );
-  }
-
-  unregister(pushSubId: number): Observable<unknown> {
-    if (!this.isRegistered) return EMPTY;
-
-    return forkJoin([
-      fromPromise(this.swPush.unsubscribe()),
-      this.notifications.notificationsPushSubscriptionsIdDelete(pushSubId),
+  unregister(pushSubId?: number): Observable<unknown> {
+    return combineLatest([
+      this.isRegistered ? fromPromise(this.swPush.unsubscribe()) : EMPTY,
+      !pushSubId
+        ? EMPTY
+        : this.notifications.notificationsPushSubscriptionsIdDelete(pushSubId),
     ]);
   }
 
   private requestSubscription(): Observable<PushSubscription> {
-    return this.notifications
-      .notificationsVapidKeysGet()
-      .pipe(
-        switchMap(({ publicKey }) =>
-          fromPromise(
-            this.swPush.requestSubscription({ serverPublicKey: publicKey }),
-          ),
-        ),
-      );
+    if (!this.vapidPublicKey) {
+      this.notify.error("Vapid public key wasn't loaded in advance. Exiting");
+      return EMPTY;
+    }
+
+    return fromPromise(
+      this.swPush.requestSubscription({ serverPublicKey: this.vapidPublicKey }),
+    );
   }
 }
