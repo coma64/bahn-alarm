@@ -1,6 +1,7 @@
 package bahn
 
 import (
+	"github.com/rs/zerolog/log"
 	"time"
 )
 
@@ -27,6 +28,7 @@ func (t *TimingInfo) IsOnTime() bool {
 }
 
 type Trip struct {
+	ID        string     `json:"id"`
 	Departure TimingInfo `json:"departure,omitempty"`
 	Arrival   TimingInfo `json:"arrival,omitempty"`
 }
@@ -41,6 +43,11 @@ func (r *ConnectionsResponse) ProcessResponse() {
 		r.Trips[i].Departure.ActualTime = r.Trips[i].Departure.ActualTime.UTC()
 		r.Trips[i].Arrival.ScheduledTime = r.Trips[i].Arrival.ScheduledTime.UTC()
 		r.Trips[i].Arrival.ActualTime = r.Trips[i].Arrival.ActualTime.UTC()
+
+		log.Debug().
+			Str("tripId", r.Trips[i].ID).
+			Time("scheduledDeparture", r.Trips[i].Departure.ScheduledTime).
+			Msg("Settings Departure.ActualTime to Departure.Scheduledtime because it was zero")
 
 		if r.Trips[i].Departure.ActualTime.IsZero() {
 			r.Trips[i].Departure.ActualTime = r.Trips[i].Departure.ScheduledTime
