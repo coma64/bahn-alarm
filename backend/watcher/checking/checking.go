@@ -47,16 +47,25 @@ func CheckDeparture(ctx context.Context, departure *queries.FatDeparture) (hasSe
 	}
 	log.Debug().Int("departureId", departure.Id).Msg("Sending notification")
 
+	if err = sendAlarm(ctx, departure, oldStatus, newStatus, oldDelay, newDelay); err != nil {
+		return false, newStatus == server.OnTime, err
+	}
+
+	return true, newStatus == server.OnTime, nil
+}
+
+func sendAlarm(ctx context.Context, departure *queries.FatDeparture, oldStatus server.TrackedDepartureStatus, newStatus server.TrackedDepartureStatus, oldDelay int, newDelay int) error {
 	urgency, message := getDelayMessage(oldStatus, newStatus, oldDelay, newDelay)
 
 	var alarm *models.Alarm
+	var err error
 	if alarm, err = models.InsertAlarm(ctx, departure.TrackedById, urgency, departure.Id, message); err != nil {
-		return false, false, fmt.Errorf("error creating alarm: %w", err)
+		return fmt.Errorf("error creating alarm: %w", err)
 	}
 
 	var notification *notifications.Notification
 	if notification, err = alarm.ToPushNotification(ctx, db.Db); err != nil {
-		return false, false, fmt.Errorf("error converting alarm %d for user %d to notification: %w", alarm.Id, alarm.ReceiverId, err)
+		return fmt.Errorf("error converting alarm %d for user %d to notification: %w", alarm.Id, alarm.ReceiverId, err)
 	}
 
 	metrics.AlarmsSent.WithLabelValues(string(alarm.Urgency)).Inc()
@@ -70,7 +79,7 @@ func CheckDeparture(ctx context.Context, departure *queries.FatDeparture) (hasSe
 		}
 	}()
 
-	return true, newStatus == server.OnTime, nil
+	return nil
 }
 
 func hasDelayChanged(oldStatus, newStatus server.TrackedDepartureStatus, oldDelay, newDelay int) bool {
