@@ -37,10 +37,10 @@ func (d *FatDeparture) TimeUntilNextDeparture() time.Duration {
 	return diff
 }
 
-func (f *FatDeparture) ToTrackedDeparture() server.TrackedDeparture {
+func (d *FatDeparture) ToTrackedDeparture() server.TrackedDeparture {
 	return server.TrackedDeparture{
-		Delay:     f.DelayMinutes,
-		Departure: f.Departure.Departure,
-		Status:    f.Status,
+		Delay:     d.DelayMinutes,
+		Departure: d.Departure.Departure,
+		Status:    d.Status,
 	}
 }

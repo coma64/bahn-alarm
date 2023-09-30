@@ -1,4 +1,4 @@
-import { NgModule, isDevMode } from '@angular/core';
+import {NgModule, isDevMode, ErrorHandler} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -23,6 +23,7 @@ import { ConnectionsState } from './state/connections.state';
 import { AlarmedDevicesState } from './state/alarmed-devices.state';
 import { AlarmsState } from './state/alarms.state';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import {RollbarErrorHandler, rollbarFactory, rollbarService} from "./rollbar";
 
 @NgModule({
   declarations: [AppComponent],
@@ -70,6 +71,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     }),
   ],
   providers: [
+    { provide: ErrorHandler, useClass: RollbarErrorHandler },
+    { provide: rollbarService, useFactory: rollbarFactory },
     {
       provide: HTTP_INTERCEPTORS,
       multi: true,

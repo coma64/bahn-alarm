@@ -1,11 +1,13 @@
-import { Injectable } from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import { Action, State, StateContext } from '@ngxs/store';
 import { UserActions } from './user.actions';
 import { Navigate } from '@ngxs/router-plugin';
 import { User } from '../api';
 import { EMPTY, Observable } from 'rxjs';
-import { NotifyService } from '../modules/shared/services/notify.service';
 import { PushNotificationSubscriptionService } from '../modules/core/push-notification-subscription.service';
+import LogRocket from "logrocket";
+import {rollbarService} from "../rollbar";
+import Rollbar from "rollbar";
 
 export type UserStateModel = {
   user?: User;
@@ -18,8 +20,8 @@ export type UserStateModel = {
 @Injectable()
 export class UserState {
   constructor(
-    private readonly notify: NotifyService,
     private readonly pushNotificationSubscription: PushNotificationSubscriptionService,
+    @Inject(rollbarService) private readonly rollbar: Rollbar,
   ) {}
 
   @Action(UserActions.LoginSuccess)
@@ -29,6 +31,12 @@ export class UserState {
   ): Observable<unknown> {
     patchState({ user });
     dispatch(new Navigate(['/connections']));
+
+    LogRocket.identify(user.id.toString(), {
+      name: user.name,
+    });
+
+    this.rollbar.configure({payload: {user: {id: user.id, name: user.name}}})
 
     return this.pushNotificationSubscription.askUserAndRegister();
   }
