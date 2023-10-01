@@ -4,23 +4,18 @@ import { Subject, takeUntil } from 'rxjs';
 import { Store } from '@ngxs/store';
 import { UserActions } from '../../../state/user.actions';
 import { AuthService, LoginRequest } from '../../../api';
-import { FeatherModule } from 'angular-feather';
 import { BannerComponent } from '../../shared/components/banner/banner.component';
 import { NgIf } from '@angular/common';
+import { IconsModule } from '../../icons/icons.module';
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss'],
-    standalone: true,
-    imports: [
-        ReactiveFormsModule,
-        NgIf,
-        BannerComponent,
-        FeatherModule,
-    ],
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
+  standalone: true,
+  imports: [ReactiveFormsModule, NgIf, BannerComponent, IconsModule],
 })
-export class LoginComponent implements OnDestroy {
+export default class LoginComponent implements OnDestroy {
   readonly form = this.fb.nonNullable.group({
     username: ['', Validators.required],
     password: ['', Validators.required],

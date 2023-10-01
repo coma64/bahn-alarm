@@ -9,25 +9,25 @@ import { NotifyService } from '../../shared/services/notify.service';
 import { PushNotificationSubscriptionService } from '../../core/push-notification-subscription.service';
 import { FormatPipe } from '../../shared/pipes/format.pipe';
 import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
-import { FeatherModule } from 'angular-feather';
 import { AlarmedDevicesListComponent } from '../alarmed-devices-list/alarmed-devices-list.component';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { IconsModule } from '../../icons/icons.module';
 
 @Component({
-    selector: 'app-profile',
-    templateUrl: './profile.component.html',
-    styleUrls: ['./profile.component.scss'],
-    standalone: true,
-    imports: [
-        NgIf,
-        AlarmedDevicesListComponent,
-        FeatherModule,
-        SpinnerComponent,
-        AsyncPipe,
-        FormatPipe,
-    ],
+  selector: 'app-profile',
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    AlarmedDevicesListComponent,
+    IconsModule,
+    SpinnerComponent,
+    AsyncPipe,
+    FormatPipe,
+  ],
 })
-export class ProfileComponent implements OnInit, OnDestroy {
+export default class ProfileComponent implements OnInit, OnDestroy {
   @Select() user$!: Observable<State['user']>;
   private readonly destroy$ = new Subject<void>();
 

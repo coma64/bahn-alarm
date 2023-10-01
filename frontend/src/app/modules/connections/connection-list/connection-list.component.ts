@@ -7,22 +7,22 @@ import { Router } from '@angular/router';
 import { trackById } from '../../shared/track-by-id';
 import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
 import { DepartureComponent } from '../departure/departure.component';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
-import { FeatherModule } from 'angular-feather';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { IconsModule } from '../../icons/icons.module';
 
 @Component({
-    selector: 'app-connection-list',
-    templateUrl: './connection-list.component.html',
-    styleUrls: ['./connection-list.component.scss'],
-    standalone: true,
-    imports: [
-        FeatherModule,
-        NgIf,
-        NgFor,
-        DepartureComponent,
-        SpinnerComponent,
-        AsyncPipe,
-    ],
+  selector: 'app-connection-list',
+  templateUrl: './connection-list.component.html',
+  styleUrls: ['./connection-list.component.scss'],
+  standalone: true,
+  imports: [
+    IconsModule,
+    NgIf,
+    NgFor,
+    DepartureComponent,
+    SpinnerComponent,
+    AsyncPipe,
+  ],
 })
 export class ConnectionListComponent {
   @Select((state: State) => state.connections.items)

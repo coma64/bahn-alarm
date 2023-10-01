@@ -1,4 +1,3 @@
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import './init-dayjs';
 
 import LogRocket from 'logrocket';
@@ -7,10 +6,10 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { ApiModule, Configuration } from './app/api';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import {
-  RouterNavigation,
+  NgxsRouterPluginModule,
   RouterDataResolved,
   RouterNavigated,
-  NgxsRouterPluginModule,
+  RouterNavigation,
 } from '@ngxs/router-plugin';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
@@ -21,20 +20,21 @@ import { ConnectionsState } from './app/state/connections.state';
 import { ConnectionStatsState } from './app/state/connection-stats.state';
 import { UserState } from './app/state/user.state';
 import { NgxsModule } from '@ngxs/store';
-import { AppRoutingModule } from './app/app-routing.module';
-import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
+import { routes } from './app/routes';
+import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
 import { JwtExpiredInterceptor } from './app/interceptors/jwt-expired.interceptor';
 import {
   HTTP_INTERCEPTORS,
-  withInterceptorsFromDi,
   provideHttpClient,
+  withInterceptorsFromDi,
 } from '@angular/common/http';
 import {
   RollbarErrorHandler,
-  rollbarService,
   rollbarFactory,
+  rollbarService,
 } from './app/rollbar';
-import { ErrorHandler, isDevMode, importProvidersFrom } from '@angular/core';
+import { ErrorHandler, importProvidersFrom, isDevMode } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 LogRocket.init('qmpbyd/bahn-alarm');
 
@@ -42,7 +42,7 @@ bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(
       BrowserModule,
-      AppRoutingModule,
+      RouterModule.forRoot(routes),
       NgxsModule.forRoot(
         [
           UserState,

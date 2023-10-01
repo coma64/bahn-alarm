@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BannerComponent } from './components/banner/banner.component';
-import { IconsModule } from '../login/icons/icons.module';
+import { IconsModule } from '../icons/icons.module';
 import { NextRelativeTimePipe } from './pipes/next-relative-time.pipe';
 import { ToRelativeTimePipe } from './pipes/to-relative-time.pipe';
 import { SpinnerComponent } from './components/spinner/spinner.component';
@@ -15,32 +15,32 @@ import { PaginationComponent } from './components/pagination/pagination.componen
 import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        IconsModule,
-        PortalModule,
-        NgObjectPipesModule,
-        ReactiveFormsModule,
-        BannerComponent,
-        NextRelativeTimePipe,
-        ToRelativeTimePipe,
-        SpinnerComponent,
-        IsIncludedInPipe,
-        FormatPipe,
-        TimeSincePipe,
-        DropdownComponent,
-        PaginationComponent,
-    ],
-    exports: [
-        BannerComponent,
-        ToRelativeTimePipe,
-        NextRelativeTimePipe,
-        SpinnerComponent,
-        IsIncludedInPipe,
-        FormatPipe,
-        TimeSincePipe,
-        DropdownComponent,
-        PaginationComponent,
-    ],
+  imports: [
+    CommonModule,
+    IconsModule,
+    PortalModule,
+    NgObjectPipesModule,
+    ReactiveFormsModule,
+    BannerComponent,
+    NextRelativeTimePipe,
+    ToRelativeTimePipe,
+    SpinnerComponent,
+    IsIncludedInPipe,
+    FormatPipe,
+    TimeSincePipe,
+    DropdownComponent,
+    PaginationComponent,
+  ],
+  exports: [
+    BannerComponent,
+    ToRelativeTimePipe,
+    NextRelativeTimePipe,
+    SpinnerComponent,
+    IsIncludedInPipe,
+    FormatPipe,
+    TimeSincePipe,
+    DropdownComponent,
+    PaginationComponent,
+  ],
 })
 export class SharedModule {}

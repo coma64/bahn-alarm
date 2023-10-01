@@ -9,19 +9,19 @@ import { AlarmsListComponent } from '../alarms-list/alarms-list.component';
 import { FiltersComponent } from '../filters/filters.component';
 
 @Component({
-    selector: 'app-alarms',
-    templateUrl: './alarms.component.html',
-    styleUrls: ['./alarms.component.scss'],
-    standalone: true,
-    imports: [
-        FiltersComponent,
-        AlarmsListComponent,
-        NgIf,
-        PaginationComponent,
-        AsyncPipe,
-    ],
+  selector: 'app-alarms',
+  templateUrl: './alarms.component.html',
+  styleUrls: ['./alarms.component.scss'],
+  standalone: true,
+  imports: [
+    FiltersComponent,
+    AlarmsListComponent,
+    NgIf,
+    PaginationComponent,
+    AsyncPipe,
+  ],
 })
-export class AlarmsComponent implements OnInit, OnDestroy {
+export default class AlarmsComponent implements OnInit, OnDestroy {
   @Select(AlarmsState)
   protected readonly alarms$!: Observable<AlarmsStateModel>;
 

@@ -1,14 +1,12 @@
 import { Component } from '@angular/core';
-import { FeatherModule } from 'angular-feather';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { IconsModule } from '../../icons/icons.module';
 
 @Component({
-    selector: 'app-header',
-    templateUrl: './header.component.html',
-    styleUrls: ['./header.component.scss'],
-    standalone: true,
-    imports: [RouterLink, RouterLinkActive, FeatherModule]
+  selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss'],
+  standalone: true,
+  imports: [RouterLink, RouterLinkActive, IconsModule],
 })
-export class HeaderComponent {
-
-}
+export class HeaderComponent {}

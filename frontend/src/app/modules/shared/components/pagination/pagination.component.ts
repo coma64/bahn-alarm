@@ -8,14 +8,14 @@ import {
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
-import { FeatherModule } from 'angular-feather';
+import { IconsModule } from '../../../icons/icons.module';
 
 @Component({
-    selector: 'app-pagination',
-    templateUrl: './pagination.component.html',
-    styleUrls: ['./pagination.component.scss'],
-    standalone: true,
-    imports: [FeatherModule, ReactiveFormsModule],
+  selector: 'app-pagination',
+  templateUrl: './pagination.component.html',
+  styleUrls: ['./pagination.component.scss'],
+  standalone: true,
+  imports: [IconsModule, ReactiveFormsModule],
 })
 export class PaginationComponent implements OnInit, OnDestroy {
   get page(): number {

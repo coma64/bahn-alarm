@@ -1,16 +1,19 @@
 import { Component } from '@angular/core';
-import { Option, DropdownComponent } from '../../shared/dropdown/dropdown.component';
+import {
+  DropdownComponent,
+  Option,
+} from '../../shared/dropdown/dropdown.component';
 import { Urgency } from '../../../api';
 import { Store } from '@ngxs/store';
 import { AlarmsActions } from '../../../state/alarms.actions';
-import { FeatherModule } from 'angular-feather';
+import { IconsModule } from '../../icons/icons.module';
 
 @Component({
-    selector: 'app-filters',
-    templateUrl: './filters.component.html',
-    styleUrls: ['./filters.component.scss'],
-    standalone: true,
-    imports: [FeatherModule, DropdownComponent],
+  selector: 'app-filters',
+  templateUrl: './filters.component.html',
+  styleUrls: ['./filters.component.scss'],
+  standalone: true,
+  imports: [IconsModule, DropdownComponent],
 })
 export class FiltersComponent {
   readonly urgencyOptions: Array<Option<Urgency | undefined>> = [

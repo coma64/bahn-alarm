@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RelativeTime } from '../relative-time/relative-time';
-import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BahnStation, TrackingService } from '../../../api';
 import { Store } from '@ngxs/store';
 import { Navigate } from '@ngxs/router-plugin';
@@ -13,23 +13,23 @@ import { SpinnerComponent } from '../../shared/components/spinner/spinner.compon
 import { BannerComponent } from '../../shared/components/banner/banner.component';
 import { DepartureSelectComponent } from '../departure-select/departure-select.component';
 import { StationSearchComponent } from '../station-search/station-search.component';
-import { FeatherModule } from 'angular-feather';
 import { NgIf } from '@angular/common';
+import { IconsModule } from '../../icons/icons.module';
 
 @Component({
-    selector: 'app-edit-connection',
-    templateUrl: './edit-connection.component.html',
-    styleUrls: ['./edit-connection.component.scss'],
-    standalone: true,
-    imports: [
-        NgIf,
-        FeatherModule,
-        ReactiveFormsModule,
-        StationSearchComponent,
-        DepartureSelectComponent,
-        BannerComponent,
-        SpinnerComponent,
-    ],
+  selector: 'app-edit-connection',
+  templateUrl: './edit-connection.component.html',
+  styleUrls: ['./edit-connection.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    IconsModule,
+    ReactiveFormsModule,
+    StationSearchComponent,
+    DepartureSelectComponent,
+    BannerComponent,
+    SpinnerComponent,
+  ],
 })
 export class EditConnectionComponent implements OnInit, OnDestroy {
   readonly stationForm = this.fb.nonNullable.group({
