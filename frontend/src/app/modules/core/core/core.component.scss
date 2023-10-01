@@ -1,15 +1,5 @@
 @use "../../../../scss/breakpoints" as b;
 
-@include b.is-large {
-}
-
-@include b.is-small {
-  :host {
-    display: block;
-    padding-bottom: 4rem;
-  }
-}
-
 main {
   max-width: 1000px;
   margin: 0 auto;
