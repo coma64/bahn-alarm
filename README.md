@@ -7,6 +7,8 @@ It does this by regularly polling the API of the new "Next DB Navigator" app.
 
 **I am by no means affiliated with the DB. This project was built for educational purposes only.**
 
+![Demo Screenshot](resources/demo-screenshot.png)
+
 ## Tech stack
 
 - Angular frontend
