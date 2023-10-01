@@ -41,7 +41,6 @@ ul {
 
     width: 100%;
     background: var(--surface1);
-    padding-top: 10px;
     padding-inline: 10px;
   }
 
@@ -51,20 +50,31 @@ ul {
     width: 22px !important;
   }
 
-  li a {
-    display: grid !important;
-    gap: 0 !important;
-    margin-inline: 10px;
+  li {
+    padding-inline: 5px;
+
+    a {
+      display: grid !important;
+      gap: 0 !important;
+      margin-inline: 10px;
+    }
   }
 }
 
 li {
   background: var(--surface1);
   border-bottom: 4px solid var(--surface1);
+  border-top: 4px solid var(--surface1);
   padding-bottom: 5px;
 
   &:has(.active) {
-    border-bottom: 4px solid var(--brand);
+    @include b.is-large {
+      border-bottom: 4px solid var(--brand);
+    }
+
+    @include b.is-small {
+      border-top: 4px solid var(--brand);
+    }
   }
 
   a {
