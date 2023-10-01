@@ -41,10 +41,8 @@ pnpm start
 ### Backend
 
 ```bash
-npm i -g nodemon
-make be
+docker compose up -d
 
-# or if you don't need automatic reloading
 cd backend
 CONFIGOR_ENV=dev go run . serve
 ```
