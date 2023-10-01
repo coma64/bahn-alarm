@@ -12,12 +12,14 @@ It does this by regularly polling the API of the new "Next DB Navigator" app.
 ## Tech stack
 
 - Angular frontend
-  - pnpm as a package manager
+  - PNPM as a package manager
   - HSL color scheme based on [web.dev - Color schemes with HSL](https://web.dev/patterns/theming/)
+  - Web push API notifications
 - Go backend
-  - Cobra for managing the different management commands
+  - Cobra for handling the different management commands
   - Echo as a server
   - sqlx and squirrel for interacting with postgres
+  - goose for migrations
 - Postgres
 - Kubernetes with traefik
 - Prometheus for metrics
