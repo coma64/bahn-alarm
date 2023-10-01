@@ -17,11 +17,14 @@ import { UserState, UserStateModel } from './state/user.state';
 import LogRocket from 'logrocket';
 import Rollbar from 'rollbar';
 import { rollbarService } from './rollbar';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: true,
+    imports: [RouterOutlet],
 })
 export class AppComponent implements OnInit, OnDestroy {
   @Select(UserState) user!: Observable<UserStateModel>;
