@@ -2,8 +2,8 @@
     <img style="margin: auto" alt="Bahn Alarm Logo" height="100" src="frontend/src/assets/logo.svg">
 </p>
 
-Bahn alarm is a pet project of mine that sends real-time notifications about train delays from the deutsche bahn.
-It does this by regularly polling the API of the next "Next DB Navigator" app.
+Bahn alarm is a pet project of mine that sends real-time notifications about train delays from the Deutsche Bahn.
+It does this by regularly polling the API of the new "Next DB Navigator" app.
 
 **I am by no means affiliated with the DB. This project was built for educational purposes only.**
 
