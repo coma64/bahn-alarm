@@ -1,10 +1,6 @@
 @use "../../../../scss/breakpoints" as b;
 
 @include b.is-large {
-  :host {
-    display: grid;
-    grid-template-columns: var(--nav-width) 0 1fr;
-  }
 }
 
 @include b.is-small {
@@ -12,4 +8,9 @@
     display: block;
     padding-bottom: 4rem;
   }
+}
+
+main {
+  max-width: 1000px;
+  margin: 0 auto;
 }

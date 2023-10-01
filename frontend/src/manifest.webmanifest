@@ -9,12 +9,7 @@
   "icons": [
     {
       "src": "assets/logo.svg",
-      "type": "image/svg+xml",
-      "sizes": "any"
-    },
-    {
-      "src": "assets/logo.svg",
-      "sizes": "70x61",
+      "sizes": "512x512",
       "type": "image/svg+xml"
     }
   ]

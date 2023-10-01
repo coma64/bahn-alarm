@@ -1,0 +1,62 @@
+@font-face {
+  font-family: "calling-code";
+  src: url("/assets/CallingCode-Regular.ttf");
+}
+
+:host {
+  background: var(--surface1);
+
+  display: flex;
+  justify-content: space-between;
+}
+
+h1 {
+  font-family: "calling-code", "monospace";
+  font-size: 30px;
+  margin: 10px 10px 10px 30px;
+}
+
+ul {
+  display: flex;
+  list-style: none;
+  margin: 0 30px 0 0;
+  padding: 0;
+  gap: 30px;
+  align-items: flex-end;
+}
+
+li {
+  background: var(--surface1);
+  border-bottom: 4px solid var(--surface1);
+  padding-bottom: 5px;
+
+  &:has(.active) {
+    border-bottom: 4px solid var(--brand);
+  }
+
+  a {
+    display: flex;
+    gap: 10px;
+    border-radius: 15px;
+    padding: 10px;
+
+    font-size: 18px;
+    color: var(--text2);
+    text-decoration: none;
+
+    transition: all 150ms ease-in-out;
+
+    &:hover {
+      color: var(--text1);
+      background: var(--surface2);
+    }
+
+    &.active {
+      color: var(--text1);
+    }
+  }
+}
+
+i-feather {
+  width: 18px;
+}
