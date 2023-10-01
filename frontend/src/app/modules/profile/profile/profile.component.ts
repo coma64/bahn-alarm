@@ -7,11 +7,25 @@ import { AlarmedDeviceActions } from '../../../state/alarmed-devices.actions';
 import { UserActions } from '../../../state/user.actions';
 import { NotifyService } from '../../shared/services/notify.service';
 import { PushNotificationSubscriptionService } from '../../core/push-notification-subscription.service';
+import { FormatPipe } from '../../shared/pipes/format.pipe';
+import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
+import { FeatherModule } from 'angular-feather';
+import { AlarmedDevicesListComponent } from '../alarmed-devices-list/alarmed-devices-list.component';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss'],
+    selector: 'app-profile',
+    templateUrl: './profile.component.html',
+    styleUrls: ['./profile.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        AlarmedDevicesListComponent,
+        FeatherModule,
+        SpinnerComponent,
+        AsyncPipe,
+        FormatPipe,
+    ],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   @Select() user$!: Observable<State['user']>;

@@ -7,7 +7,6 @@ import { IconsModule } from '../login/icons/icons.module';
 import { HeaderComponent } from './header/header.component';
 
 @NgModule({
-  declarations: [CoreComponent, HeaderComponent],
-  imports: [CommonModule, CoreRoutingModule, IconsModule, NgOptimizedImage],
+    imports: [CommonModule, CoreRoutingModule, IconsModule, NgOptimizedImage, CoreComponent, HeaderComponent],
 })
 export class CoreModule {}

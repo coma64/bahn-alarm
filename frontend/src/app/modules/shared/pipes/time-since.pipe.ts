@@ -3,7 +3,8 @@ import dayjs from 'dayjs/esm';
 import { interval, map, Observable, startWith } from 'rxjs';
 
 @Pipe({
-  name: 'timeSince',
+    name: 'timeSince',
+    standalone: true,
 })
 export class TimeSincePipe implements PipeTransform {
   transform(value: dayjs.Dayjs | string): Observable<string> {

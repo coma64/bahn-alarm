@@ -7,12 +7,8 @@ import {
   TrackByFunction,
   ViewChild,
 } from '@angular/core';
-import {
-  ControlValueAccessor,
-  FormControl,
-  NG_VALUE_ACCESSOR,
-} from '@angular/forms';
-import { CdkPortal, TemplatePortal } from '@angular/cdk/portal';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { CdkPortal, TemplatePortal, PortalModule } from '@angular/cdk/portal';
 import { Overlay } from '@angular/cdk/overlay';
 import {
   catchError,
@@ -29,18 +25,29 @@ import {
 } from 'rxjs';
 import { BahnService, BahnStation } from '../../../api';
 import { NotifyService } from '../../shared/services/notify.service';
+import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-station-search',
-  templateUrl: './station-search.component.html',
-  styleUrls: ['./station-search.component.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: forwardRef(() => StationSearchComponent),
-    },
-  ],
+    selector: 'app-station-search',
+    templateUrl: './station-search.component.html',
+    styleUrls: ['./station-search.component.scss'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            multi: true,
+            useExisting: forwardRef(() => StationSearchComponent),
+        },
+    ],
+    standalone: true,
+    imports: [
+        ReactiveFormsModule,
+        PortalModule,
+        NgIf,
+        NgFor,
+        SpinnerComponent,
+        AsyncPipe,
+    ],
 })
 export class StationSearchComponent implements ControlValueAccessor, OnDestroy {
   @Input() inputId?: string;

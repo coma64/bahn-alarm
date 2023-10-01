@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { TrackedDeparture } from '../../api';
 
 @Pipe({
-  name: 'toHumanStatus',
+    name: 'toHumanStatus',
+    standalone: true,
 })
 export class ToHumanStatusPipe implements PipeTransform {
   transform(departure: TrackedDeparture): string {

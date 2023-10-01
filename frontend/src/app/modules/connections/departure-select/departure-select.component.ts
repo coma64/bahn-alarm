@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { BahnService, BahnStation } from '../../../api';
 import { RelativeTime } from '../relative-time/relative-time';
-import { FormControl } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   BehaviorSubject,
   combineLatest,
@@ -19,11 +19,29 @@ import {
   startWith,
   switchMap,
 } from 'rxjs';
+import { NgArrayPipesModule } from 'ngx-pipes';
+import { IsIncludedInPipe } from '../../shared/pipes/is-included-in.pipe';
+import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
+import { BannerComponent } from '../../shared/components/banner/banner.component';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { RelativeTimeComponent } from '../relative-time/relative-time.component';
 
 @Component({
-  selector: 'app-departure-select',
-  templateUrl: './departure-select.component.html',
-  styleUrls: ['./departure-select.component.scss'],
+    selector: 'app-departure-select',
+    templateUrl: './departure-select.component.html',
+    styleUrls: ['./departure-select.component.scss'],
+    standalone: true,
+    imports: [
+        RelativeTimeComponent,
+        ReactiveFormsModule,
+        NgIf,
+        BannerComponent,
+        NgFor,
+        SpinnerComponent,
+        AsyncPipe,
+        IsIncludedInPipe,
+        NgArrayPipesModule,
+    ],
 })
 export class DepartureSelectComponent implements OnDestroy {
   get from(): BahnStation | undefined {

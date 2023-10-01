@@ -1,23 +1,27 @@
 import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
-import {
-  ControlValueAccessor,
-  FormControl,
-  NG_VALUE_ACCESSOR,
-} from '@angular/forms';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { RelativeTime } from './relative-time';
 import { Subject, takeUntil } from 'rxjs';
+import { NextRelativeTimePipe } from '../../shared/pipes/next-relative-time.pipe';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-relative-time',
-  templateUrl: './relative-time.component.html',
-  styleUrls: ['./relative-time.component.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: forwardRef(() => RelativeTimeComponent),
-    },
-  ],
+    selector: 'app-relative-time',
+    templateUrl: './relative-time.component.html',
+    styleUrls: ['./relative-time.component.scss'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            multi: true,
+            useExisting: forwardRef(() => RelativeTimeComponent),
+        },
+    ],
+    standalone: true,
+    imports: [
+        ReactiveFormsModule,
+        AsyncPipe,
+        NextRelativeTimePipe,
+    ],
 })
 export class RelativeTimeComponent
   implements ControlValueAccessor, OnInit, OnDestroy

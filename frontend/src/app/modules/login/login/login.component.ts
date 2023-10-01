@@ -1,14 +1,24 @@
 import { Component, OnDestroy } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { Store } from '@ngxs/store';
 import { UserActions } from '../../../state/user.actions';
 import { AuthService, LoginRequest } from '../../../api';
+import { FeatherModule } from 'angular-feather';
+import { BannerComponent } from '../../shared/components/banner/banner.component';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
+    standalone: true,
+    imports: [
+        ReactiveFormsModule,
+        NgIf,
+        BannerComponent,
+        FeatherModule,
+    ],
 })
 export class LoginComponent implements OnDestroy {
   readonly form = this.fb.nonNullable.group({

@@ -10,8 +10,10 @@ import {
   TrackByFunction,
   ViewChild,
 } from '@angular/core';
-import { CdkPortal, TemplatePortal } from '@angular/cdk/portal';
+import { CdkPortal, TemplatePortal, PortalModule } from '@angular/cdk/portal';
 import { Overlay } from '@angular/cdk/overlay';
+import { NgIf, NgFor } from '@angular/common';
+import { FeatherModule } from 'angular-feather';
 
 export type Option<T> = {
   label: string;
@@ -19,10 +21,17 @@ export type Option<T> = {
 };
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'button[app-dropdown]',
-  templateUrl: './dropdown.component.html',
-  styleUrls: ['./dropdown.component.scss'],
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'button[app-dropdown]',
+    templateUrl: './dropdown.component.html',
+    styleUrls: ['./dropdown.component.scss'],
+    standalone: true,
+    imports: [
+        FeatherModule,
+        PortalModule,
+        NgIf,
+        NgFor,
+    ],
 })
 export class DropdownComponent<T> implements OnDestroy {
   @Input() options: ReadonlyArray<Option<T>> = [];

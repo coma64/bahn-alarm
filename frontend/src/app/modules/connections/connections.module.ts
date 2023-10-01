@@ -19,27 +19,25 @@ import { RelativeTimeComponent } from './relative-time/relative-time.component';
 import { PortalModule } from '@angular/cdk/portal';
 
 @NgModule({
-  declarations: [
-    ConnectionsComponent,
-    ConnectionStatsComponent,
-    ConnectionListComponent,
-    DepartureComponent,
-    ToHumanStatusPipe,
-    EditConnectionComponent,
-    DepartureSelectComponent,
-    StationSearchComponent,
-    RelativeTimeComponent,
-  ],
-  imports: [
-    CommonModule,
-    ConnectionsRoutingModule,
-    IconsModule,
-    SharedModule,
-    OverlayModule,
-    ReactiveFormsModule,
-    FormsModule,
-    NgArrayPipesModule,
-    PortalModule,
-  ],
+    imports: [
+        CommonModule,
+        ConnectionsRoutingModule,
+        IconsModule,
+        SharedModule,
+        OverlayModule,
+        ReactiveFormsModule,
+        FormsModule,
+        NgArrayPipesModule,
+        PortalModule,
+        ConnectionsComponent,
+        ConnectionStatsComponent,
+        ConnectionListComponent,
+        DepartureComponent,
+        ToHumanStatusPipe,
+        EditConnectionComponent,
+        DepartureSelectComponent,
+        StationSearchComponent,
+        RelativeTimeComponent,
+    ],
 })
 export class ConnectionsModule {}

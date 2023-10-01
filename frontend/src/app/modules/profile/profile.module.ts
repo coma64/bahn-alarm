@@ -8,7 +8,6 @@ import { IconsModule } from '../login/icons/icons.module';
 import { AlarmedDevicesListComponent } from './alarmed-devices-list/alarmed-devices-list.component';
 
 @NgModule({
-  declarations: [ProfileComponent, AlarmedDevicesListComponent],
-  imports: [CommonModule, ProfileRoutingModule, SharedModule, IconsModule],
+    imports: [CommonModule, ProfileRoutingModule, SharedModule, IconsModule, ProfileComponent, AlarmedDevicesListComponent],
 })
 export class ProfileModule {}

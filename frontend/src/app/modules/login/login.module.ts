@@ -8,13 +8,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
-  declarations: [LoginComponent],
-  imports: [
-    CommonModule,
-    LoginRoutingModule,
-    IconsModule,
-    ReactiveFormsModule,
-    SharedModule,
-  ],
+    imports: [
+        CommonModule,
+        LoginRoutingModule,
+        IconsModule,
+        ReactiveFormsModule,
+        SharedModule,
+        LoginComponent,
+    ],
 })
 export class LoginModule {}

@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import dayjs from 'dayjs/esm';
 
 @Pipe({
-  name: 'format',
+    name: 'format',
+    standalone: true,
 })
 export class FormatPipe implements PipeTransform {
   transform(value: boolean | string | dayjs.Dayjs): string {

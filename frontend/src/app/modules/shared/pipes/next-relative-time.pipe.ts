@@ -6,7 +6,8 @@ import {
 } from '../../connections/relative-time/relative-time';
 
 @Pipe({
-  name: 'nextRelativeTime',
+    name: 'nextRelativeTime',
+    standalone: true,
 })
 export class NextRelativeTimePipe implements PipeTransform {
   transform(

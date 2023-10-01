@@ -3,11 +3,23 @@ import { Select, Store } from '@ngxs/store';
 import { AlarmsActions } from '../../../state/alarms.actions';
 import { AlarmsState, AlarmsStateModel } from '../../../state/alarms.state';
 import { exhaustMap, Observable, Subject, takeUntil, timer } from 'rxjs';
+import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { AlarmsListComponent } from '../alarms-list/alarms-list.component';
+import { FiltersComponent } from '../filters/filters.component';
 
 @Component({
-  selector: 'app-alarms',
-  templateUrl: './alarms.component.html',
-  styleUrls: ['./alarms.component.scss'],
+    selector: 'app-alarms',
+    templateUrl: './alarms.component.html',
+    styleUrls: ['./alarms.component.scss'],
+    standalone: true,
+    imports: [
+        FiltersComponent,
+        AlarmsListComponent,
+        NgIf,
+        PaginationComponent,
+        AsyncPipe,
+    ],
 })
 export class AlarmsComponent implements OnInit, OnDestroy {
   @Select(AlarmsState)

@@ -4,11 +4,15 @@ import { Store } from '@ngxs/store';
 import { ConnectionStats } from '../../../state/connection-stats.actions';
 import { Connections } from '../../../state/connections.actions';
 import { exhaustMap, Subject, takeUntil, timer } from 'rxjs';
+import { ConnectionListComponent } from '../connection-list/connection-list.component';
+import { ConnectionStatsComponent } from '../stats/connection-stats.component';
 
 @Component({
-  selector: 'app-connections',
-  templateUrl: './connections.component.html',
-  styleUrls: ['./connections.component.scss'],
+    selector: 'app-connections',
+    templateUrl: './connections.component.html',
+    styleUrls: ['./connections.component.scss'],
+    standalone: true,
+    imports: [ConnectionStatsComponent, ConnectionListComponent],
 })
 export class ConnectionsComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();

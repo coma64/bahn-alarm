@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'isIncludedIn',
+    name: 'isIncludedIn',
+    standalone: true,
 })
 export class IsIncludedInPipe implements PipeTransform {
   transform<T>(value: T, arr: readonly T[], comparingKey?: keyof T): boolean {
