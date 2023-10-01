@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import { Select, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
-import { State } from '../../../state/state';
+import { Store } from '@ngxs/store';
 import { Urgency } from '../../../api';
 import { AlarmsActions } from '../../../state/alarms.actions';
 import { trackById } from '../../shared/track-by-id';
@@ -10,6 +8,8 @@ import { SpinnerComponent } from '../../shared/components/spinner/spinner.compon
 import { ConnectionInfoComponent } from '../connection-info/connection-info.component';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { IconsModule } from '../../icons/icons.module';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { alarmsStateToken } from '../../../state/alarms.state';
 
 @Component({
   selector: 'app-alarms-list',
@@ -27,8 +27,9 @@ import { IconsModule } from '../../icons/icons.module';
   ],
 })
 export class AlarmsListComponent {
-  @Select() readonly alarms$!: Observable<State['alarms']>;
-  readonly emergencyToHumanReadable: Record<Urgency, string> = {
+  protected readonly alarms = toSignal(this.store.select(alarmsStateToken));
+
+  protected readonly emergencyToHumanReadable: Record<Urgency, string> = {
     info: 'Info',
     warn: 'Warning',
     error: 'Error',

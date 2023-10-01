@@ -2,11 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { AlarmsActions } from '../../../state/alarms.actions';
 import { AlarmsState, AlarmsStateModel } from '../../../state/alarms.state';
-import { exhaustMap, Observable, Subject, takeUntil, timer } from 'rxjs';
+import { exhaustMap, Observable, Subject, timer } from 'rxjs';
 import { PaginationComponent } from '../../shared/components/pagination/pagination.component';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { AlarmsListComponent } from '../alarms-list/alarms-list.component';
 import { FiltersComponent } from '../filters/filters.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-alarms',
@@ -26,6 +27,7 @@ export default class AlarmsComponent implements OnInit, OnDestroy {
   protected readonly alarms$!: Observable<AlarmsStateModel>;
 
   private readonly destroy$ = new Subject<void>();
+  private readonly untilDestroyed = takeUntilDestroyed();
 
   constructor(private readonly store: Store) {}
 
@@ -33,7 +35,7 @@ export default class AlarmsComponent implements OnInit, OnDestroy {
     timer(0, 5_000)
       .pipe(
         exhaustMap(() => this.store.dispatch(AlarmsActions.Fetch)),
-        takeUntil(this.destroy$),
+        this.untilDestroyed,
       )
       .subscribe();
   }

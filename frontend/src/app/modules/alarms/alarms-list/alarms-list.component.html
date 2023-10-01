@@ -1,4 +1,4 @@
-<section *ngIf="(alarms$ | async)?.items as alarms; else spinner">
+<section *ngIf="alarms()?.items as alarms; else spinner">
   <p *ngIf="!alarms.length" class="text2">No alarms were found</p>
 
   <div class="alarm" *ngFor="let alarm of alarms; trackBy: trackById">

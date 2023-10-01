@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { State, Action, StateContext } from '@ngxs/store';
+import { State, Action, StateContext, StateToken } from '@ngxs/store';
 import { AlarmsActions } from './alarms.actions';
 import { Alarm, AlarmsService, Urgency } from '../api';
 import { EMPTY, Observable, tap } from 'rxjs';
 import { NotifyService } from '../modules/shared/services/notify.service';
+
+export const alarmsStateToken = new StateToken<AlarmsStateModel>('alarms');
 
 export class AlarmsStateModel {
   items?: Alarm[];
@@ -14,7 +16,7 @@ export class AlarmsStateModel {
 }
 
 @State<AlarmsStateModel>({
-  name: 'alarms',
+  name: alarmsStateToken,
   defaults: new AlarmsStateModel(),
 })
 @Injectable()
