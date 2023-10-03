@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { inject, Injectable, OnDestroy } from '@angular/core';
 import { SwPush } from '@angular/service-worker';
 import {
   NotificationsService,
@@ -29,18 +29,24 @@ export class PushNotificationSubscriptionService implements OnDestroy {
   private readonly destroy$ = new Subject<void>();
   private _isRegistered = false;
   private vapidPublicKey?: string;
+  private readonly swPush?: SwPush;
 
   get isRegistered(): boolean {
     return this._isRegistered;
   }
 
   constructor(
-    private readonly swPush: SwPush,
     private readonly notifications: NotificationsService,
     private readonly notify: NotifyService,
     private readonly store: Store,
   ) {
-    this.swPush.subscription
+    try {
+      this.swPush = inject(SwPush);
+    } catch (e) {
+      console.error("Failed to initialize 'SwPush'", e);
+    }
+
+    this.swPush?.subscription
       .pipe(takeUntil(this.destroy$))
       .subscribe((sub) => (this._isRegistered = !!sub));
 
@@ -90,7 +96,9 @@ export class PushNotificationSubscriptionService implements OnDestroy {
 
   unregister(pushSubId?: number): Observable<unknown> {
     return combineLatest([
-      this.isRegistered ? fromPromise(this.swPush.unsubscribe()) : EMPTY,
+      this.isRegistered && this.swPush
+        ? fromPromise(this.swPush.unsubscribe())
+        : EMPTY,
       !pushSubId
         ? EMPTY
         : this.notifications.notificationsPushSubscriptionsIdDelete(pushSubId),
@@ -100,6 +108,10 @@ export class PushNotificationSubscriptionService implements OnDestroy {
   private requestSubscription(): Observable<PushSubscription> {
     if (!this.vapidPublicKey) {
       this.notify.error("Vapid public key wasn't loaded in advance. Exiting");
+      return EMPTY;
+    }
+
+    if (!this.swPush) {
       return EMPTY;
     }
 
