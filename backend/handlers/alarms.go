@@ -72,6 +72,18 @@ offset $4 fetch first $5 rows only
 	)
 }
 
+func (b *BahnAlarmApi) DeleteAlarms(ctx echo.Context) error {
+	if _, err := db.Db.ExecContext(
+		ctx.Request().Context(),
+		"delete from alarms a using users u where u.name = $1",
+		ctx.Get("username"),
+	); err != nil {
+		return err
+	}
+
+	return ctx.NoContent(http.StatusNoContent)
+}
+
 func (b *BahnAlarmApi) DeleteAlarmsId(ctx echo.Context, id int) error {
 	result, err := db.Db.ExecContext(
 		ctx.Request().Context(),

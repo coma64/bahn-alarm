@@ -1,4 +1,11 @@
 services:
+  api-docs:
+    build:
+      context: ./backend/openapi
+      dockerfile: swagger-ui.Dockerfile
+    restart: always
+    ports:
+      - 8099:8080
   backend:
     profiles:
       - full

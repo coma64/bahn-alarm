@@ -10,6 +10,10 @@ export namespace AlarmsActions {
     constructor(readonly targetId: number) {}
   }
 
+  export class DeleteAll {
+    static readonly type = '[Alarms] Delete all';
+  }
+
   export class FilterByUrgency {
     static readonly type = '[Alarms] Filter by urgency';
     constructor(readonly urgency?: Urgency) {}

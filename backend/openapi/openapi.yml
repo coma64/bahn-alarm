@@ -402,6 +402,15 @@ paths:
                 $ref: "#/components/schemas/AlarmsList"
         401:
           description: Not logged in
+    delete:
+      description: Delete all alarms
+      tags:
+        - alarms
+      responses:
+        204:
+          description: All alarms deleted
+        401:
+          description: Not logged in
   /alarms/{id}:
     delete:
       tags:

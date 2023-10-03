@@ -66,6 +66,21 @@ export class AlarmsState {
     );
   }
 
+  @Action(AlarmsActions.DeleteAll)
+  deleteAll({
+    patchState,
+  }: StateContext<AlarmsStateModel>): Observable<unknown> {
+    return this.alarms.alarmsDelete().pipe(
+      tap({
+        next: () => patchState({ items: [] }),
+        error: () =>
+          this.notify.error(
+            'An unknown error occurred while deleting the alarms',
+          ),
+      }),
+    );
+  }
+
   @Action(AlarmsActions.FilterByUrgency)
   filterByUrgency(
     { patchState, dispatch }: StateContext<AlarmsStateModel>,

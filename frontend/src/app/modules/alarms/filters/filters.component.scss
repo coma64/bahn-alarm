@@ -1,4 +1,18 @@
+@use "../../../../scss/breakpoints" as b;
+
 :host {
   display: flex;
+  flex-wrap: wrap;
   gap: 1ch;
+}
+
+button {
+  @include b.is-small {
+    font-size: 15px;
+
+    i-feather {
+      width: 16px !important;
+      height: 16px !important;
+    }
+  }
 }

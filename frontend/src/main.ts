@@ -36,9 +36,11 @@ import {
 import { ErrorHandler, importProvidersFrom, isDevMode } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-LogRocket.init('qmpbyd/bahn-alarm', {
-  console: { isEnabled: { warn: true, error: true } },
-});
+if (environment.production) {
+  LogRocket.init('qmpbyd/bahn-alarm', {
+    console: { isEnabled: { warn: true, error: true } },
+  });
+}
 
 bootstrapApplication(AppComponent, {
   providers: [

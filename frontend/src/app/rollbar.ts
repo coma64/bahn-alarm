@@ -8,11 +8,13 @@ import {
   isDevMode,
 } from '@angular/core';
 import LogRocket from 'logrocket';
+import { environment } from '../environments/environment';
 
 const rollbarConfig: Configuration = {
   accessToken: '771442c822394e9787f6fc2dfcaa645a',
   captureUncaught: true,
   captureUnhandledRejections: true,
+  enabled: environment.production,
 };
 
 export const rollbarService = new InjectionToken<Rollbar>('rollbar');
