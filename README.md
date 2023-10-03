@@ -15,7 +15,7 @@ It does this by regularly polling the API of the new "Next DB Navigator" app.
   <img alt="Demo Screenshot" src="./resources/demo-screenshot.png">
 
   <h3>Mobile</h3>
-  <img alt="Mobile Demo Screenshot" src="./resources/demo-screenshot-mobile.jpeg">
+  <img height="500" alt="Mobile Demo Screenshot" src="./resources/demo-screenshot-mobile.jpeg">
 </details>
 
 ## Tech stack
