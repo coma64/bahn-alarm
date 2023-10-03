@@ -7,7 +7,16 @@ It does this by regularly polling the API of the new "Next DB Navigator" app.
 
 **I am by no means affiliated with the DB. This project was built for educational purposes only.**
 
-![Demo Screenshot](resources/demo-screenshot.png)
+
+<details>
+  <summary>Screenshots</summary>
+
+  <h3>Desktop</h3>
+  <img alt="Demo Screenshot" src="./resources/demo-screenshot.png">
+
+  <h3>Mobile</h3>
+  <img alt="Mobile Demo Screenshot" src="./resources/demo-screenshot-mobile.jpeg">
+</details>
 
 ## Tech stack
 
