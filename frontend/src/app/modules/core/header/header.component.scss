@@ -42,6 +42,8 @@ ul {
     width: 100%;
     background: var(--surface1);
     padding-inline: 10px;
+    justify-content: space-evenly;
+    padding-bottom: 10px;
   }
 
   i-feather {
@@ -52,12 +54,14 @@ ul {
 
   li {
     padding-inline: 5px;
-    padding-block: 10px;
+    padding-block: 5px;
 
     a {
       display: grid !important;
       gap: 0 !important;
       margin-inline: 10px;
+      font-size: 12px !important;
+      padding: 3px !important;
     }
   }
 }
@@ -65,16 +69,11 @@ ul {
 li {
   background: var(--surface1);
   border-bottom: 4px solid var(--surface1);
-  border-top: 4px solid var(--surface1);
   padding-bottom: 5px;
 
   &:has(.active) {
     @include b.is-large {
       border-bottom: 4px solid var(--brand);
-    }
-
-    @include b.is-small {
-      border-top: 4px solid var(--brand);
     }
   }
 
@@ -90,13 +89,19 @@ li {
 
     transition: all 150ms ease-in-out;
 
-    &:hover {
-      color: var(--text1);
-      background: var(--surface2);
+    @include b.is-large {
+      &:hover {
+        color: var(--text1);
+        background: var(--surface2);
+      }
     }
 
     &.active {
       color: var(--text1);
+
+      @include b.is-small {
+        color: var(--brand);
+      }
     }
   }
 }
